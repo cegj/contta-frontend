@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 :root {
+  --main-background-light: #FDFDFD;
   --main-color: #0B467B;
 }
 
@@ -8,11 +10,20 @@
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 body {
   margin: 0;
   padding: 0;
   background-color: #f7f7f7;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
 }

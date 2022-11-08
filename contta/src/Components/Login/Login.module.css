@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  align-content: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  gap: 2rem;
+}
+
+.loginContainer {
+  background-color: var(--main-background-light);
+}
+
+.subtitle {
+  display: block;
+  max-width: 70%;
+  margin: 0 auto;
+  margin-top: .2rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: lighter;
+}
