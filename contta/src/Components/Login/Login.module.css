@@ -1,5 +1,6 @@
 .container {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-items: center;
   align-content: center;
@@ -11,7 +12,13 @@
 
 .loginContainer {
   background-color: var(--main-background-light);
+  min-height: 300px;
+  min-width: 350px;
+  padding: 2rem;
+  border-radius: 5px;
+  border: 2px solid #eee;
 }
+
 
 .subtitle {
   display: block;

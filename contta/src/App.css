@@ -3,6 +3,7 @@
 
 :root {
   --main-background-light: #FDFDFD;
+  --main-background-light-focus: #fbfbfb;
   --main-color: #0B467B;
 }
 
@@ -19,6 +20,7 @@ body {
   background-color: #f7f7f7;
 }
 
+p,
 h1,
 h2,
 h3,

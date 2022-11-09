@@ -1,25 +1,38 @@
 import React from 'react'
 import AppName from '../Elements/AppName'
+import Input from '../Elements/Forms/Input';
+import Button from '../Elements/Forms/Button';
 import style from './Login.module.css'
+import useForm from '../../Hooks/useForm';
+import { POST_LOGIN, GET_USER } from '../../api';
 
 const Home = () => {
 
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const email = useForm('email');
+  const password = useForm();
 
-  function handleSubmit(event){
+  React.useEffect(() => {
+    const token = window.localStorage.getItem('token');
+    if (token) getUser(token)
+  }, [])
+
+  async function getUser(token){
+    const {url, options} = GET_USER(token);
+    console.log(options);
+    const response = await fetch(url, options);
+    const json = await response.json();
+    console.log(json);
+  }
+
+  async function handleSubmit(event){
     event.preventDefault();
-    fetch('http://3.220.229.85:8000/api/users/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({email, password})
-    })
-    .then(response => {
-      console.log(response)
-      return response.json()})
-    .then(json => {console.log(json)})
+    const { url, options } = POST_LOGIN({ email: email.value, password: password.value });
+    
+    const response = await fetch(url, options);
+    const json = await response.json();
+    console.log(json)
+    window.localStorage.setItem('token', json.access_token);
+    getUser(json.access_token);
   }
 
   return (
@@ -31,9 +44,18 @@ const Home = () => {
       <section>
         <div className={style.loginContainer}>
           <form action='' onSubmit={handleSubmit}>
-            <input type="text" onChange={({target}) => setEmail(target.value)} value={email}/>
-            <input type="password" onChange={({target}) => setPassword(target.value)} value={password}/>
-            <button>Entrar</button>
+            <Input
+              label="E-mail do usuário"
+              type="email" name="email"
+              required={true}
+              {...email}/>
+            <Input
+              label="Senha"
+              type="password"
+              name="password"
+              required={true}
+              {...password}/>
+            <Button style={{display: 'block', marginLeft: 'auto'}}>Entrar</Button>
           </form>
         </div>
       </section>
