@@ -1,0 +1,50 @@
+.placeholder {
+  position: fixed;
+  height: 0px;
+  width: 97%;
+  top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  gap: 20px;
+  z-index: 100;
+}
+
+.message {
+  display: flex;
+  min-height: 45px;
+  width: fit-content;
+  padding: 0px 30px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  border-radius: 4px;
+
+}
+
+:global(.m-type-e) {
+  background-color: rgba(226, 164, 164, 0.671);
+  color: #523030;
+  border: 1px solid rgba(182, 131, 131, 0.671);
+}
+
+:global(.m-type-s) {
+  background-color: rgba(196, 223, 184, 0.671);
+  color: #365230;
+  border: 1px solid rgba(179, 207, 167, 0.671);
+}
+
+:global(.m-type-a) {
+  background-color: rgba(226, 220, 164, 0.671);
+  color: #525030;
+  border: 1px solid rgba(161, 157, 117, 0.671);
+}
+
+:global(.m-type-n) {
+  background-color: rgba(218, 218, 218, 0.671);
+  color: #3f3f3f;
+  border: 1px solid rgba(153, 153, 153, 0.671);
+}

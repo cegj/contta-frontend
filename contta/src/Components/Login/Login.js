@@ -4,35 +4,21 @@ import Input from '../Elements/Forms/Input';
 import Button from '../Elements/Forms/Button';
 import style from './Login.module.css'
 import useForm from '../../Hooks/useForm';
-import { POST_LOGIN, GET_USER } from '../../api';
+import UserContext from '../../Contexts/UserContext';
 
-const Home = () => {
+const Login = () => {
 
   const email = useForm('email');
   const password = useForm();
 
-  React.useEffect(() => {
-    const token = window.localStorage.getItem('token');
-    if (token) getUser(token)
-  }, [])
-
-  async function getUser(token){
-    const {url, options} = GET_USER(token);
-    console.log(options);
-    const response = await fetch(url, options);
-    const json = await response.json();
-    console.log(json);
-  }
+  const { userLogin } = React.useContext(UserContext);
 
   async function handleSubmit(event){
     event.preventDefault();
-    const { url, options } = POST_LOGIN({ email: email.value, password: password.value });
-    
-    const response = await fetch(url, options);
-    const json = await response.json();
-    console.log(json)
-    window.localStorage.setItem('token', json.access_token);
-    getUser(json.access_token);
+
+    if(email.validate() && password.validate()){
+      userLogin(email.value, password.value);
+    }
   }
 
   return (
@@ -63,4 +49,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Login
