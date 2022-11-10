@@ -30,7 +30,7 @@ export const UserContextData = ({children}) => {
         setUser(user);
         setLogged(true);
         console.log(user)
-        setMessage({content: `Usuário ${user.name} autenticado com sucesso`, type: 's'})
+        setMessage({content: `${user.name} autenticado com sucesso`, type: 's'})
       } else {
         const json = await response.json();
         throw new Error(json.message);
