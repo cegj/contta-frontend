@@ -28,7 +28,6 @@ const Messages = () => {
     }}, [messages, messages.length, setShowMessages]);
 
     function closeMessage(event){
-      console.log('cliquei', event.target.parentElement);
       event.target.parentElement.remove();
     }
 

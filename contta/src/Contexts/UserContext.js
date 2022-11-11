@@ -53,7 +53,6 @@ export const UserContextData = ({children}) => {
     try {
       const {url, options} = POST_LOGIN({email, password});
       const {response, json, error} = await request(url, options);
-      console.log(error)
       if (response.ok){
         const {access_token} = json;
         window.localStorage.setItem('token', access_token);

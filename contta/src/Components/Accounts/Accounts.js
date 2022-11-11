@@ -1,12 +1,15 @@
 import React from 'react'
 import UserContext from '../../Contexts/UserContext'
+import Header from '../Header'
 
 const Accounts = () => {
-  const user = React.useContext(UserContext);
-  console.log(user)
+  // const user = React.useContext(UserContext);
 
   return (
-    <div>Accounts</div>
+    <>
+      <Header />
+      <div>Accounts</div>
+    </>
   )
 }
 

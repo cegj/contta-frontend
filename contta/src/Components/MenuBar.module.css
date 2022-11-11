@@ -1,0 +1,28 @@
+.menuBar {
+  display: flex;
+  background-color: #0B467B;
+  height: 70px;
+  align-items: center;
+  align-content: center;
+  padding: 1rem;
+  justify-content: space-between;
+}
+
+.menuPageNameContainer {
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+
+.pageName {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 2rem;
+  font-weight: lighter;
+  color: #EFF4FA;
+  padding-left: 10px;
+}
+
+.optionsContainer {
+  display: flex;
+  gap: 15px;
+}
