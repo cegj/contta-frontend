@@ -15,9 +15,6 @@ const MenuBar = () => {
       </div>
       <div className={styles.optionsContainer}>
         <OptionsButton />
-        <OptionsButton />
-        <OptionsButton />
-        <OptionsButton />
       </div>
     </section>
   )
