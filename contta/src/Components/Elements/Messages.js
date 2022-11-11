@@ -4,7 +4,7 @@ import styles from './Messages.module.css'
 
 const Messages = () => {
 
-  const {message, setMessage} = React.useContext(MessagesContext);
+  const {message, setMessage, showMessages, setShowMessages} = React.useContext(MessagesContext);
 
   const messages = React.useMemo(() => {
     return [];
@@ -13,14 +13,32 @@ const Messages = () => {
   React.useEffect(() => {
     if (message){
       messages.push(message)
+      setShowMessages(true)
     }
     setMessage(null)
-  },[message, messages, setMessage])
+  },[message, messages, setMessage, setShowMessages])
+
+  React.useEffect(() => {
+    if(messages.length > 0){
+      const timer = setTimeout(() => {
+        setShowMessages(false)
+        messages.length = 0;
+      }, 10000);
+      return () => clearTimeout(timer);  
+    }}, [messages, messages.length, setShowMessages]);
+
+    function closeMessage(event){
+      console.log('cliquei', event.target.parentElement);
+      event.target.parentElement.remove();
+    }
 
   return (
-    <div className={styles.placeholder}>
+    showMessages && <div className={styles.placeholder}>
       {messages.map((message, i) => {
-        return <div className={`${styles.message} m-type-${message.type}`} key={i}>{message.content}</div>
+        return <div className={`${styles.message} m-type-${message.type}`} key={i}>
+          {message.content}
+          <span className={styles.closeMessageBtn} onClick={closeMessage}>X</span>
+        </div>
       })}
     </div>
   )
