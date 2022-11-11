@@ -12,16 +12,14 @@ export const UserContextData = ({children}) => {
   const [logged, setLogged] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
 
-  // React.useEffect(() => {
-  //   console.log('User: ' + user);
-  //   console.log('Logged ' + logged);
-  //   console.log('Loading: ' + loading);
-  //   console.log('Message: ' + message);
-  // }, [user, logged, loading, message])
+  React.useEffect(() => {
+    console.log('User: ' + user);
+    console.log('Logged ' + logged);
+    console.log('Loading: ' + loading);
+  }, [user, logged, loading])
 
   const getUser = React.useCallback(async (token) => {
     try {
-      setMessage(null);
       setLoading(true);
       const {url, options} = GET_USER(token);
       const response = await fetch(url, options);
@@ -36,7 +34,7 @@ export const UserContextData = ({children}) => {
         throw new Error(json.message);
       }
     } catch (error) {
-      window.localStorage.removeItem('token');
+      userLogout();
       setMessage({content: `Não foi possível entrar: ${error.message}`, type: 'e'});
     } finally {
       setLoading(false); 
@@ -53,32 +51,8 @@ export const UserContextData = ({children}) => {
     autoLogin();
   }, [getUser])
 
-
-  // async function getUser(token){
-  //   try {
-  //     setMessage(null);
-  //     setLoading(true);
-  //     const {url, options} = GET_USER(token);
-  //     const response = await fetch(url, options);
-  //     if (response.ok){
-  //       const user = await response.json();
-  //       setUser(user);
-  //       setLogged(true);
-  //     } else {
-  //       const { message } = await response.json();
-  //       throw new Error(message);
-  //     }
-  //   } catch (error) {
-  //     window.localStorage.removeItem('token');
-  //     setMessage(error);
-  //   } finally {
-  //     setLoading(false); 
-  //   }
-  // }
-
   async function userLogin(email, password) {
     try {
-      setMessage(null);
       setLoading(true);
       const {url, options} = POST_LOGIN({email, password});
       const response = await fetch(url, options);
@@ -103,7 +77,7 @@ export const UserContextData = ({children}) => {
     setUser(null);
     setLogged(false);
     setLoading(false);
-    setMessage(null);
+    setMessage({content: "Sessão encerrada", type: 'n'});
   }
 
   return (
