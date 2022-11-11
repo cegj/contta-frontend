@@ -5,6 +5,7 @@ import { MessagesContextData } from './Contexts/MessagesContext';
 import { UserContextData } from './Contexts/UserContext';
 import Accounts from './Components/Accounts/Accounts';
 import Messages from './Components/Elements/Messages';
+import ProtectedRoute from './Helpers/ProtectedRoute';
 
 function App() {
 
@@ -15,7 +16,7 @@ function App() {
           <Messages />
           <Routes>
             <Route path="/" element={<Login />}/>
-            <Route path="/accounts" element={<Accounts />}/>
+            <Route path="/accounts/*" element={<ProtectedRoute><Accounts /></ProtectedRoute>}/>
           </Routes>
         </UserContextData>
       </MessagesContextData>
