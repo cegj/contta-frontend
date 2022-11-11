@@ -11,7 +11,7 @@ const Login = () => {
   const email = useForm('email');
   const password = useForm();
 
-  const { userLogin } = React.useContext(UserContext);
+  const { userLogin, loading } = React.useContext(UserContext);
 
   async function handleSubmit(event){
     event.preventDefault();
@@ -41,7 +41,9 @@ const Login = () => {
               name="password"
               required={true}
               {...password}/>
-            <Button style={{display: 'block', marginLeft: 'auto'}}>Entrar</Button>
+            {!loading
+            ? <Button style={{display: 'block', marginLeft: 'auto'}}>Entrar</Button>
+            : <Button style={{display: 'block', marginLeft: 'auto'}} disabled>Entrando...</Button>}
           </form>
         </div>
       </section>
