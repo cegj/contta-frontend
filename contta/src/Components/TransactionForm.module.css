@@ -1,0 +1,166 @@
+.modalContainer {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  background-color: rgba(0, 0, 0, .5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formContainer {
+  background-color: #fafafa;
+  width: 800px;
+  height: fit-content;
+  border-radius: 5px;
+  animation: animateFormContainer .4s forwards;
+}
+
+@keyframes animateFormContainer {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.titleBar {
+  border-bottom: 3px solid lightgray;
+  padding: 1rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+}
+
+.buttonsContainer {
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  gap: 10px;
+}
+
+.buttonsContainer>span {
+  background-color: #f3f3f3;
+  border-radius: 50%;
+}
+
+.closeButton>svg,
+.pinButton>svg {
+  fill: #717171;
+}
+
+.pinButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  width: 35px;
+  cursor: pointer;
+}
+
+.pinButton:hover>svg {
+  fill: blue;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  width: 35px;
+  cursor: pointer;
+}
+
+.closeButton:hover>svg {
+  fill: red;
+}
+
+.transactionForm {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.fc1 {
+  grid-column: span 1
+}
+
+.fc2 {
+  grid-column: span 2
+}
+
+.fc4 {
+  grid-column: span 4
+}
+
+.fc6 {
+  grid-column: span 6
+}
+
+.formControl {
+  display: block;
+  border: 1px solid #D4D4D4;
+  border-radius: 4px;
+  width: 100%;
+  background-color: #fcfcfc;
+  max-height: 80.85px;
+}
+
+.formControl label,
+.formControl input,
+.formControl select {
+  display: block;
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
+}
+
+.checkboxControl {
+  height: 50%;
+  display: flex;
+  align-items: center;
+  padding: .5rem;
+  gap: 5px;
+  flex-wrap: nowrap;
+  border-bottom: 1px solid #D4D4D4;
+}
+
+.checkboxControl:last-child {
+  border-bottom: none;
+}
+
+.checkboxControl label,
+.checkboxControl input {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.checkboxControl input {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.formControl label {
+  color: #8A8A8A;
+  font-size: 1rem;
+  padding: .3rem .5rem;
+}
+
+.formControl input,
+.formControl select {
+  background-color: #fff;
+  height: 50px;
+  font-size: 1.1rem;
+  border: none;
+  border-top: 1px solid #D4D4D4;
+  border-radius: 4px;
+  padding: .5rem;
+  color: #474747;
+}

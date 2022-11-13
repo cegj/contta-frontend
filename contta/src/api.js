@@ -25,3 +25,72 @@ export function GET_USER(token){
     }
   }
 }
+
+export function GET_ACCOUNTS(token){
+  return {
+    url: API_URL + '/accounts',
+    options: {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
+    }
+  }
+}
+
+export function GET_CATEGORIES(token){
+  return {
+    url: API_URL + '/categories/groups',
+    options: {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
+    }
+  }
+}
+
+export function POST_INCOME(body, token){
+  return {
+    url: API_URL + '/transacions/incomes',
+    options: {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
+export function POST_EXPENSE(body, token){
+  return {
+    url: API_URL + '/transacions/expenses',
+    options: {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
+export function POST_TRANSACTION(body, token){
+  return {
+    url: API_URL + '/transacions/expenses',
+    options: {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}

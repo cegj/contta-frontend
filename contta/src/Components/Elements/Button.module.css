@@ -1,11 +1,8 @@
 .button {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-family: 'Roboto', sans-serif;
   border: none;
-  box-shadow: 0 0 0 1.5px #c8d8b4;
   border-radius: 4px;
-  background-color: #E0F1CB;
-  color: #6e795f;
   cursor: pointer;
   padding: .7rem 1.1rem;
   transition: .1s;
@@ -16,12 +13,22 @@
 .button:hover,
 .button:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #9cb381;
-  background-color: #d2e2be;
-  color: #545c48;
 }
 
 .button:disabled {
   opacity: .5;
   cursor: wait;
+}
+
+.buttonConfirm {
+  box-shadow: 0 0 0 1.5px #c8d8b4;
+  background-color: #daf7b7;
+  color: #697e4d;
+}
+
+.buttonConfirm:hover,
+.buttonConfirm:focus {
+  box-shadow: 0 0 0 3px #a0ad91;
+  background-color: #c3dda3;
+  color: #4e5e39;
 }

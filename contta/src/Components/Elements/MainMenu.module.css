@@ -23,6 +23,10 @@
   box-shadow: 0px -8px 0px #EFF4FA, 0px 8px 0px #EFF4FA;
 }
 
+.menuBtn:hover::after {
+  transform: scale(1.07);
+}
+
 .menuBtnActive::after {
   display: block;
   content: "";
@@ -40,6 +44,7 @@
 .menu {
   position: absolute;
   top: 46px;
+  left: -1rem;
   color: #fff;
   background-color: #18578f;
   padding: 20px;
@@ -67,6 +72,7 @@
   gap: 5px;
   align-content: center;
   align-items: center;
+  transition: .05s;
 }
 
 .menu>ul>li {
@@ -80,4 +86,8 @@
 .icon>* {
   height: 10;
   fill: #fff;
+}
+
+.menu>ul>li>a:hover {
+  transform: scale(1.1);
 }

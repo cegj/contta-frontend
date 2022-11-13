@@ -1,0 +1,47 @@
+.addTransactionButton {
+  display: flex;
+  background-color: #002445;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  transition: .2s;
+  cursor: pointer;
+}
+
+.addTransactionButton::after {
+  content: "";
+  background-color: #fff;
+  border-radius: 5px;
+  position: absolute;
+  height: 4px;
+  width: 30px;
+  top: calc(50% - (4px / 2));
+  left: calc(50% - (30px / 2));
+}
+
+.addTransactionButton::before {
+  content: "";
+  background-color: #fff;
+  border-radius: 5px;
+  position: absolute;
+  height: 30px;
+  width: 4px;
+  top: calc(50% - (30px / 2));
+  left: calc(50% - (4px / 2));
+}
+
+.addTransactionButton:hover {
+  transform: rotate(90deg);
+}
+
+.addTransactionButton:hover::before {
+  transform: scale(1.2);
+}
+
+.addTransactionButton:hover::after {
+  transform: scale(1.2);
+}

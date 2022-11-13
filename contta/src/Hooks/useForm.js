@@ -28,10 +28,15 @@ const useForm = (type) => {
     setValue(target.value)
   }
 
+  function onCheck({target}) {
+    setValue(target.checked)
+  }
+
   return {
     value,
     setValue,
     onChange,
+    onCheck,
     error,
     validate: () => validate(value),
     onBlur: () => validate(value)

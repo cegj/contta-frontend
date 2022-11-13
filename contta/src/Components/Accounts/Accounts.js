@@ -1,5 +1,5 @@
 import React from 'react'
-import UserContext from '../../Contexts/UserContext'
+// import UserContext from '../../Contexts/UserContext'
 import Header from '../Header'
 
 const Accounts = () => {

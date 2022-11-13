@@ -29,7 +29,7 @@ export const UserContextData = ({children}) => {
         const user = json;
         setUser(user);
         setLogged(true);
-        setMessage({content: `${user.name} autenticado com sucesso`, type: 's'})
+        setMessage({content: `${user.name} autenticado`, type: 's'})
         navigate('/accounts')
       } else {
         throw new Error(error);

@@ -1,7 +1,7 @@
 import React from 'react'
 import AppName from '../Elements/AppName'
-import Input from '../Elements/Forms/Input';
-import Button from '../Elements/Forms/Button';
+import Input from './Form/Input';
+import Button from '../Elements/Button';
 import style from './Login.module.css'
 import useForm from '../../Hooks/useForm';
 import UserContext from '../../Contexts/UserContext';
@@ -42,8 +42,8 @@ const Login = () => {
               required={true}
               {...password}/>
             {!loading
-            ? <Button style={{display: 'block', marginLeft: 'auto'}}>Entrar</Button>
-            : <Button style={{display: 'block', marginLeft: 'auto'}} disabled>Entrando...</Button>}
+            ? <Button style={{display: 'block', marginLeft: 'auto'}} type="confirm">Entrar</Button>
+            : <Button style={{display: 'block', marginLeft: 'auto'}} type="confirm" disabled>Entrando...</Button>}
           </form>
         </div>
       </section>

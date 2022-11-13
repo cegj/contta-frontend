@@ -1,7 +1,7 @@
 .placeholder {
   position: fixed;
   height: 0px;
-  width: auto;
+  min-width: auto;
   top: 20px;
   right: 20px;
   padding: 20px;
@@ -16,9 +16,9 @@
 
 .message {
   display: grid;
-  grid-template-columns: auto 20px;
+  grid-template-columns: 240px 20px;
   min-height: 45px;
-  max-width: 300px;
+  width: 300px;
   padding: 30px 20px;
   align-content: center;
   align-items: center;
