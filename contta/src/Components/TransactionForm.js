@@ -8,10 +8,12 @@ import useFetch from '../Hooks/useFetch'
 import Select from 'react-select'
 import selectStyles from '../options/selectStyles'
 import useForm from '../Hooks/useForm'
-import { POST_EXPENSE, POST_INCOME, POST_TRANSACTION } from '../api'
+import { POST_EXPENSE, POST_INCOME, POST_TRANSFER } from '../api'
+import MessagesContext from '../Contexts/MessagesContext'
 
 const TransactionForm = () => {
 
+  const {setMessage} = React.useContext(MessagesContext);
   const {request, loading} = useFetch();
   const {categories, accounts, transactionFormIsOpen, setTransactionFormIsOpen} = React.useContext(AppContext);
 
@@ -56,24 +58,33 @@ const TransactionForm = () => {
     })
   }, [categories, categoryOptions])
 
-  // React.useEffect(() => [], [type.value])
-
   function closeForm(){
     setTransactionFormIsOpen(false);
+  }
+
+  function cleanForm(){
+    setType([]);
+    transactionDate.value = null;
+    paymentDate.value = null;
+    value.value = null;
+    description.value = null;
+    setCategory(null);
+    setAccount(null);
+    setDestinationAccount(null);
+    totalInstallments.value = null;
+    preview.value = false;
+    usual.value = false;
   }
 
   async function handleSubmit(event){
     event.preventDefault();
     const token = window.localStorage.getItem('token');
     let body = {};
-    let adjustedValue;
-    if (type.value === 'D') adjustedValue = value.value * -1
-    else adjustedValue = value.value;
     if (type.value === 'R' || type.value === 'D') {
       body = {
         transaction_date: transactionDate.value,
         payment_date: paymentDate.value,
-        value: adjustedValue,
+        value: value.value,
         description: description.value,
         category_id: category.value,
         account_id: account.value,
@@ -83,7 +94,7 @@ const TransactionForm = () => {
       }} else if (type.value === 'T'){
         body = {
           transaction_date: transactionDate.value,
-          value: adjustedValue,
+          value: value.value,
           description: description.value,
           account_id: account.value,
           destination_account_id: destinationAccount.value,
@@ -94,18 +105,19 @@ const TransactionForm = () => {
       let options;
       if (type.value === 'R') {({url, options} = POST_INCOME(body, token))}
       else if (type.value === 'D') {({url, options} = POST_EXPENSE(body, token))}
-      else if (type.value === 'T') {({url, options} = POST_TRANSACTION(body, token))}
+      else if (type.value === 'T') {({url, options} = POST_TRANSFER(body, token))}
 
       try {
         const {response, json, error} = await request(url, options);
         if (response.ok){
-          console.log(response);
-          console.log(json);
+          setMessage({content: json.message, type: 's'})
+          cleanForm();
         } else {
           throw new Error(error)
         }
       } catch (error) {
         console.log(error)
+        setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       }
 
     }
@@ -245,7 +257,12 @@ const TransactionForm = () => {
                 <label htmlFor="usual">Habitual</label>
               </span>
             </span>
+            {loading 
+            ?
+            <Button type="confirm" style={{gridColumn: '6'}} disabled>Registrando...</Button>
+            :
             <Button type="confirm" style={{gridColumn: '6'}}>Registrar</Button>
+            }
             </form>
           </div>
       </div>

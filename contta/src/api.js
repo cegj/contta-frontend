@@ -52,7 +52,7 @@ export function GET_CATEGORIES(token){
 
 export function POST_INCOME(body, token){
   return {
-    url: API_URL + '/transacions/incomes',
+    url: API_URL + '/transactions/incomes',
     options: {
       method: 'POST',
       headers: {
@@ -67,7 +67,7 @@ export function POST_INCOME(body, token){
 
 export function POST_EXPENSE(body, token){
   return {
-    url: API_URL + '/transacions/expenses',
+    url: API_URL + '/transactions/expenses',
     options: {
       method: 'POST',
       headers: {
@@ -80,9 +80,9 @@ export function POST_EXPENSE(body, token){
   }
 }
 
-export function POST_TRANSACTION(body, token){
+export function POST_TRANSFER(body, token){
   return {
-    url: API_URL + '/transacions/expenses',
+    url: API_URL + '/transactions/transfers',
     options: {
       method: 'POST',
       headers: {

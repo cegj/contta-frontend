@@ -11,13 +11,14 @@
   justify-content: flex-start;
   align-items: flex-end;
   gap: 20px;
-  z-index: 100;
+  z-index: 3000;
 }
 
 .message {
   display: grid;
   grid-template-columns: 240px 20px;
   min-height: 45px;
+  height: min-content;
   width: 300px;
   padding: 30px 20px;
   align-content: center;

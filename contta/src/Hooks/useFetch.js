@@ -17,9 +17,9 @@ const useFetch = () => {
         throw new Error();
       }
     } catch (e) {
-      if (json.message) error = json.message
-      else if (json.error) error = json.error
-      else error = 'Erro não identificado em useFetch'
+      if (json.error) error = json.error
+      else if (json.message) error = json.message
+      else error = 'Falha na requisição ao servidor'
       json = null;
     } finally {
       setData(json);
