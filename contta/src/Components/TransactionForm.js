@@ -129,7 +129,13 @@ const TransactionForm = () => {
         <div className={styles.modalContainer}>
           <div className={styles.formContainer}>
             <div className={styles.titleBar}>
-              <h2>Registrar transação</h2>
+              <h2
+                className={`${styles.modalTitle}
+                 ${(type && type.value === 'D') ? styles.d : ''}
+                 ${(type && type.value === 'R') ? styles.r : ''}
+                 ${(type && type.value === 'T') ? styles.t : ''}`}>
+                  Registrar transação
+              </h2>
               <span className={styles.buttonsContainer}>
                 <span className={styles.pinButton}><PinIcon /></span>
                 <span className={styles.closeButton} onClick={closeForm}><CloseIcon /></span>
@@ -145,6 +151,7 @@ const TransactionForm = () => {
                   value={type}
                   onChange={setType}
                   options={typeOptions}
+                  className="Teste"
                 />
               </span>
               <span className={`${styles.formControl} ${styles.fc2}`}>

@@ -16,6 +16,7 @@
   height: fit-content;
   border-radius: 5px;
   animation: animateFormContainer .4s forwards;
+  box-shadow: 10px 10px 50px rgba(0, 0, 0, .1);
 }
 
 @keyframes animateFormContainer {
@@ -37,6 +38,18 @@
   justify-content: space-between;
   align-items: center;
   align-content: center;
+}
+
+.modalTitle.d {
+  color: rgb(119, 0, 0);
+}
+
+.modalTitle.r {
+  color: rgb(0, 99, 0);
+}
+
+.modalTitle.t {
+  color: rgb(104, 0, 104);
 }
 
 .buttonsContainer {
