@@ -8,6 +8,7 @@
   transition: .1s;
   min-width: 8rem;
   margin: 3px;
+  max-height: 43.375px;
 }
 
 .button:hover,

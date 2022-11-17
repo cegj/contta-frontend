@@ -1,0 +1,65 @@
+.formControl {
+  display: block;
+  border: 1px solid #D4D4D4;
+  border-radius: 4px;
+  width: 100%;
+  background-color: #fcfcfc;
+  max-height: 80.85px;
+}
+
+.formControl label,
+.formControl input,
+.formControl select {
+  font-family: 'Roboto', sans-serif;
+}
+
+.formControl input,
+.formControl select {
+  display: block;
+  width: 100%;
+}
+
+
+.formControl label {
+  color: #8A8A8A;
+  font-size: 1rem;
+}
+
+.formControl input,
+.formControl select {
+  background-color: #fff;
+  height: 50px;
+  font-size: 1.1rem;
+  border: none;
+  border-top: 1px solid #D4D4D4;
+  border-radius: 4px;
+  padding: .5rem;
+  color: #474747;
+}
+
+.labelContainer {
+  display: flex;
+  padding: .1rem .5rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pinIconContainer {
+  cursor: pointer;
+}
+
+.pinIconContainer>svg {
+  fill: #afafaf;
+}
+
+.pinIconContainer>svg:hover {
+  fill: #474747;
+}
+
+.pinIconContainer>svg:hover {
+  fill: #474747;
+}
+
+.pinIconContainer.active>svg {
+  fill: var(--main-color);
+}

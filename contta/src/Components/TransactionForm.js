@@ -5,11 +5,10 @@ import {ReactComponent as PinIcon} from '../assets/icons/pin_icon.svg'
 import {ReactComponent as CloseIcon} from '../assets/icons/close_icon.svg'
 import Button from './Elements/Button'
 import useFetch from '../Hooks/useFetch'
-import Select from 'react-select'
-import selectStyles from '../options/selectStyles'
 import useForm from '../Hooks/useForm'
 import { POST_EXPENSE, POST_INCOME, POST_TRANSFER } from '../api'
 import MessagesContext from '../Contexts/MessagesContext'
+import TransactionFormInput from './TransactionFormInput'
 
 const TransactionForm = () => {
 
@@ -58,22 +57,26 @@ const TransactionForm = () => {
     })
   }, [categories, categoryOptions])
 
+  React.useEffect(() => {}, [transactionFormIsOpen])
+
   function closeForm(){
     setTransactionFormIsOpen(false);
+    clearForm();
   }
 
-  function cleanForm(){
+  function clearForm(){
     setType([]);
-    transactionDate.value = null;
-    paymentDate.value = null;
-    value.value = null;
-    description.value = null;
-    setCategory(null);
-    setAccount(null);
-    setDestinationAccount(null);
-    totalInstallments.value = null;
-    preview.value = false;
-    usual.value = false;
+    transactionDate.setValue('');
+    transactionDate.setValue('');
+    paymentDate.setValue('');
+    value.setValue('');
+    description.setValue('');
+    setCategory('');
+    setAccount('');
+    setDestinationAccount('');
+    totalInstallments.setValue('');
+    preview.setValue(false);
+    usual.setValue(false);
   }
 
   async function handleSubmit(event){
@@ -111,7 +114,6 @@ const TransactionForm = () => {
         const {response, json, error} = await request(url, options);
         if (response.ok){
           setMessage({content: json.message, type: 's'})
-          cleanForm();
         } else {
           throw new Error(error)
         }
@@ -142,107 +144,98 @@ const TransactionForm = () => {
               </span>
             </div>
             <form className={styles.transactionForm} onSubmit={handleSubmit}>
-              <span className={`${styles.formControl} ${styles.fc2}`}>
-                <label htmlFor="type">Tipo</label>
-                <Select 
-                  placeholder="Selecione..."
-                  isClearable={true}
-                  styles={selectStyles}
-                  value={type}
-                  onChange={setType}
-                  options={typeOptions}
-                  className="Teste"
-                />
-              </span>
-              <span className={`${styles.formControl} ${styles.fc2}`}>
-                <label htmlFor="transaction-date">Data da transação</label>
-                <input
-                  type="date"
-                  name="transaction-date"
-                  id="transaction-date"
-                  value={transactionDate.value}
-                  onChange={transactionDate.onChange}>
-                </input>
-              </span>
+              <TransactionFormInput 
+                label="Tipo"
+                name='type'
+                type='select'
+                value={type}
+                onChange={setType}
+                options={typeOptions}
+                setValue={setType}
+                gridColumn="span 2"
+              />
+              <TransactionFormInput 
+                label='Data da transação'
+                name='transaction-date'
+                type='date'
+                value={transactionDate.value}
+                onChange={transactionDate.onChange}
+                setValue={transactionDate.setValue}
+                gridColumn="span 2"
+              />
               {(!type || type.value !== 'T') &&
-                <span className={`${styles.formControl} ${styles.fc2}`}>
-                <label htmlFor="payment-date">Data do pagamento</label>
-                <input
-                  type="date"
-                  name="payment-date"
-                  id="payment-date"
-                  value={paymentDate.value}
-                  onChange={paymentDate.onChange}>
-                </input>
-              </span>}
-              <span className={`${styles.formControl} ${styles.fc2}`}>
-                <label htmlFor="value">Valor</label>
-                <input
-                  type="text"
-                  name="value"
-                  id="value"
-                  value={value.value}
-                  onChange={value.onChange}>
-                </input>
-              </span>
-              <span className={`${styles.formControl} ${(type && type.value === 'T') ? styles.fc6 : styles.fc4}`}>
-                <label htmlFor="description">Descrição</label>
-                <input
-                  type="text"
-                  name="description"
-                  id="description"
-                  value={description.value}
-                  onChange={description.onChange}>
-                </input>
-              </span>
-              <span className={`${styles.formControl} ${styles.fc2}`}>
-                <label htmlFor="account">Conta {type && type.value === 'T' && "de origem"}</label>
-                <Select
-                  placeholder="Selecione..."
-                  isClearable={true}
-                  styles={selectStyles}
-                  value={account}
-                  onChange={setAccount}
-                  options={accountOptions}
-                />
-              </span>
+                <TransactionFormInput 
+                label='Data do pagamento'
+                name='payment-date'
+                type='date'
+                value={paymentDate.value}
+                onChange={paymentDate.onChange}
+                setValue={paymentDate.setValue}
+                gridColumn="span 2"
+              />}
+              <TransactionFormInput 
+                label='Valor'
+                name='value'
+                type='string'
+                value={value.value}
+                onChange={value.onChange}
+                setValue={value.setValue}
+                gridColumn="span 2"
+              /> 
+              <TransactionFormInput 
+                label='Descrição'
+                name='description'
+                type='string'
+                value={description.value}
+                onChange={description.onChange}
+                setValue={description.setValue}
+                gridColumn={(type && type.value === 'T') ? 'span 6' : 'span 4'}
+              />
+              <TransactionFormInput 
+                label={`Conta ${(type && type.value === 'T') ? 'de origem' : ''}`}
+                name='account'
+                type='select'
+                value={account}
+                onChange={setAccount}
+                options={accountOptions}
+                setValue={setAccount}
+                gridColumn="span 2"
+              />       
               {type && type.value === 'T'
               ?
-              <span className={`${styles.formControl} ${styles.fc2}`}>
-                <label htmlFor="account">Conta de destino</label>
-                <Select
-                  placeholder="Selecione..."
-                  isClearable={true}
-                  styles={selectStyles}
-                  value={destinationAccount}
-                  onChange={setDestinationAccount}
-                  options={accountOptions}
-                />
-              </span>
+              <TransactionFormInput 
+                label="Conta de destino"
+                name='destination_account'
+                type='select'
+                value={destinationAccount}
+                onChange={setDestinationAccount}
+                options={accountOptions}
+                setValue={setDestinationAccount}
+                gridColumn="span 2"
+              />   
               :
-              <span className={`${styles.formControl} ${styles.fc2}`}>
-              <label htmlFor="category">Categoria</label>
-              <Select 
-                placeholder="Selecione..."
-                isClearable={true}
-                styles={selectStyles}
+              <TransactionFormInput 
+                label="Categoria"
+                name='category'
+                type='select'
                 value={category}
                 onChange={setCategory}
                 options={categoryOptions}
+                setValue={setCategory}
+                gridColumn="span 2"
               />
-              </span>
               }
               {(!type || type.value !== 'T') && 
-                <span className={`${styles.formControl} ${styles.fc1}`}>
-                <label htmlFor="total_installments">Parcelas</label>
-                <input
-                  type="number" 
-                  name="total_installments"
-                  id="total_installments"
-                  value={totalInstallments.value}
-                  onChange={totalInstallments.onChange}>
-                </input>
-              </span>}
+              <TransactionFormInput 
+                label="Parcelas"
+                name="total_installments"
+                type="text"
+                value={totalInstallments.value}
+                onChange={totalInstallments.onChange}
+                setValue={totalInstallments.setValue}
+                gridColumn="span 1"
+              />
+              }
             <span className={`${styles.formControl} ${styles.fc1}`}>
               <span className={styles.checkboxControl}>
                 <input
@@ -266,9 +259,9 @@ const TransactionForm = () => {
             </span>
             {loading 
             ?
-            <Button type="confirm" style={{gridColumn: '6'}} disabled>Registrando...</Button>
+            <Button type="confirm" style={{gridColumn: '6', alignSelf: 'end'}} disabled>Registrando...</Button>
             :
-            <Button type="confirm" style={{gridColumn: '6'}}>Registrar</Button>
+            <Button type="confirm" style={{gridColumn: '6', alignSelf: 'end'}}>Registrar</Button>
             }
             </form>
           </div>
