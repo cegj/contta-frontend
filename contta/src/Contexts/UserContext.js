@@ -11,7 +11,7 @@ export const UserContextData = ({children}) => {
   const { setMessage } = React.useContext(MessagesContext);
   const {request, loading} = useFetch();
   const [user, setUser] = React.useState(null);
-  const [logged, setLogged] = React.useState(null);
+  const [logged, setLogged] = React.useState(false);
   const navigate = useNavigate();
 
   const userLogout = React.useCallback(() => {
@@ -46,8 +46,10 @@ export const UserContextData = ({children}) => {
         getUser(token);
       }
     }
-    autoLogin();
-  }, [getUser])
+    if(!logged){
+      autoLogin();
+    }
+  }, [getUser, logged])
 
   async function userLogin(email, password) {
     try {
