@@ -1,0 +1,118 @@
+.modalContainer {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  background-color: #00000080;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formContainer {
+  background-color: #fafafa;
+  width: 400px;
+  height: fit-content;
+  border-radius: 5px;
+  animation: animateFormContainer .4s forwards;
+  box-shadow: 10px 10px 50px rgba(0, 0, 0, .1);
+}
+
+@keyframes animateFormContainer {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.titleBar {
+  border-bottom: 3px solid lightgray;
+  padding: 1rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+}
+
+
+.buttonsContainer {
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  gap: 10px;
+}
+
+.buttonsContainer>span {
+  background-color: #f3f3f3;
+  border-radius: 50%;
+}
+
+.closeButton>svg {
+  fill: #717171;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  width: 35px;
+  cursor: pointer;
+}
+
+.closeButton:hover>svg {
+  fill: red;
+}
+
+.form {
+  padding: 1rem;
+  font-size: 1.2rem;
+}
+
+.inputsContainer {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.input {
+  -moz-appearance: 'textfield';
+  font-size: 1.2rem;
+  border: none;
+  height: 43.3833px;
+  padding: .5rem;
+  border-radius: 4px;
+  transition: .2s;
+  outline: none;
+  box-shadow: 0 0 0 2px #eee;
+  margin: 0 .3rem;
+}
+
+.input:hover,
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #ddd;
+}
+
+.input.month {
+  width: 40px;
+}
+
+.input.year {
+  width: 65px;
+}

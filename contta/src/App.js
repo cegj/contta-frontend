@@ -11,6 +11,8 @@ import AddTransactionButton from './Components/Elements/AddTransactionButton';
 import TransactionForm from './Components/TransactionForm';
 import ReactTooltip from 'react-tooltip';
 import React from 'react';
+import Statement from './Components/Statement/Statement';
+import MonthYearForm from './Components/monthYearForm/MonthYearForm';
 
 function App() {
 
@@ -23,9 +25,11 @@ function App() {
               <Messages />
               <Routes>
                 <Route path="/" element={<Login />}/>
+                <Route path="/statement/*" element={<ProtectedRoute><Statement /></ProtectedRoute>}/>
                 <Route path="/accounts/*" element={<ProtectedRoute><Accounts /></ProtectedRoute>}/>
               </Routes>
               <TransactionForm />
+              <MonthYearForm />
               <AddTransactionButton />
             </AppContextData>
           </UserContextData>

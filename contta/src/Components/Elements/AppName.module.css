@@ -4,4 +4,5 @@
   font-family: 'Maven Pro', sans-serif;
   color: var(--main-color);
   cursor: default;
+  user-select: none;
 }

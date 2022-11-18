@@ -8,12 +8,23 @@ const AppContext = React.createContext();
 
 export const AppContextData = ({children}) => {
 
+  const date = new Date();
+
+  const [pageName, setPageName] = React.useState(null);
+  const [month, setMonth] = React.useState(date.getMonth());
+  const [year, setYear] = React.useState(date.getFullYear());
   const [categories, setCategories] = React.useState([]);
   const [accounts, setAccounts] = React.useState([]);
   const {setMessage} = React.useContext(MessagesContext);
   const {logged} = React.useContext(UserContext);
   const {request} = useFetch();
   const [transactionFormIsOpen, setTransactionFormIsOpen] = React.useState(false);
+  const [monthYearModalIsOpen, setMonthYearModalIsOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    if(pageName) document.title = `Contta - ${pageName}`
+    else document.title = `Contta`
+  }, [pageName])
 
   React.useEffect(() => {
     if(logged){
@@ -56,7 +67,22 @@ React.useEffect(() => {
 }, [request, setMessage, logged])
 
   return (
-    <AppContext.Provider value={{categories, accounts, transactionFormIsOpen, setTransactionFormIsOpen}}>
+    <AppContext.Provider value={
+      {
+        categories,
+        accounts,
+        transactionFormIsOpen,
+        setTransactionFormIsOpen,
+        pageName,
+        setPageName,
+        month,
+        setMonth,
+        year,
+        setYear,
+        monthYearModalIsOpen,
+        setMonthYearModalIsOpen 
+      }}
+      >
       {children}
     </AppContext.Provider>
   )

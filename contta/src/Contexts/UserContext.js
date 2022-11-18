@@ -30,7 +30,7 @@ export const UserContextData = ({children}) => {
         setUser(user);
         setLogged(true);
         setMessage({content: `${user.name} autenticado`, type: 's'})
-        navigate('/accounts')
+        navigate('/statement')
       } else {
         throw new Error(error);
       }

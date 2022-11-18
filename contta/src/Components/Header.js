@@ -1,7 +1,7 @@
 import React from 'react'
 import AppName from './Elements/AppName'
 import styles from './Header.module.css'
-import MenuBar from './MenuBar'
+import MainBar from './MainBar/MainBar'
 
 const Header = () => {
   return (
@@ -9,7 +9,7 @@ const Header = () => {
       <header className={styles.header}>
         <div style={{fontSize: '1.6rem'}}><AppName /></div>
       </header>
-      <MenuBar />
+      <MainBar />
     </>
   )
 }

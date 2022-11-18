@@ -1,9 +1,11 @@
 import React from 'react'
-// import UserContext from '../../Contexts/UserContext'
+import AppContext from '../../Contexts/AppContext'
 import Header from '../Header'
 
 const Accounts = () => {
-  // const user = React.useContext(UserContext);
+
+  const {setPageName} = React.useContext(AppContext)
+  React.useEffect(() => {setPageName("Contas")}, [setPageName])
 
   return (
     <>
