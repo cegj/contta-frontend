@@ -2,10 +2,10 @@ import React from 'react'
 import styles from './TransactionFormInput.module.css'
 import Select from 'react-select'
 import selectStyles from '../options/selectStyles'
-import {ReactComponent as SaveIcon} from '../assets/icons/save_icon.svg'
+import {ReactComponent as AttachIcon} from '../assets/icons/attach_icon_small.svg'
 import setCurrencyMask from '../Helpers/setCurrencyMask'
 
-const TransactionFormInput = ({type, name, label, value, onChange, gridColumn, options, setValue, reload, currency = false}) => {
+const TransactionFormInput = ({type, name, label, value, onChange, gridColumn, options, setValue, reload, currency = false, keepAllValues}) => {
 
   const [keepValue, setKeepValue] = React.useState(false);
 
@@ -48,11 +48,15 @@ const TransactionFormInput = ({type, name, label, value, onChange, gridColumn, o
     }
   }
 
+  React.useEffect(() => {
+    setKeepValue(keepAllValues)
+  }, [keepAllValues])
+
   if (type==='select') return(
   <span className={`${styles.formControl}`} style={{gridColumn: gridColumn}}>
     <span className={styles.labelContainer}>
       <label htmlFor={name}>{label}</label>
-      <span className={`${styles.pinIconContainer} ${keepValue && styles.active}`} onClick={toggleKeepValue}><SaveIcon /></span>
+      <span data-tip="Manter valor" data-background-color="#a19f9f" className={`${styles.pinIconContainer} ${keepValue && styles.active}`} onClick={toggleKeepValue}><AttachIcon /></span>
     </span>
     <Select
     name={name}
@@ -78,13 +82,13 @@ const TransactionFormInput = ({type, name, label, value, onChange, gridColumn, o
           />
         <label htmlFor={name}>{label}</label>
       </span>
-    <span className={`${styles.pinIconContainer} ${keepValue && styles.active}`} onClick={toggleKeepValue}><SaveIcon /></span>
+    <span data-tip="Manter valor" data-background-color="#a19f9f" className={`${styles.pinIconContainer} ${keepValue && styles.active}`} onClick={toggleKeepValue}><AttachIcon /></span>
   </span>)
   else return (
     <span className={`${styles.formControl}`} style={{gridColumn: gridColumn}}>
       <span className={styles.labelContainer}>
         <label htmlFor={name}>{label}</label>
-        <span className={`${styles.pinIconContainer} ${keepValue && styles.active}`} onClick={toggleKeepValue}><SaveIcon /></span>
+        <span data-tip="Manter valor" data-background-color="#a19f9f" className={`${styles.pinIconContainer} ${keepValue && styles.active}`} onClick={toggleKeepValue}><AttachIcon /></span>
       </span>
         <input
         type={type}

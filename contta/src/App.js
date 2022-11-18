@@ -9,6 +9,8 @@ import Messages from './Components/Elements/Messages';
 import ProtectedRoute from './Helpers/ProtectedRoute';
 import AddTransactionButton from './Components/Elements/AddTransactionButton';
 import TransactionForm from './Components/TransactionForm';
+import ReactTooltip from 'react-tooltip';
+import React from 'react';
 
 function App() {
 
@@ -17,6 +19,7 @@ function App() {
       <MessagesContextData>
           <UserContextData>
             <AppContextData>
+              <ReactTooltip effect="solid" className="tooltip" backgroundColor="#636262" />
               <Messages />
               <Routes>
                 <Route path="/" element={<Login />}/>

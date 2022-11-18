@@ -54,3 +54,11 @@ li {
   gap: 20px;
   z-index: 100;
 }
+
+.tooltip {
+  z-index: 10000 !important;
+  opacity: 1 !important;
+  font-size: .75rem !important;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, .2);
+  padding: .3rem .6rem !important;
+}

@@ -54,19 +54,15 @@
 }
 
 .pinIconContainer>svg {
-  fill: #afafaf;
+  fill: #c2c2c2;
 }
 
 .pinIconContainer>svg:hover {
-  fill: #474747;
-}
-
-.pinIconContainer>svg:hover {
-  fill: #474747;
+  fill: #757575;
 }
 
 .pinIconContainer.active>svg {
-  fill: var(--main-color);
+  fill: #757575;
 }
 
 .formControl {

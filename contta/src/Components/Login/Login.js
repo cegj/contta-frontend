@@ -5,8 +5,11 @@ import Button from '../Elements/Button';
 import style from './Login.module.css'
 import useForm from '../../Hooks/useForm';
 import UserContext from '../../Contexts/UserContext';
+import ReactTooltip from 'react-tooltip';
 
 const Login = () => {
+
+  ReactTooltip.hide()
 
   const email = useForm('email');
   const password = useForm();

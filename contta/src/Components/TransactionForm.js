@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './TransactionForm.module.css'
 import AppContext from '../Contexts/AppContext'
+import {ReactComponent as AttachIcon} from '../assets/icons/attach_icon.svg'
 import {ReactComponent as PinIcon} from '../assets/icons/pin_icon.svg'
 import {ReactComponent as CloseIcon} from '../assets/icons/close_icon.svg'
 import Button from './Elements/Button'
@@ -9,6 +10,8 @@ import useForm from '../Hooks/useForm'
 import { POST_EXPENSE, POST_INCOME, POST_TRANSFER } from '../api'
 import MessagesContext from '../Contexts/MessagesContext'
 import TransactionFormInput from './TransactionFormInput'
+import convertToInteger from '../Helpers/convertToInteger'
+import ReactTooltip from 'react-tooltip'
 
 const TransactionForm = () => {
 
@@ -16,6 +19,7 @@ const TransactionForm = () => {
   const {request, loading} = useFetch();
   const {categories, accounts, transactionFormIsOpen, setTransactionFormIsOpen} = React.useContext(AppContext);
   const [modalIsFixed, setModalIsFixed] = React.useState(false);
+  const [keepAllValues, setKeepAllValues] = React.useState(false);
   const [reload, setReload] = React.useState(false);
 
   const [type, setType] = React.useState([]);
@@ -59,7 +63,10 @@ const TransactionForm = () => {
     })
   }, [categories, categoryOptions])
 
-  React.useEffect(() => {}, [transactionFormIsOpen])
+  React.useEffect(() => {
+    ReactTooltip.rebuild()
+    if(!transactionFormIsOpen) {ReactTooltip.hide()}
+  }, [transactionFormIsOpen])
 
   function handleCloseForm(){
     setTransactionFormIsOpen(false);
@@ -87,8 +94,33 @@ const TransactionForm = () => {
     }
   }, [reload])
 
-  function validate(field){
-    if (!field || !field.value || field.value === "" || field.value === null){
+
+
+  function validateSubmit(fields){
+
+    function validate(field){
+      if (!field || !field.value || field.value === "" || field.value === null){
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+    let invalidFieldsNames = []
+    fields.forEach((field) => {
+      console.log(field)
+      if(!validate(field.field)){
+        invalidFieldsNames.push(field.name)
+      }
+    })
+    if(invalidFieldsNames.length > 0){
+      let fieldsAsString = invalidFieldsNames.toString().replace(/,(?=[^,]*$)/, ' e ').replace(/,/g, ', ')
+      console.log(fieldsAsString)
+      if (invalidFieldsNames.length > 1){
+        setMessage({content: `Os campos ${fieldsAsString} devem ser preenchidos`, type: 'a'})
+      } else {
+        setMessage({content: `O campo ${fieldsAsString} deve ser preenchido`, type: 'a'})
+      }
       return false;
     } else {
       return true;
@@ -107,32 +139,19 @@ const TransactionForm = () => {
           {field: paymentDate, name: 'data do pagamento'}, 
           {field: value, name: 'valor'}, 
           {field: description, name: 'descrição'}, 
-          {field: category, name: 'categoria'}, 
-          {field: account, name: 'conta'}
+          {field: account, name: 'conta'},
+          {field: category, name: 'categoria'} 
         ]
-
-        let invalidFieldsNames = []
-        fields.forEach((field) => {
-          console.log(field)
-          if(!validate(field.field)){
-            invalidFieldsNames.push(field.name)
-          }
-        })
-        if(invalidFieldsNames.length > 0){
-          let fieldsAsString = invalidFieldsNames.toString().replace(/(.*), (.*)/, '$1 e $2').replace(/,/g, ', ')
-          console.log(fieldsAsString)
-          if (invalidFieldsNames.length > 1){
-            setMessage({content: `Os campos ${fieldsAsString} devem ser preenchidos`, type: 'a'})
-          } else {
-            setMessage({content: `O campo ${fieldsAsString} deve ser preenchido`, type: 'a'})
-          }
+        if (!validateSubmit(fields)){
           return;
-        } 
+        }
+
+        const integerValue = convertToInteger(value.value)
 
         body = {
           transaction_date: transactionDate.value,
           payment_date: paymentDate.value,
-          value: value.value,
+          value: integerValue,
           description: description.value,
           category_id: category.value,
           account_id: account.value,
@@ -140,9 +159,23 @@ const TransactionForm = () => {
           usual: usual.value,
           total_installments: totalInstallments.value
         }} else {
+
+          let fields = [
+            {field: transactionDate, name: 'data da transação'},
+            {field: value, name: 'valor'}, 
+            {field: description, name: 'descrição'}, 
+            {field: account, name: 'conta de origem'},
+            {field: destinationAccount, name: 'conta de destino'},
+          ]
+          if (!validateSubmit(fields)){
+            return;
+          }
+
+          const integerValue = convertToInteger(value.value)
+
           body = {
             transaction_date: transactionDate.value,
-            value: value.value,
+            value: integerValue,
             description: description.value,
             account_id: account.value,
             destination_account_id: destinationAccount.value,
@@ -165,6 +198,9 @@ const TransactionForm = () => {
           setMessage({content: json.message, type: 's'})
           clearForm();
           setReload(true);
+          if(!modalIsFixed){
+            setTransactionFormIsOpen(false);
+          }
         } else {
           throw new Error(error)
         }
@@ -179,6 +215,7 @@ const TransactionForm = () => {
   return (
       transactionFormIsOpen &&
         <div className={styles.modalContainer}>
+          {/* <ReactTooltip /> */}
           <div className={styles.formContainer}>
             <div className={styles.titleBar}>
               <h2
@@ -189,8 +226,9 @@ const TransactionForm = () => {
                   Registrar transação
               </h2>
               <span className={styles.buttonsContainer}>
-                <span className={`${styles.pinButton} ${modalIsFixed && styles.active}`} onClick={() => {modalIsFixed ? setModalIsFixed(false) : setModalIsFixed(true)}}><PinIcon /></span>
-                <span className={styles.closeButton} onClick={handleCloseForm}><CloseIcon /></span>
+                <span data-tip="Manter valores" className={`${styles.pinButton} ${keepAllValues && styles.active}`} onClick={() => {keepAllValues ? setKeepAllValues(false) : setKeepAllValues(true)}}><AttachIcon /></span>
+                <span data-tip="Manter janela aberta após envio" className={`${styles.pinButton} ${modalIsFixed && styles.active}`} onClick={() => {modalIsFixed ? setModalIsFixed(false) : setModalIsFixed(true)}}><PinIcon /></span>
+                <span data-tip="Fechar" className={styles.closeButton} onClick={handleCloseForm} ><CloseIcon /></span>
               </span>
             </div>
             <form className={styles.transactionForm} onSubmit={handleSubmit}>
@@ -204,6 +242,7 @@ const TransactionForm = () => {
                 setValue={setType}
                 gridColumn="span 2"
                 reload={reload}
+                keepAllValues={keepAllValues}
               />
               <TransactionFormInput 
                 label='Data da transação'
@@ -214,6 +253,7 @@ const TransactionForm = () => {
                 setValue={transactionDate.setValue}
                 gridColumn="span 2"
                 reload={reload}
+                keepAllValues={keepAllValues}
               />
               {(!type || type.value !== 'T') &&
                 <TransactionFormInput 
@@ -225,6 +265,7 @@ const TransactionForm = () => {
                 setValue={paymentDate.setValue}
                 gridColumn="span 2"
                 reload={reload}
+                keepAllValues={keepAllValues}
               />}
               <TransactionFormInput 
                 label='Valor'
@@ -236,6 +277,7 @@ const TransactionForm = () => {
                 gridColumn="span 2"
                 reload={reload}
                 currency={true}
+                keepAllValues={keepAllValues}
               /> 
               <TransactionFormInput 
                 label='Descrição'
@@ -246,6 +288,7 @@ const TransactionForm = () => {
                 setValue={description.setValue}
                 gridColumn={(type && type.value === 'T') ? 'span 6' : 'span 4'}
                 reload={reload}
+                keepAllValues={keepAllValues}
               />
               <TransactionFormInput 
                 label={`Conta ${(type && type.value === 'T') ? 'de origem' : ''}`}
@@ -257,6 +300,7 @@ const TransactionForm = () => {
                 setValue={setAccount}
                 gridColumn="span 2"
                 reload={reload}
+                keepAllValues={keepAllValues}
               />       
               {type && type.value === 'T'
               ?
@@ -270,6 +314,7 @@ const TransactionForm = () => {
                 setValue={setDestinationAccount}
                 gridColumn="span 2"
                 reload={reload}
+                keepAllValues={keepAllValues}
               />   
               :
               <TransactionFormInput 
@@ -282,6 +327,7 @@ const TransactionForm = () => {
                 setValue={setCategory}
                 gridColumn="span 2"
                 reload={reload}
+                keepAllValues={keepAllValues}
               />
               }
               {(!type || type.value !== 'T') && 
@@ -294,9 +340,11 @@ const TransactionForm = () => {
                 setValue={totalInstallments.setValue}
                 gridColumn="span 1"
                 reload={reload}
+                keepAllValues={keepAllValues}
               />
               }
             <span className={styles.checkboxesContainer}>
+            {(!type || type.value !== 'T') && 
               <TransactionFormInput
                 label="Previsão"
                 name="preview"
@@ -305,7 +353,8 @@ const TransactionForm = () => {
                 onChange={preview.onChange}
                 setValue={preview.setValue}
                 reload={reload}
-              />
+                keepAllValues={keepAllValues}
+              />}
               <TransactionFormInput
                 label="Habitual"
                 name="usual"
@@ -314,6 +363,7 @@ const TransactionForm = () => {
                 onChange={usual.onChange}
                 setValue={usual.setValue}
                 reload={reload}
+                keepAllValues={keepAllValues}
               />
             </span>
             {loading 
