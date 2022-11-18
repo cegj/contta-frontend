@@ -19,6 +19,11 @@
   width: 100%;
 }
 
+.formControl input:focus,
+.formControl input:hover {
+  outline: none;
+}
+
 
 .formControl label {
   color: #8A8A8A;
@@ -62,4 +67,43 @@
 
 .pinIconContainer.active>svg {
   fill: var(--main-color);
+}
+
+.formControl {
+  border: 1px solid #D4D4D4;
+  max-height: 80.85px;
+}
+
+.checkboxControl {
+  display: flex;
+  height: 35px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  border: 1px solid #D4D4D4;
+  border-radius: 4px;
+  background-color: #fcfcfc;
+  align-items: center;
+  align-content: center;
+  justify-content: space-between;
+  padding: .1rem .5rem;
+}
+
+.checkboxAndLabelContainer {
+  display: flex;
+  align-items: center;
+}
+
+.checkboxControl label,
+.checkboxControl input {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: inline-block !important;
+}
+
+.checkboxControl input {
+  width: 20px !important;
+  height: 20px !important;
+  margin-right: .3rem !important;
 }

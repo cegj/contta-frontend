@@ -15,6 +15,8 @@ const TransactionForm = () => {
   const {setMessage} = React.useContext(MessagesContext);
   const {request, loading} = useFetch();
   const {categories, accounts, transactionFormIsOpen, setTransactionFormIsOpen} = React.useContext(AppContext);
+  const [modalIsFixed, setModalIsFixed] = React.useState(false);
+  const [reload, setReload] = React.useState(false);
 
   const [type, setType] = React.useState([]);
   const transactionDate = useForm();
@@ -59,7 +61,7 @@ const TransactionForm = () => {
 
   React.useEffect(() => {}, [transactionFormIsOpen])
 
-  function closeForm(){
+  function handleCloseForm(){
     setTransactionFormIsOpen(false);
     clearForm();
   }
@@ -79,31 +81,78 @@ const TransactionForm = () => {
     usual.setValue(false);
   }
 
+  React.useEffect(() => {
+    if(reload){
+      setReload(false)
+    }
+  }, [reload])
+
+  function validate(field){
+    if (!field || !field.value || field.value === "" || field.value === null){
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   async function handleSubmit(event){
     event.preventDefault();
     const token = window.localStorage.getItem('token');
     let body = {};
-    if (type.value === 'R' || type.value === 'D') {
-      body = {
-        transaction_date: transactionDate.value,
-        payment_date: paymentDate.value,
-        value: value.value,
-        description: description.value,
-        category_id: category.value,
-        account_id: account.value,
-        preview: preview.value,
-        usual: usual.value,
-        total_installments: totalInstallments.value
-      }} else if (type.value === 'T'){
+    
+    if (type.value === 'R' || type.value === 'D' || type.value === 'T') {
+      if (type.value === 'R' || type.value === 'D'){
+        let fields = [
+          {field: transactionDate, name: 'data da transação'},
+          {field: paymentDate, name: 'data do pagamento'}, 
+          {field: value, name: 'valor'}, 
+          {field: description, name: 'descrição'}, 
+          {field: category, name: 'categoria'}, 
+          {field: account, name: 'conta'}
+        ]
+
+        let invalidFieldsNames = []
+        fields.forEach((field) => {
+          console.log(field)
+          if(!validate(field.field)){
+            invalidFieldsNames.push(field.name)
+          }
+        })
+        if(invalidFieldsNames.length > 0){
+          let fieldsAsString = invalidFieldsNames.toString().replace(/(.*), (.*)/, '$1 e $2').replace(/,/g, ', ')
+          console.log(fieldsAsString)
+          if (invalidFieldsNames.length > 1){
+            setMessage({content: `Os campos ${fieldsAsString} devem ser preenchidos`, type: 'a'})
+          } else {
+            setMessage({content: `O campo ${fieldsAsString} deve ser preenchido`, type: 'a'})
+          }
+          return;
+        } 
+
         body = {
           transaction_date: transactionDate.value,
+          payment_date: paymentDate.value,
           value: value.value,
           description: description.value,
+          category_id: category.value,
           account_id: account.value,
-          destination_account_id: destinationAccount.value,
-          usual: usual.value      
-        }
+          preview: preview.value,
+          usual: usual.value,
+          total_installments: totalInstallments.value
+        }} else {
+          body = {
+            transaction_date: transactionDate.value,
+            value: value.value,
+            description: description.value,
+            account_id: account.value,
+            destination_account_id: destinationAccount.value,
+            usual: usual.value      
+          }
+      }} else {
+          setMessage({content: "O tipo de transação deve ser informado", type: 'a'})
+          return
       }
+
       let url;
       let options;
       if (type.value === 'R') {({url, options} = POST_INCOME(body, token))}
@@ -114,6 +163,8 @@ const TransactionForm = () => {
         const {response, json, error} = await request(url, options);
         if (response.ok){
           setMessage({content: json.message, type: 's'})
+          clearForm();
+          setReload(true);
         } else {
           throw new Error(error)
         }
@@ -121,8 +172,7 @@ const TransactionForm = () => {
         console.log(error)
         setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       }
-
-    }
+    }  
 
   React.useEffect(() => {}, [transactionFormIsOpen, accounts, loading, accountOptions]);
 
@@ -139,8 +189,8 @@ const TransactionForm = () => {
                   Registrar transação
               </h2>
               <span className={styles.buttonsContainer}>
-                <span className={styles.pinButton}><PinIcon /></span>
-                <span className={styles.closeButton} onClick={closeForm}><CloseIcon /></span>
+                <span className={`${styles.pinButton} ${modalIsFixed && styles.active}`} onClick={() => {modalIsFixed ? setModalIsFixed(false) : setModalIsFixed(true)}}><PinIcon /></span>
+                <span className={styles.closeButton} onClick={handleCloseForm}><CloseIcon /></span>
               </span>
             </div>
             <form className={styles.transactionForm} onSubmit={handleSubmit}>
@@ -153,6 +203,7 @@ const TransactionForm = () => {
                 options={typeOptions}
                 setValue={setType}
                 gridColumn="span 2"
+                reload={reload}
               />
               <TransactionFormInput 
                 label='Data da transação'
@@ -162,6 +213,7 @@ const TransactionForm = () => {
                 onChange={transactionDate.onChange}
                 setValue={transactionDate.setValue}
                 gridColumn="span 2"
+                reload={reload}
               />
               {(!type || type.value !== 'T') &&
                 <TransactionFormInput 
@@ -172,6 +224,7 @@ const TransactionForm = () => {
                 onChange={paymentDate.onChange}
                 setValue={paymentDate.setValue}
                 gridColumn="span 2"
+                reload={reload}
               />}
               <TransactionFormInput 
                 label='Valor'
@@ -181,6 +234,8 @@ const TransactionForm = () => {
                 onChange={value.onChange}
                 setValue={value.setValue}
                 gridColumn="span 2"
+                reload={reload}
+                currency={true}
               /> 
               <TransactionFormInput 
                 label='Descrição'
@@ -190,6 +245,7 @@ const TransactionForm = () => {
                 onChange={description.onChange}
                 setValue={description.setValue}
                 gridColumn={(type && type.value === 'T') ? 'span 6' : 'span 4'}
+                reload={reload}
               />
               <TransactionFormInput 
                 label={`Conta ${(type && type.value === 'T') ? 'de origem' : ''}`}
@@ -200,6 +256,7 @@ const TransactionForm = () => {
                 options={accountOptions}
                 setValue={setAccount}
                 gridColumn="span 2"
+                reload={reload}
               />       
               {type && type.value === 'T'
               ?
@@ -212,6 +269,7 @@ const TransactionForm = () => {
                 options={accountOptions}
                 setValue={setDestinationAccount}
                 gridColumn="span 2"
+                reload={reload}
               />   
               :
               <TransactionFormInput 
@@ -223,6 +281,7 @@ const TransactionForm = () => {
                 options={categoryOptions}
                 setValue={setCategory}
                 gridColumn="span 2"
+                reload={reload}
               />
               }
               {(!type || type.value !== 'T') && 
@@ -234,28 +293,28 @@ const TransactionForm = () => {
                 onChange={totalInstallments.onChange}
                 setValue={totalInstallments.setValue}
                 gridColumn="span 1"
+                reload={reload}
               />
               }
-            <span className={`${styles.formControl} ${styles.fc1}`}>
-              <span className={styles.checkboxControl}>
-                <input
-                  type="checkbox"
-                  name="preview"
-                  id="preview"
-                  value={preview.value}
-                  onChange={preview.onCheck}/>
-                <label htmlFor="preview">Previsão</label>
-              </span>
-              <span className={styles.checkboxControl}>
-                <input
-                  type="checkbox"
-                  name="usual"
-                  id="usual"
-                  value={usual.value}
-                  onChange={usual.onCheck}
-                  />
-                <label htmlFor="usual">Habitual</label>
-              </span>
+            <span className={styles.checkboxesContainer}>
+              <TransactionFormInput
+                label="Previsão"
+                name="preview"
+                type="checkbox"
+                value={preview.value}
+                onChange={preview.onChange}
+                setValue={preview.setValue}
+                reload={reload}
+              />
+              <TransactionFormInput
+                label="Habitual"
+                name="usual"
+                type="checkbox"
+                value={usual.value}
+                onChange={usual.onChange}
+                setValue={usual.setValue}
+                reload={reload}
+              />
             </span>
             {loading 
             ?

@@ -9,7 +9,7 @@ const types = {
 
 const useForm = (type) => {
 
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = React.useState((type === 'checkbox') ? false : '');
   const [error, setError] = React.useState(null);
 
   function validate(value){
@@ -25,18 +25,14 @@ const useForm = (type) => {
 
   function onChange({target}) {
     if(error) validate(target.value)
-    setValue(target.value)
-  }
-
-  function onCheck({target}) {
-    setValue(target.checked)
+    if(type === 'checkbox') setValue(target.checked)
+    else setValue(target.value)
   }
 
   return {
     value,
     setValue,
     onChange,
-    onCheck,
     error,
     validate: () => validate(value),
     onBlur: () => validate(value)
