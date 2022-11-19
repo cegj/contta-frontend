@@ -1,3 +1,5 @@
+import objectToQueryString from "./Helpers/objectToQueryString";
+
 export const API_URL = 'http://3.220.229.85:8000/api';
 
 export function POST_LOGIN(body){
@@ -91,6 +93,20 @@ export function POST_TRANSFER(body, token){
         Accept: 'application/json'
       },
       body: JSON.stringify(body)
+    }
+  }
+}
+
+export function GET_TRANSACTIONS(token, queryObject){
+  const query = objectToQueryString(queryObject)
+
+  return {
+    url: API_URL + `/transactions?${query}`,
+    options: {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
     }
   }
 }

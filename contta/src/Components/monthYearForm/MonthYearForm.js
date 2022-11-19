@@ -18,6 +18,16 @@ const MonthYearForm = () => {
     setMonthYearModalIsOpen(false)
   }
 
+  function selectMonth({target}){
+    setMonth(target.innerText)
+    setMonthYearModalIsOpen(false)
+  }
+
+  function selectYear({target}){
+    setYear(target.innerText)
+    setMonthYearModalIsOpen(false)
+  }
+
   function validate(month, year){
     let monthIsInvalid = false;
     let yearIsInvalid = false;
@@ -75,6 +85,25 @@ const MonthYearForm = () => {
           </span>
         <Button type="confirm" style={{gridColumn: '6', alignSelf: 'end'}}>Selecionar</Button>
         </form>
+        <div className={styles.monthSelector}>
+          <span onClick={selectMonth}>01</span>
+          <span onClick={selectMonth}>02</span>
+          <span onClick={selectMonth}>03</span>
+          <span onClick={selectMonth}>04</span>
+          <span onClick={selectMonth}>05</span>
+          <span onClick={selectMonth}>06</span>
+          <span onClick={selectMonth}>07</span>
+          <span onClick={selectMonth}>08</span>
+          <span onClick={selectMonth}>09</span>
+          <span onClick={selectMonth}>10</span>
+          <span onClick={selectMonth}>11</span>
+          <span onClick={selectMonth}>12</span>
+        </div>
+        <div className={styles.yearSelector}>
+          <span onClick={selectYear}>{+year-1}</span>
+          <span onClick={selectYear}>{+year}</span>
+          <span onClick={selectYear}>{+year+1}</span>
+        </div>
       </div>
   </div>
 )

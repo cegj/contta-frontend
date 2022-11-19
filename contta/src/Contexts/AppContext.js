@@ -20,11 +20,22 @@ export const AppContextData = ({children}) => {
   const {request} = useFetch();
   const [transactionFormIsOpen, setTransactionFormIsOpen] = React.useState(false);
   const [monthYearModalIsOpen, setMonthYearModalIsOpen] = React.useState(false);
+  const [firstDay, setFirstDay] = React.useState(null);
+  const [lastDay, setLastDay] = React.useState(null);
 
   React.useEffect(() => {
     if(pageName) document.title = `Contta - ${pageName}`
     else document.title = `Contta`
   }, [pageName])
+
+  React.useEffect(() => {
+    let first = new Date(year, +month-1, 1)
+    first = first.toISOString().split('T')[0]
+    let last = new Date(year, month, 0)
+    last = last.toISOString().split('T')[0]
+    setFirstDay(first)
+    setLastDay(last)
+  }, [month, year])
 
   React.useEffect(() => {
     if(logged){
@@ -79,8 +90,10 @@ React.useEffect(() => {
         setMonth,
         year,
         setYear,
+        firstDay,
+        lastDay,
         monthYearModalIsOpen,
-        setMonthYearModalIsOpen 
+        setMonthYearModalIsOpen
       }}
       >
       {children}

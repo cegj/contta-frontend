@@ -1,0 +1,171 @@
+.statementItem {
+  font-family: 'Roboto', sans-serif;
+  width: 100%;
+  min-height: 70px;
+  display: grid;
+  grid-template-rows: 2;
+  grid-template-columns: 30px 2.2fr 1.8fr 1fr 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+  padding: 10px;
+  grid-auto-flow: column;
+}
+
+.typeIcon {
+  grid-row: span 2;
+  align-self: center;
+}
+
+.T {
+  background-color: #F1EDF6;
+}
+
+.R {
+  background-color: #EAF6EC;
+}
+
+.D {
+  background-color: #F6EDED;
+}
+
+.description {
+  color: #333;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.D>.typeIcon {
+  fill: #FFB6B6;
+}
+
+.R>.typeIcon {
+  fill: #99eb9d;
+}
+
+.T>.typeIcon {
+  fill: #D6B6FF;
+}
+
+.D>.value {
+  color: #BA3939;
+}
+
+.R>.value {
+  color: #2FA12C;
+}
+
+.T>.value {
+  color: #7139BA;
+}
+
+.account,
+.category {
+  font-weight: lighter;
+  color: #00000095;
+}
+
+.date {
+  font-weight: regular;
+  color: #00000090;
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+}
+
+.date>svg {
+  fill: rgba(0, 0, 0, .3);
+}
+
+.menuContainer {
+  position: relative;
+}
+
+.menuBtn {
+  grid-row: span 2;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: .2s;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  align-content: center;
+}
+
+.menuBtn::after {
+  display: block;
+  content: "";
+  height: 1px;
+  width: 20px;
+  background-color: #00000050;
+  box-shadow: 0px -8px 0px #00000050, 0px 8px 0px #00000050;
+}
+
+.menuBtn:hover::after {
+  transform: scale(1.07);
+}
+
+/* .menuBtnActive::after {
+  display: block;
+  content: "";
+  height: 4px;
+  width: 4px;
+  background-color: #EFF4FA;
+  border-radius: 4px;
+  box-shadow: 0px -8px 0px #EFF4FA, 0px 8px 0px #EFF4FA;
+} */
+
+.menuBtnActive {
+  transform: rotate(90deg);
+}
+
+.menu {
+  position: absolute;
+  top: 46px;
+  left: -1rem;
+  color: #fff;
+  background-color: #18578f;
+  padding: 20px;
+  min-width: 14rem;
+  transform: .2s;
+  animation: showMenu .2s forwards;
+  box-shadow: 3px 3px 20px rgba(0, 0, 0, .2)
+}
+
+@keyframes showMenu {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.menu>ul>li>a {
+  color: #fff;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 1.2rem;
+  display: flex;
+  gap: 5px;
+  align-content: center;
+  align-items: center;
+  transition: .05s;
+}
+
+.menu>ul>li {
+  margin-bottom: 1rem;
+}
+
+.menu>ul>li:last-child {
+  margin-bottom: 0;
+}
+
+.icon>* {
+  height: 10;
+  fill: #fff;
+}
+
+.menu>ul>li>a:hover {
+  transform: scale(1.1);
+}

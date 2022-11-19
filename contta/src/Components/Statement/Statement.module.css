@@ -1,0 +1,15 @@
+.statementContainer {
+  display: block;
+  width: 810px;
+  margin: 1rem auto;
+}
+
+.noTransactions {
+  display: block;
+  width: fit-content;
+  background-color: #eee;
+  color: #444;
+  padding: .5rem 1rem;
+  border-radius: 5px;
+  margin: 0 auto;
+}
