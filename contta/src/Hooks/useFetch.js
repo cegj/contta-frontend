@@ -1,9 +1,10 @@
 import React from 'react'
+import AppContext from '../Contexts/AppContext';
 
 const useFetch = () => {
 
   const [data, setData] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(null);
 
   const request = React.useCallback(async(url, options) => {
     let response;
@@ -26,7 +27,7 @@ const useFetch = () => {
       setLoading(false)
       return {response, json, error}
     }
-  }, [])
+  }, [setLoading])
 
   return {request, data, loading}
 }

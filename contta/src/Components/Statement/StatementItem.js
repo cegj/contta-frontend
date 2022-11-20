@@ -12,12 +12,14 @@ import convertDateToBr from '../../Helpers/convertDateToBr'
 import useFetch from '../../Hooks/useFetch'
 import { DELETE_TRANSACTION } from '../../api'
 import MessagesContext from '../../Contexts/MessagesContext'
+import AppContext from '../../Contexts/AppContext'
 
-const StatementItem = ({id, type, description, value, account, category, transaction_date, payment_date, installments_key, installment, preview, setReload}) => {
+const StatementItem = ({id, type, description, value, account, category, transaction_date, payment_date, installments_key, installment, preview}) => {
 
   const [optionsIsOpen, setOptionsIsOpen] = React.useState(false);
   const {request} = useFetch();
   const {setMessage} = React.useContext(MessagesContext);
+  const {setReload} = React.useContext(AppContext);
 
   let icon;
   if(type === 'R'){

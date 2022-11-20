@@ -13,9 +13,9 @@ const Statement = () => {
   React.useEffect(() => {setPageName("Extrato")}, [setPageName])
   const {setMessage} = React.useContext(MessagesContext)
   const {firstDay, lastDay} = React.useContext(AppContext)
+  const {reload, setReload} = React.useContext(AppContext)
   const {request, loading} = useFetch();
   const [transactions, setTransactions] = React.useState(null)
-  const [reload, setReload] = React.useState(false)
 
   React.useEffect(() => {
     async function getData(){
@@ -32,7 +32,7 @@ const Statement = () => {
     }
     getData()
     setReload(false)
-  }, [request, firstDay, lastDay, setMessage, reload])
+  }, [request, firstDay, lastDay, setMessage, reload, setReload])
 
   if (loading)
   return (
@@ -52,7 +52,7 @@ const Statement = () => {
     <div className={styles.statementContainer}>
       {(transactions && transactions.length > 0) ?
       transactions.map((transaction) => {
-        return <StatementItem key={transaction.id} setReload={setReload} {...transaction} /> 
+        return <StatementItem key={transaction.id} {...transaction} /> 
       })
       :
       <span className={styles.noTransactions}>Não foram encontradas transações neste mês</span>        

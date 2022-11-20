@@ -15,6 +15,9 @@ const MainBar = () => {
         <MainMenu />
         <span className={styles.pageName}>{pageName}</span>
         <span className={styles.monthYear}>{month}/{year}</span>
+          <div style={{width: "30px", height: "30px", margin: "1rem 1rem"}}>
+          <span className="loading"></span>
+        </div>
       </div>
       <div className={styles.optionsContainer}>
         <MonthYearButton />

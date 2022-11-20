@@ -1,6 +1,5 @@
 const convertToInteger = (value) => {
-  const float = parseFloat(value.replace(/\./g, '').replace(',', '.'))
-  const integer = float * 100;
+  const integer = value.replace(/\./g, '').replace(',', '')  
   return integer
 }
 

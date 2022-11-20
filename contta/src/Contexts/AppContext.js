@@ -22,6 +22,7 @@ export const AppContextData = ({children}) => {
   const [monthYearModalIsOpen, setMonthYearModalIsOpen] = React.useState(false);
   const [firstDay, setFirstDay] = React.useState(null);
   const [lastDay, setLastDay] = React.useState(null);
+  const [reload, setReload] = React.useState(false);
 
   React.useEffect(() => {
     if(pageName) document.title = `Contta - ${pageName}`
@@ -93,7 +94,9 @@ React.useEffect(() => {
         firstDay,
         lastDay,
         monthYearModalIsOpen,
-        setMonthYearModalIsOpen
+        setMonthYearModalIsOpen,
+        reload,
+        setReload,
       }}
       >
       {children}
