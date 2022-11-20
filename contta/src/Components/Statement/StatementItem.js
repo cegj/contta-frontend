@@ -40,7 +40,7 @@ const StatementItem = ({id, type, description, value, account, category, transac
     const token = window.localStorage.getItem('token')
     const cascade = JSON.parse(target.dataset.cascade)
 
-    const confirmDelete = window.confirm(`Confirmar a exclusão de ${description}${cascade ? ' e das suas parcelas seguintes?' : '?'}`)
+    const confirmDelete = window.confirm(`Confirmar a exclusão de "${description}"${cascade ? ' e das suas parcelas seguintes?' : '?'}`)
 
     if (confirmDelete){
       const {url, options} = DELETE_TRANSACTION(token, id, type, cascade)
