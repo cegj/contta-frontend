@@ -9,10 +9,15 @@ import {ReactComponent as PaymentDateIcon} from '../../assets/icons/calendar_pay
 import {ReactComponent as DoneIcon} from '../../assets/icons/done_icon_small.svg'
 import {ReactComponent as NotDoneIcon} from '../../assets/icons/done_fill_icon_small.svg'
 import convertDateToBr from '../../Helpers/convertDateToBr'
+import useFetch from '../../Hooks/useFetch'
+import { DELETE_TRANSACTION } from '../../api'
+import MessagesContext from '../../Contexts/MessagesContext'
 
-const StatementItem = ({type, description, value, account, category, transaction_date, payment_date, installments_key, installment, preview}) => {
+const StatementItem = ({id, type, description, value, account, category, transaction_date, payment_date, installments_key, installment, preview, setReload}) => {
 
   const [optionsIsOpen, setOptionsIsOpen] = React.useState(false);
+  const {request} = useFetch();
+  const {setMessage} = React.useContext(MessagesContext);
 
   let icon;
   if(type === 'R'){
@@ -28,10 +33,25 @@ const StatementItem = ({type, description, value, account, category, transaction
     else setOptionsIsOpen(true)
   }
 
-  function handleDelete(){
-   
-    const confirmDelete = window.confirm("Confirmar exclusão?")
-    console.log(confirmDelete);
+  async function handleDelete({target}){
+
+    const token = window.localStorage.getItem('token')
+    const cascade = JSON.parse(target.dataset.cascade)
+
+    const confirmDelete = window.confirm(`Confirmar a exclusão de ${description}${cascade ? ' e das suas parcelas seguintes?' : '?'}`)
+
+    if (confirmDelete){
+      const {url, options} = DELETE_TRANSACTION(token, id, type, cascade)
+      const {response, json, error} = await request(url, options);
+      console.log(response, json)
+      if (response.ok){
+        setMessage({content: `${cascade ? 'Transação e parcelas seguintes apagadas com sucesso' : 'Transação apagada com sucesso'}`, type: 's'})
+        setReload(true)
+      } else {
+        setMessage({content: error, type: 'e'})
+      }
+    }
+
   }
 
   return (
@@ -58,7 +78,8 @@ const StatementItem = ({type, description, value, account, category, transaction
       <div className={`${styles.menu} ${optionsIsOpen && styles.active}`}>
           <ul>
             <li className={styles.editIcon}>Editar</li>
-            <li className={styles.deleteIcon} onClick={handleDelete}>Apagar</li>
+            <li className={styles.deleteIcon} data-cascade="false" onClick={handleDelete}>Apagar</li>
+            {installments_key && <li className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar parcelas</li>}
           </ul>
         </div>
     </div>

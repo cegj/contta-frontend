@@ -110,3 +110,31 @@ export function GET_TRANSACTIONS(token, queryObject){
     }
   }
 }
+
+export function DELETE_TRANSACTION(token, transactionId, transactionType, cascade){
+  let typeOnUrl;
+  switch(transactionType){
+    case 'D':
+      typeOnUrl = 'expenses'
+      break
+    case 'R':
+      typeOnUrl = 'incomes'
+      break
+    case 'T':
+      typeOnUrl = 'transfers'
+      break
+    default:
+      typeOnUrl = false;
+      break
+  }
+
+  return {
+    url: API_URL + `/transactions/${typeOnUrl}/${transactionId}?cascade=${cascade}`,
+    options: {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
+    }
+  }
+}
