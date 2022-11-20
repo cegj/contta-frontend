@@ -13,17 +13,20 @@ const MonthYearForm = () => {
   const [yearValue, setYearValue] = React.useState(year);
 
   React.useEffect(() => {}, [monthYearModalIsOpen])
+  React.useEffect(() => {}, [month, year])
 
   function handleCloseForm(){
     setMonthYearModalIsOpen(false)
   }
 
   function selectMonth({target}){
+    window.localStorage.setItem('month', target.innerText)
     setMonth(target.innerText)
     setMonthYearModalIsOpen(false)
   }
 
   function selectYear({target}){
+    window.localStorage.setItem('year', target.innerText)
     setYear(target.innerText)
     setMonthYearModalIsOpen(false)
   }
@@ -53,6 +56,8 @@ const MonthYearForm = () => {
     if (!validate(monthValue, yearValue)){
       return false
     }
+    window.localStorage.setItem('month', monthValue)
+    window.localStorage.setItem('year', yearValue)
     setMonth(monthValue)
     setYear(yearValue)
     setMonthYearModalIsOpen(false)

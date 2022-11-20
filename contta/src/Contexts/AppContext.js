@@ -11,8 +11,8 @@ export const AppContextData = ({children}) => {
   const date = new Date();
 
   const [pageName, setPageName] = React.useState(null);
-  const [month, setMonth] = React.useState(date.getMonth());
-  const [year, setYear] = React.useState(date.getFullYear());
+  const [month, setMonth] = React.useState(window.localStorage.getItem('month') || date.getMonth());
+  const [year, setYear] = React.useState(window.localStorage.getItem('year') || date.getFullYear());
   const [categories, setCategories] = React.useState([]);
   const [accounts, setAccounts] = React.useState([]);
   const {setMessage} = React.useContext(MessagesContext);
