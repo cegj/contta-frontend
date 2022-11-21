@@ -3,13 +3,15 @@ import AppContext from './AppContext';
 import { GET_TRANSACTIONS, GET_TRANSACTION_BY_ID } from '../api';
 import MessagesContext from './MessagesContext';
 import useFetch from '../Hooks/useFetch';
+import UserContext from './UserContext';
 
 const TransactionsContext = React.createContext();
 
 export const TransactionsContextData = ({children}) => {
 
   const {setMessage} = React.useContext(MessagesContext)
-  const {firstDay, lastDay, reload, setReload} = React.useContext(AppContext)
+  const {month, year, firstDay, lastDay, setReload} = React.useContext(AppContext)
+  const {logged} = React.useContext(UserContext);
   const {request, loading} = useFetch();
   const [transactions, setTransactions] = React.useState(null)
 
@@ -40,9 +42,11 @@ export const TransactionsContextData = ({children}) => {
   }, [request, setMessage])
 
   React.useEffect(() => {
-    getTransactions()
-    setReload(false)
-  }, [reload, setReload, getTransactions])
+    if (logged){
+      getTransactions()
+      setReload(false)  
+    }
+  }, [month, year, getTransactions, setReload, logged])
 
   return (
     <TransactionsContext.Provider value={

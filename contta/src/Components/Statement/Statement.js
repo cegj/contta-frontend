@@ -10,7 +10,6 @@ const Statement = () => {
   const {setPageName} = React.useContext(AppContext)
   React.useEffect(() => {setPageName("Extrato")}, [setPageName])
   const {transactions} = React.useContext(TransactionsContext)
-  React.useEffect(() => {}, [transactions])
 
   return (
     <>
