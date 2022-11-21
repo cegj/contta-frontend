@@ -241,9 +241,9 @@ const TransactionForm = () => {
       let url;
       let options;
       if(transactionToEdit){
-        if (type.value === 'R') {({url, options} = PATCH_INCOME(body, token, transactionToEdit.id, false))}
-        else if (type.value === 'D') {({url, options} = PATCH_EXPENSE(body, token, transactionToEdit.id, false))}
-        else if (type.value === 'T') {({url, options} = PATCH_TRANSFER(body, token, transactionToEdit.id, false))}  
+        if (type.value === 'R') {({url, options} = PATCH_INCOME(body, token, transactionToEdit.id, cascade.value))}
+        else if (type.value === 'D') {({url, options} = PATCH_EXPENSE(body, token, transactionToEdit.id, cascade.value))}
+        else if (type.value === 'T') {({url, options} = PATCH_TRANSFER(body, token, transactionToEdit.id, cascade.value))}  
       } else {
         if (type.value === 'R') {({url, options} = POST_INCOME(body, token))}
         else if (type.value === 'D') {({url, options} = POST_EXPENSE(body, token))}
@@ -423,7 +423,7 @@ const TransactionForm = () => {
                 keepAllValues={keepAllValues}
               />
             </span>
-            {transactionToEdit && <TransactionFormInput
+            {(transactionToEdit && type.value !== 'T') && <TransactionFormInput
                 label="Aplicar mudanças às parcelas seguintes"
                 name="cascade"
                 type="checkbox"
