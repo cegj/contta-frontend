@@ -27,7 +27,6 @@ const TransactionForm = () => {
 
   const [type, setType] = React.useState([]);
   const transactionDate = useForm();
-  transactionDate.setValue()
   const paymentDate = useForm();
   const value = useForm();
   const description = useForm();
@@ -132,7 +131,6 @@ const TransactionForm = () => {
   // Open transaction with transaction data setted if user clicks to edit transaction
   React.useEffect(() => {
     if (transactionToEdit){
-      cascade.setValue(false)
       setEditingTransactionValues(transactionToEdit)
     }
   }, [transactionToEdit, setEditingTransactionValues])
@@ -140,6 +138,7 @@ const TransactionForm = () => {
   function handleCloseForm(){
     setTransactionFormIsOpen(false);
     setTransactionToEdit(null);
+    cascade.setValue(false);
     clearForm();
   }
 
