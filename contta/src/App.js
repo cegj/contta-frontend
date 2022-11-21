@@ -4,6 +4,7 @@ import Login from './Components/Login/Login';
 import { MessagesContextData } from './Contexts/MessagesContext';
 import { UserContextData } from './Contexts/UserContext';
 import { AppContextData } from './Contexts/AppContext';
+import { TransactionsContextData } from './Contexts/TransactionsContext';
 import Accounts from './Components/Accounts/Accounts';
 import Messages from './Components/Elements/Messages';
 import ProtectedRoute from './Helpers/ProtectedRoute';
@@ -21,16 +22,18 @@ function App() {
       <MessagesContextData>
           <UserContextData>
             <AppContextData>
-              <ReactTooltip effect="solid" className="tooltip" backgroundColor="#636262" />
-              <Messages />
-              <Routes>
-                <Route path="/" element={<Login />}/>
-                <Route path="/statement/*" element={<ProtectedRoute><Statement /></ProtectedRoute>}/>
-                <Route path="/accounts/*" element={<ProtectedRoute><Accounts /></ProtectedRoute>}/>
-              </Routes>
-              <TransactionForm />
-              <MonthYearForm />
-              <AddTransactionButton />
+              <TransactionsContextData>
+                <ReactTooltip effect="solid" className="tooltip" backgroundColor="#636262" />
+                <Messages />
+                <Routes>
+                  <Route path="/" element={<Login />}/>
+                  <Route path="/statement/*" element={<ProtectedRoute><Statement /></ProtectedRoute>}/>
+                  <Route path="/accounts/*" element={<ProtectedRoute><Accounts /></ProtectedRoute>}/>
+                </Routes>
+                <TransactionForm />
+                <MonthYearForm />
+                <AddTransactionButton />
+              </TransactionsContextData>
             </AppContextData>
           </UserContextData>
       </MessagesContextData>

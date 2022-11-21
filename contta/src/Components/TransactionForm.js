@@ -7,23 +7,27 @@ import {ReactComponent as CloseIcon} from '../assets/icons/close_icon.svg'
 import Button from './Elements/Button'
 import useFetch from '../Hooks/useFetch'
 import useForm from '../Hooks/useForm'
-import { POST_EXPENSE, POST_INCOME, POST_TRANSFER } from '../api'
+import { PATCH_INCOME, PATCH_EXPENSE, PATCH_TRANSFER, POST_EXPENSE, POST_INCOME, POST_TRANSFER } from '../api'
 import MessagesContext from '../Contexts/MessagesContext'
 import TransactionFormInput from './TransactionFormInput'
 import convertToInteger from '../Helpers/convertToInteger'
 import ReactTooltip from 'react-tooltip'
+import convertToFloat from '../Helpers/convertToFloat'
+import TransactionsContext from '../Contexts/TransactionsContext'
 
 const TransactionForm = () => {
 
   const {setMessage} = React.useContext(MessagesContext);
   const {request, loading} = useFetch();
-  const {categories, accounts, transactionFormIsOpen, setTransactionFormIsOpen} = React.useContext(AppContext);
+  const {categories, accounts, transactionToEdit, setTransactionToEdit, transactionFormIsOpen, setTransactionFormIsOpen} = React.useContext(AppContext);
   const [modalIsFixed, setModalIsFixed] = React.useState(false);
   const [keepAllValues, setKeepAllValues] = React.useState(false);
   const [reload, setReload] = React.useState(false);
+  const {getTransactions, getTransactionById} = React.useContext(TransactionsContext);
 
   const [type, setType] = React.useState([]);
   const transactionDate = useForm();
+  transactionDate.setValue()
   const paymentDate = useForm();
   const value = useForm();
   const description = useForm();
@@ -33,13 +37,17 @@ const TransactionForm = () => {
   const totalInstallments = useForm();
   const preview = useForm('checkbox');
   const usual = useForm('checkbox');
+  const cascade = useForm('checkbox');
 
-  const typeOptions = [
-    {value: 'D', label: 'Despesa'},
-    {value: 'R', label: 'Receita'},
-    {value: 'T', label: 'Transferência'},
-  ]
+  const typeOptions = React.useMemo(() => {
+    return [
+      {value: 'D', label: 'Despesa'},
+      {value: 'R', label: 'Receita'},
+      {value: 'T', label: 'Transferência'},
+    ]
+  }, [])
 
+  //Set account options object to SELECT field
   const accountOptions = React.useMemo(() => {return []}, []);
   React.useEffect(() => {
     accountOptions.length = 0;
@@ -50,6 +58,8 @@ const TransactionForm = () => {
   }, [accounts, accountOptions])
 
   const categoryOptions = React.useMemo(() => {return []}, []);
+
+  //Set categories options object to SELECT field
   React.useEffect(() => {
     categories.forEach((group) => {
       const categories = [];
@@ -63,19 +73,78 @@ const TransactionForm = () => {
     })
   }, [categories, categoryOptions])
 
+
   React.useEffect(() => {
     ReactTooltip.rebuild()
     if(!transactionFormIsOpen) {ReactTooltip.hide()}
   }, [transactionFormIsOpen])
 
+  //Update form is reload is setted true by some child
+  React.useEffect(() => {
+    if(reload){
+      setReload(false)
+    }
+  }, [reload])
+
+  //Update transaction form component if some of this dependencies changes
+  React.useEffect(() => {}, [transactionFormIsOpen, accounts, loading, accountOptions, categoryOptions]);
+
+  const setEditingTransactionValues = React.useCallback(async(transactionToEdit) => {
+    async function getRelatedTransactions(id){
+      const transactions = await getTransactionById(id);
+      return transactions.allRelated
+    }
+    async function setValues(transactionToEdit){
+      const typeOfEditting = typeOptions.find(type => type.value === transactionToEdit.type)
+      let categoryOfEditting;
+      categoryOptions.forEach((group) => {
+        const cat = group.options.find((category) => category.value === 1)
+        if (cat) {categoryOfEditting = cat; return};
+      })
+      let relatedTransactions = null;
+      if (transactionToEdit.type === "T") {relatedTransactions = await getRelatedTransactions(transactionToEdit.id)}
+      let accountOfEditting;
+      let destinationAccountOfEditting;
+      if (transactionToEdit.type === "T"){
+        accountOfEditting = accountOptions.find(account => account.value === relatedTransactions[0].account_id)
+        destinationAccountOfEditting = accountOptions.find(account => account.value === relatedTransactions[1].account_id)
+      } else {
+        accountOfEditting = accountOptions.find(account => account.value === transactionToEdit.account_id)
+      }
+
+      setType(typeOfEditting);
+      transactionDate.setValue(transactionToEdit.transaction_date);
+      paymentDate.setValue(transactionToEdit.payment_date);
+      value.setValue(convertToFloat(transactionToEdit.value));
+      description.setValue(transactionToEdit.description);
+      setCategory(categoryOfEditting);
+      setAccount(accountOfEditting);
+      setDestinationAccount(destinationAccountOfEditting);
+      totalInstallments.setValue(transactionToEdit.total_installments);
+      preview.setValue(transactionToEdit.preview);
+      usual.setValue(transactionToEdit.usual);  
+      setTransactionFormIsOpen(true)  
+    }
+    setValues(transactionToEdit);
+  }, [transactionToEdit]) // eslint-disable-line react-hooks/exhaustive-deps
+
+
+  // Open transaction with transaction data setted if user clicks to edit transaction
+  React.useEffect(() => {
+    if (transactionToEdit){
+      cascade.setValue(false)
+      setEditingTransactionValues(transactionToEdit)
+    }
+  }, [transactionToEdit, setEditingTransactionValues])
+
   function handleCloseForm(){
     setTransactionFormIsOpen(false);
+    setTransactionToEdit(null);
     clearForm();
   }
 
   function clearForm(){
     setType([]);
-    transactionDate.setValue('');
     transactionDate.setValue('');
     paymentDate.setValue('');
     value.setValue('');
@@ -88,16 +157,7 @@ const TransactionForm = () => {
     usual.setValue(false);
   }
 
-  React.useEffect(() => {
-    if(reload){
-      setReload(false)
-    }
-  }, [reload])
-
-
-
   function validateSubmit(fields){
-
     function validate(field){
       if (!field || !field.value || field.value === "" || field.value === null){
         return false;
@@ -105,7 +165,6 @@ const TransactionForm = () => {
         return true;
       }
     }
-
     let invalidFieldsNames = []
     fields.forEach((field) => {
       console.log(field)
@@ -145,9 +204,7 @@ const TransactionForm = () => {
         if (!validateSubmit(fields)){
           return;
         }
-
         const integerValue = convertToInteger(value.value)
-
         body = {
           transaction_date: transactionDate.value,
           payment_date: paymentDate.value,
@@ -159,7 +216,6 @@ const TransactionForm = () => {
           usual: usual.value,
           total_installments: totalInstallments.value
         }} else {
-
           let fields = [
             {field: transactionDate, name: 'data da transação'},
             {field: value, name: 'valor'}, 
@@ -170,9 +226,7 @@ const TransactionForm = () => {
           if (!validateSubmit(fields)){
             return;
           }
-
           const integerValue = convertToInteger(value.value)
-
           body = {
             transaction_date: transactionDate.value,
             value: integerValue,
@@ -185,19 +239,24 @@ const TransactionForm = () => {
           setMessage({content: "O tipo de transação deve ser informado", type: 'a'})
           return
       }
-
       let url;
       let options;
-      if (type.value === 'R') {({url, options} = POST_INCOME(body, token))}
-      else if (type.value === 'D') {({url, options} = POST_EXPENSE(body, token))}
-      else if (type.value === 'T') {({url, options} = POST_TRANSFER(body, token))}
-
+      if(transactionToEdit){
+        if (type.value === 'R') {({url, options} = PATCH_INCOME(body, token, transactionToEdit.id, false))}
+        else if (type.value === 'D') {({url, options} = PATCH_EXPENSE(body, token, transactionToEdit.id, false))}
+        else if (type.value === 'T') {({url, options} = PATCH_TRANSFER(body, token, transactionToEdit.id, false))}  
+      } else {
+        if (type.value === 'R') {({url, options} = POST_INCOME(body, token))}
+        else if (type.value === 'D') {({url, options} = POST_EXPENSE(body, token))}
+        else if (type.value === 'T') {({url, options} = POST_TRANSFER(body, token))}  
+      }
       try {
         const {response, json, error} = await request(url, options);
         if (response.ok){
           setMessage({content: json.message, type: 's'})
           clearForm();
           setReload(true);
+          getTransactions();
           if(!modalIsFixed){
             setTransactionFormIsOpen(false);
           }
@@ -208,10 +267,8 @@ const TransactionForm = () => {
         console.log(error)
         setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       }
-    }  
-
-  React.useEffect(() => {}, [transactionFormIsOpen, accounts, loading, accountOptions]);
-
+    }
+    
   return (
       transactionFormIsOpen &&
         <div className={styles.modalContainer}>
@@ -223,7 +280,7 @@ const TransactionForm = () => {
                  ${(type && type.value === 'D') ? styles.d : ''}
                  ${(type && type.value === 'R') ? styles.r : ''}
                  ${(type && type.value === 'T') ? styles.t : ''}`}>
-                  Registrar transação
+                  {transactionToEdit ? 'Editar transação' : 'Registrar transação'}
               </h2>
               <span className={styles.buttonsContainer}>
                 <span data-tip="Manter valores" className={`${styles.pinButton} ${keepAllValues && styles.active}`} onClick={() => {keepAllValues ? setKeepAllValues(false) : setKeepAllValues(true)}}><AttachIcon /></span>
@@ -232,7 +289,7 @@ const TransactionForm = () => {
               </span>
             </div>
             <form className={styles.transactionForm} onSubmit={handleSubmit}>
-              <TransactionFormInput 
+              {<TransactionFormInput 
                 label="Tipo"
                 name='type'
                 type='select'
@@ -240,10 +297,11 @@ const TransactionForm = () => {
                 onChange={setType}
                 options={typeOptions}
                 setValue={setType}
-                gridColumn="span 2"
+                style={{gridColumn: 'span 2'}}
                 reload={reload}
                 keepAllValues={keepAllValues}
-              />
+                disabled={transactionToEdit ? true : false}
+              />}
               <TransactionFormInput 
                 label='Data da transação'
                 name='transaction-date'
@@ -251,7 +309,7 @@ const TransactionForm = () => {
                 value={transactionDate.value}
                 onChange={transactionDate.onChange}
                 setValue={transactionDate.setValue}
-                gridColumn="span 2"
+                style={{gridColumn: 'span 2'}}
                 reload={reload}
                 keepAllValues={keepAllValues}
               />
@@ -263,7 +321,7 @@ const TransactionForm = () => {
                 value={paymentDate.value}
                 onChange={paymentDate.onChange}
                 setValue={paymentDate.setValue}
-                gridColumn="span 2"
+                style={{gridColumn: 'span 2'}}
                 reload={reload}
                 keepAllValues={keepAllValues}
               />}
@@ -274,7 +332,7 @@ const TransactionForm = () => {
                 value={value.value}
                 onChange={value.onChange}
                 setValue={value.setValue}
-                gridColumn="span 2"
+                style={{gridColumn: 'span 2'}}
                 reload={reload}
                 currency={true}
                 keepAllValues={keepAllValues}
@@ -286,7 +344,7 @@ const TransactionForm = () => {
                 value={description.value}
                 onChange={description.onChange}
                 setValue={description.setValue}
-                gridColumn={(type && type.value === 'T') ? 'span 6' : 'span 4'}
+                style={(type && type.value === 'T') ? {gridColumn: 'span 6'} : {gridColumn: 'span 4'}}
                 reload={reload}
                 keepAllValues={keepAllValues}
               />
@@ -298,7 +356,7 @@ const TransactionForm = () => {
                 onChange={setAccount}
                 options={accountOptions}
                 setValue={setAccount}
-                gridColumn="span 2"
+                style={{gridColumn: 'span 2'}}
                 reload={reload}
                 keepAllValues={keepAllValues}
               />       
@@ -312,7 +370,7 @@ const TransactionForm = () => {
                 onChange={setDestinationAccount}
                 options={accountOptions}
                 setValue={setDestinationAccount}
-                gridColumn="span 2"
+                style={{gridColumn: 'span 3'}}
                 reload={reload}
                 keepAllValues={keepAllValues}
               />   
@@ -325,12 +383,12 @@ const TransactionForm = () => {
                 onChange={setCategory}
                 options={categoryOptions}
                 setValue={setCategory}
-                gridColumn="span 2"
+                style={{gridColumn: 'span 2'}}
                 reload={reload}
                 keepAllValues={keepAllValues}
               />
               }
-              {(!type || type.value !== 'T') && 
+              {(!transactionToEdit && (!type || type.value !== 'T')) && 
               <TransactionFormInput 
                 label="Parcelas"
                 name="total_installments"
@@ -338,7 +396,7 @@ const TransactionForm = () => {
                 value={totalInstallments.value}
                 onChange={totalInstallments.onChange}
                 setValue={totalInstallments.setValue}
-                gridColumn="span 1"
+                style={{gridColumn: 'span 1'}}
                 reload={reload}
                 keepAllValues={keepAllValues}
               />
@@ -366,11 +424,22 @@ const TransactionForm = () => {
                 keepAllValues={keepAllValues}
               />
             </span>
+            {transactionToEdit && <TransactionFormInput
+                label="Aplicar mudanças às parcelas seguintes"
+                name="cascade"
+                type="checkbox"
+                value={cascade.value}
+                onChange={cascade.onChange}
+                setValue={cascade.setValue}
+                reload={reload}
+                keepAllValues={keepAllValues}
+                style={{gridRow: '4', gridColumn: 'span 5', alignSelf: 'center'}}
+              />}
             {loading 
             ?
-            <Button type="confirm" style={{gridColumn: '6', alignSelf: 'end'}} disabled>Registrando...</Button>
+            <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}} disabled>Registrando...</Button>
             :
-            <Button type="confirm" style={{gridColumn: '6', alignSelf: 'end'}}>Registrar</Button>
+            <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}}>{transactionToEdit ? 'Editar' : 'Registrar'}</Button>
             }
             </form>
           </div>

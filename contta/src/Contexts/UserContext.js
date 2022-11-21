@@ -9,7 +9,7 @@ const UserContext = React.createContext();
 export const UserContextData = ({children}) => {
 
   const { setMessage } = React.useContext(MessagesContext);
-  const {request, loading} = useFetch();
+  const {request} = useFetch();
   const [user, setUser] = React.useState(null);
   const [logged, setLogged] = React.useState(false);
   const navigate = useNavigate();

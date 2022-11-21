@@ -6,25 +6,25 @@ import {ReactComponent as ExpenseIcon} from '../../assets/icons/expense_icon.svg
 import {ReactComponent as TransferIcon} from '../../assets/icons/transfer_icon.svg'
 import {ReactComponent as TransactionDateIcon} from '../../assets/icons/calendar_date_icon.svg'
 import {ReactComponent as PaymentDateIcon} from '../../assets/icons/calendar_pay_icon.svg'
-import {ReactComponent as DoneIcon} from '../../assets/icons/done_icon_small.svg'
-import {ReactComponent as NotDoneIcon} from '../../assets/icons/done_fill_icon_small.svg'
+import {ReactComponent as DoneIcon} from '../../assets/icons/done_fill_icon_small.svg'
+import {ReactComponent as NotDoneIcon} from '../../assets/icons/done_icon_small.svg'
 import convertDateToBr from '../../Helpers/convertDateToBr'
 import useFetch from '../../Hooks/useFetch'
 import { DELETE_TRANSACTION } from '../../api'
 import MessagesContext from '../../Contexts/MessagesContext'
 import AppContext from '../../Contexts/AppContext'
 
-const StatementItem = ({id, type, description, value, account, category, transaction_date, payment_date, installments_key, installment, preview}) => {
+const StatementItem = (transaction) => {
 
   const [optionsIsOpen, setOptionsIsOpen] = React.useState(false);
   const {request} = useFetch();
   const {setMessage} = React.useContext(MessagesContext);
-  const {setReload} = React.useContext(AppContext);
+  const {setReload, setTransactionToEdit} = React.useContext(AppContext);
 
   let icon;
-  if(type === 'R'){
+  if(transaction.type === 'R'){
     icon = <IncomeIcon />
-  } else if (type === 'D'){
+  } else if (transaction.type === 'D'){
     icon = <ExpenseIcon />
   } else {
     icon = <TransferIcon />
@@ -36,14 +36,12 @@ const StatementItem = ({id, type, description, value, account, category, transac
   }
 
   async function handleDelete({target}){
-
+    setOptionsIsOpen(false)
     const token = window.localStorage.getItem('token')
     const cascade = JSON.parse(target.dataset.cascade)
-
-    const confirmDelete = window.confirm(`Confirmar a exclusão de "${description}"${cascade ? ' e das suas parcelas seguintes?' : '?'}`)
-
+    const confirmDelete = window.confirm(`Confirmar a exclusão de "${transaction.description}"${cascade ? ' e das suas parcelas seguintes?' : '?'}`)
     if (confirmDelete){
-      const {url, options} = DELETE_TRANSACTION(token, id, type, cascade)
+      const {url, options} = DELETE_TRANSACTION(token, transaction.id, transaction.type, cascade)
       const {response, json, error} = await request(url, options);
       console.log(response, json)
       if (response.ok){
@@ -53,35 +51,39 @@ const StatementItem = ({id, type, description, value, account, category, transac
         setMessage({content: error, type: 'e'})
       }
     }
+  }
 
+  async function handleEdit(){
+    setOptionsIsOpen(false)
+    setTransactionToEdit(transaction)
   }
 
   return (
-    <div className={`${styles.statementItem} ${styles[type]}`}>
+    <div className={`${styles.statementItem} ${styles[transaction.type]}`}>
       <div className={styles.container}>
         <span className={styles.typeIcon}>{icon}</span>
       </div>
       <div className={styles.container}>
-        <span className={styles.description}>{description} {installments_key && `(${installment})`}</span>
-        <span className={styles.value}>R$ {convertToFloat(value)}</span>
+        <span className={styles.description}>{transaction.description} {transaction.installments_key && `(${transaction.installment})`}</span>
+        <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
       </div>
       <div className={styles.container}>
-        <span className={styles.account}>{account.name}</span>
-        {category ? <span className={styles.category}>{category.name}</span> : <span></span>}
+        <span className={styles.account}>{transaction.account.name}</span>
+        {transaction.category ? <span className={styles.category}>{transaction.category.name}</span> : <span></span>}
       </div>
       <div className={styles.container}>
-        <span className={styles.date}><TransactionDateIcon /> {convertDateToBr(transaction_date)}</span>
-        <span className={styles.date}><PaymentDateIcon /> {convertDateToBr(payment_date)}</span>
+        <span className={styles.date}><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
+        <span className={styles.date}><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
       </div>
       <div className={styles.container}>
-        <span className={styles.date}>{!preview ? <DoneIcon /> : <NotDoneIcon />}</span>
+        <span className={styles.date}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
       </div>
       <span className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive}`} onClick={toggleOptions}></span>
       <div className={`${styles.menu} ${optionsIsOpen && styles.active}`}>
           <ul>
-            <li className={styles.editIcon}>Editar</li>
+            <li className={styles.editIcon} onClick={handleEdit}>Editar</li>
             <li className={styles.deleteIcon} data-cascade="false" onClick={handleDelete}>Apagar</li>
-            {installments_key && <li className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar parcelas</li>}
+            {transaction.installments_key && <li className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar parcelas</li>}
           </ul>
         </div>
     </div>

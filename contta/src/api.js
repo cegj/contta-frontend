@@ -111,6 +111,18 @@ export function GET_TRANSACTIONS(token, queryObject){
   }
 }
 
+export function GET_TRANSACTION_BY_ID(token, id){
+  return {
+    url: API_URL + `/transactions/${id}`,
+    options: {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
+    }
+  }
+}
+
 export function DELETE_TRANSACTION(token, transactionId, transactionType, cascade){
   let typeOnUrl;
   switch(transactionType){
@@ -135,6 +147,52 @@ export function DELETE_TRANSACTION(token, transactionId, transactionType, cascad
       headers: {
         Authorization: 'Bearer ' + token
       }  
+    }
+  }
+}
+
+
+export function PATCH_INCOME(body, token, id, cascade){
+  return {
+    url: API_URL + `/transactions/incomes/${id}?cascade=${cascade}`,
+    options: {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
+export function PATCH_EXPENSE(body, token, id, cascade){
+  return {
+    url: API_URL + `/transactions/expenses/${id}?cascade=${cascade}`,
+    options: {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
+export function PATCH_TRANSFER(body, token, id, cascade){
+  return {
+    url: API_URL + `/transactions/transfers/${id}?cascade=${cascade}`,
+    options: {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
     }
   }
 }

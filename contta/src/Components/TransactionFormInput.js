@@ -5,7 +5,7 @@ import selectStyles from '../options/selectStyles'
 import {ReactComponent as AttachIcon} from '../assets/icons/attach_icon_small.svg'
 import setCurrencyMask from '../Helpers/setCurrencyMask'
 
-const TransactionFormInput = ({type, name, label, value, onChange, gridColumn, options, setValue, reload, currency = false, keepAllValues}) => {
+const TransactionFormInput = ({type, name, label, value, onChange, style, options, setValue, reload, currency = false, keepAllValues, disabled = false}) => {
 
   const [keepValue, setKeepValue] = React.useState(false);
 
@@ -53,7 +53,7 @@ const TransactionFormInput = ({type, name, label, value, onChange, gridColumn, o
   }, [keepAllValues])
 
   if (type==='select') return(
-  <span className={`${styles.formControl}`} style={{gridColumn: gridColumn}}>
+  <span className={`${styles.formControl}`} style={style}>
     <span className={styles.labelContainer}>
       <label htmlFor={name}>{label}</label>
       <span data-tip="Manter valor" data-background-color="#a19f9f" className={`${styles.pinIconContainer} ${keepValue && styles.active}`} onClick={toggleKeepValue}><AttachIcon /></span>
@@ -67,10 +67,11 @@ const TransactionFormInput = ({type, name, label, value, onChange, gridColumn, o
     value={value}
     onChange={onChange}
     options={options}
+    isDisabled={disabled}
     />
   </span>)
   else if (type==='checkbox') return (
-    <span className={styles.checkboxControl}>
+    <span className={styles.checkboxControl} style={style}>
       <span className={styles.checkboxAndLabelContainer}>
         <input
           type={type}
@@ -79,13 +80,14 @@ const TransactionFormInput = ({type, name, label, value, onChange, gridColumn, o
           value={value}
           onChange={onChange}
           checked={value}
+          disabled={disabled}
           />
         <label htmlFor={name}>{label}</label>
       </span>
     <span data-tip="Manter valor" data-background-color="#a19f9f" className={`${styles.pinIconContainer} ${keepValue && styles.active}`} onClick={toggleKeepValue}><AttachIcon /></span>
   </span>)
   else return (
-    <span className={`${styles.formControl}`} style={{gridColumn: gridColumn}}>
+    <span className={`${styles.formControl}`} style={style}>
       <span className={styles.labelContainer}>
         <label htmlFor={name}>{label}</label>
         <span data-tip="Manter valor" data-background-color="#a19f9f" className={`${styles.pinIconContainer} ${keepValue && styles.active}`} onClick={toggleKeepValue}><AttachIcon /></span>
@@ -96,6 +98,7 @@ const TransactionFormInput = ({type, name, label, value, onChange, gridColumn, o
         id={name}
         value={value}
         onChange={onChange}
+        disabled={disabled}
         >
         </input>
     </span>)

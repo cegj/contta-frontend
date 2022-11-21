@@ -1,5 +1,4 @@
 import React from 'react'
-import AppContext from '../Contexts/AppContext';
 
 const useFetch = () => {
 
