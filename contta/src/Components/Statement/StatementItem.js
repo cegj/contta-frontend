@@ -10,9 +10,10 @@ import {ReactComponent as DoneIcon} from '../../assets/icons/done_fill_icon_smal
 import {ReactComponent as NotDoneIcon} from '../../assets/icons/done_icon_small.svg'
 import convertDateToBr from '../../Helpers/convertDateToBr'
 import useFetch from '../../Hooks/useFetch'
-import { DELETE_TRANSACTION } from '../../api'
+import { DELETE_TRANSACTION, PATCH_EXPENSE, PATCH_INCOME, PATCH_TRANSFER } from '../../api'
 import MessagesContext from '../../Contexts/MessagesContext'
 import AppContext from '../../Contexts/AppContext'
+import TransactionsContext from '../../Contexts/TransactionsContext'
 
 const StatementItem = (transaction) => {
 
@@ -20,6 +21,7 @@ const StatementItem = (transaction) => {
   const {request} = useFetch();
   const {setMessage} = React.useContext(MessagesContext);
   const {setReload, setTransactionToEdit} = React.useContext(AppContext);
+  const {getTransactions} = React.useContext(TransactionsContext)
 
   let icon;
   if(transaction.type === 'R'){
@@ -58,6 +60,36 @@ const StatementItem = (transaction) => {
     setTransactionToEdit(transaction)
   }
 
+  async function togglePreview(){
+    if (transaction.type !== 'T'){
+      const token = window.localStorage.getItem('token');
+      let body;
+      if (transaction.preview === 1){
+        body = {preview: false}
+      } else {
+        body = {preview: true}
+      }
+      let url;
+      let options;
+      if (transaction.type === 'R') {({url, options} = PATCH_INCOME(body, token, transaction.id))}
+      else if (transaction.type === 'D') {({url, options} = PATCH_EXPENSE(body, token, transaction.id))}
+      else if (transaction.type === 'T') {({url, options} = PATCH_TRANSFER(body, token, transaction.id))}  
+      try {
+        const {response, json, error} = await request(url, options);
+        if (response.ok){
+          getTransactions();
+        } else {
+          throw new Error(error)
+        }
+      } catch (error) {
+        console.log(error)
+        setMessage({content: `Erro ao alterar transação: ${error.message}`, type: "e"})
+      }  
+    } else {
+      setMessage({content: 'Não é possível definir uma transferência como previsão', type: 'a'})
+    }
+  }
+
   return (
     <div className={`${styles.statementItem} ${styles[transaction.type]}`}>
       <div className={styles.container}>
@@ -76,7 +108,7 @@ const StatementItem = (transaction) => {
         <span className={styles.date}><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
       </div>
       <div className={styles.container}>
-        <span className={styles.date}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
+        <span className={`${styles.preview} ${transaction.type === 'T' ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
       </div>
       <span className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive}`} onClick={toggleOptions}></span>
       <div className={`${styles.menu} ${optionsIsOpen && styles.active}`}>

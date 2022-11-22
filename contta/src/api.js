@@ -152,7 +152,7 @@ export function DELETE_TRANSACTION(token, transactionId, transactionType, cascad
 }
 
 
-export function PATCH_INCOME(body, token, id, cascade){
+export function PATCH_INCOME(body, token, id, cascade = false){
   return {
     url: API_URL + `/transactions/incomes/${id}?cascade=${cascade}`,
     options: {
@@ -167,7 +167,7 @@ export function PATCH_INCOME(body, token, id, cascade){
   }
 }
 
-export function PATCH_EXPENSE(body, token, id, cascade){
+export function PATCH_EXPENSE(body, token, id, cascade = false){
   return {
     url: API_URL + `/transactions/expenses/${id}?cascade=${cascade}`,
     options: {
@@ -182,7 +182,7 @@ export function PATCH_EXPENSE(body, token, id, cascade){
   }
 }
 
-export function PATCH_TRANSFER(body, token, id, cascade){
+export function PATCH_TRANSFER(body, token, id, cascade = false){
   return {
     url: API_URL + `/transactions/transfers/${id}?cascade=${cascade}`,
     options: {
