@@ -1,10 +1,17 @@
 import React from 'react'
 import styles from './Modal.module.css'
 import {ReactComponent as CloseIcon} from '../../assets/icons/close_icon.svg'
+import ReactTooltip from 'react-tooltip'
 
 const Modal = ({title, isOpen, setIsOpen, children}) => {
   
   const modalContainer = React.useRef(null);
+
+  React.useEffect(() => {
+    ReactTooltip.rebuild()
+    if(!isOpen) {ReactTooltip.hide()}
+  }, [isOpen])
+
 
   React.useEffect(() => {
     function closeOnClick(event){

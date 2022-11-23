@@ -14,6 +14,8 @@ import { DELETE_TRANSACTION, PATCH_EXPENSE, PATCH_INCOME, PATCH_TRANSFER } from 
 import MessagesContext from '../../Contexts/MessagesContext'
 import AppContext from '../../Contexts/AppContext'
 import TransactionsContext from '../../Contexts/TransactionsContext'
+import RelatedTransactions from './RelatedTransactions'
+import ReactTooltip from 'react-tooltip'
 
 const StatementItem = (transaction) => {
 
@@ -22,6 +24,12 @@ const StatementItem = (transaction) => {
   const {setMessage} = React.useContext(MessagesContext);
   const {setReload, setTransactionToEdit} = React.useContext(AppContext);
   const {getTransactions} = React.useContext(TransactionsContext)
+  const [transactionToGetRelated, setTransactionToGetRelated] = React.useState(null);
+  const [relatedModalIsOpen, setRelatedModalIsOpen] = React.useState(true);
+
+  React.useEffect(() => {
+    ReactTooltip.rebuild()
+  }, [])
 
   let icon;
   if(transaction.type === 'R'){
@@ -31,6 +39,10 @@ const StatementItem = (transaction) => {
   } else {
     icon = <TransferIcon />
   }
+
+  React.useEffect(() => {
+    if (!relatedModalIsOpen) setTransactionToGetRelated(null);
+  }, [relatedModalIsOpen])
 
   function toggleOptions(){
     if (optionsIsOpen) setOptionsIsOpen(false)
@@ -92,34 +104,37 @@ const StatementItem = (transaction) => {
   }
 
   return (
-    <div className={`${styles.statementItem} ${styles[transaction.type]}`}>
-      <div className={styles.container}>
-        <span className={styles.typeIcon}>{icon}</span>
-      </div>
-      <div className={styles.container}>
-        <span className={styles.description}>{transaction.description} {transaction.installments_key && <span className={styles.statementNumber}>{transaction.installment}</span>}</span>
-        <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
-      </div>
-      <div className={styles.container}>
-        <span className={styles.account}>{transaction.account.name}</span>
-        {transaction.category ? <span className={styles.category}>{transaction.category.name}</span> : <span></span>}
-      </div>
-      <div className={styles.container}>
-        <span className={styles.date}><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
-        <span className={styles.date}><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
-      </div>
-      <div className={styles.container}>
-        <span className={`${styles.preview} ${transaction.type === 'T' ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
-      </div>
-      <span className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive}`} onClick={toggleOptions}></span>
-      <div className={`${styles.menu} ${optionsIsOpen && styles.active}`}>
-          <ul>
-            <li className={styles.editIcon} onClick={handleEdit}>Editar</li>
-            <li className={styles.deleteIcon} data-cascade="false" onClick={handleDelete}>Apagar</li>
-            {transaction.installments_key && <li className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar parcelas</li>}
-          </ul>
+    <>
+      <div className={`${styles.statementItem} ${styles[transaction.type]}`}>
+        <div className={styles.container}>
+          <span className={styles.typeIcon}>{icon}</span>
         </div>
-    </div>
+        <div className={styles.container}>
+          <span className={styles.description}>{transaction.description} {transaction.installments_key && <span data-tip="Ver transações relacionadas" onClick={() => {setTransactionToGetRelated(transaction.id); setRelatedModalIsOpen(true)}} className={styles.installmentNumber}>{transaction.installment}</span>}</span>
+          <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
+        </div>
+        <div className={styles.container}>
+          <span className={styles.account}>{transaction.account.name}</span>
+          {transaction.category ? <span className={styles.category}>{transaction.category.name}</span> : <span></span>}
+        </div>
+        <div className={styles.container}>
+          <span className={styles.date}><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
+          <span className={styles.date}><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
+        </div>
+        <div className={styles.container}>
+          <span data-tip={transaction.type !== 'T' ? !transaction.preview ? "Marcar como prevista" : "Marcar como consolidada" : ''} className={`${styles.preview} ${transaction.type === 'T' ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
+        </div>
+        <span className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive}`} onClick={toggleOptions}></span>
+        <div className={`${styles.menu} ${optionsIsOpen && styles.active}`}>
+            <ul>
+              <li className={styles.editIcon} onClick={handleEdit}>Editar</li>
+              <li className={styles.deleteIcon} data-cascade="false" onClick={handleDelete}>Apagar</li>
+              {transaction.installments_key && <li className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar parcelas</li>}
+            </ul>
+          </div>
+      </div>
+      {transactionToGetRelated && <RelatedTransactions id={transactionToGetRelated} isOpen={relatedModalIsOpen} setIsOpen={setRelatedModalIsOpen}/>}
+    </>
   )
 }
 

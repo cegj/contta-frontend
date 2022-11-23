@@ -237,7 +237,7 @@ const TransactionForm = () => {
       }
 
       if (transactionToEdit){
-        const stored = editTransaction(body, transactionToEdit.type, transactionToEdit.id, cascade)
+        const stored = editTransaction(body, transactionToEdit.type, transactionToEdit.id, cascade.value)
         if (stored){
           clearForm();
           setReload(true);

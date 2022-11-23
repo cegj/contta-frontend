@@ -198,12 +198,13 @@
   margin-right: .3rem;
 }
 
-.statementNumber {
+.installmentNumber {
   display: inline-block;
   background-color: rgba(121, 121, 121, .1);
-  color: rgba(121, 121, 121, .8);
+  color: rgba(121, 121, 121, .9);
   width: 20px;
   height: 20px;
+  font-size: .875rem;
   padding: .1rem;
   text-align: center;
   font-weight: normal;

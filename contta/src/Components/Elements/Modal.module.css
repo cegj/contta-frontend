@@ -3,6 +3,7 @@
   width: 100vw;
   height: 100vh;
   top: 0;
+  left: 0;
   background-color: #00000080;
   z-index: 2000;
   display: flex;
@@ -14,9 +15,11 @@
   background-color: #fafafa;
   width: fit-content;
   height: fit-content;
+  max-height: 500px;
   border-radius: 5px;
   animation: animateModal .4s forwards;
   box-shadow: 10px 10px 50px rgba(0, 0, 0, .1);
+  overflow: auto;
 }
 
 @keyframes animateModal {
