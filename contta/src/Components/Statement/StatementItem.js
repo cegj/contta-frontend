@@ -49,6 +49,7 @@ const StatementItem = (transaction) => {
       if (response.ok){
         setMessage({content: `${cascade ? 'Transação e parcelas seguintes apagadas com sucesso' : 'Transação apagada com sucesso'}`, type: 's'})
         setReload(true)
+        getTransactions()
       } else {
         setMessage({content: error, type: 'e'})
       }
@@ -75,7 +76,7 @@ const StatementItem = (transaction) => {
       else if (transaction.type === 'D') {({url, options} = PATCH_EXPENSE(body, token, transaction.id))}
       else if (transaction.type === 'T') {({url, options} = PATCH_TRANSFER(body, token, transaction.id))}  
       try {
-        const {response, json, error} = await request(url, options);
+        const {response, error} = await request(url, options);
         if (response.ok){
           getTransactions();
         } else {

@@ -7,7 +7,7 @@ import MonthYearButton from './MonthYearButton';
 
 const MainBar = () => {
 
-  const {pageName, month, year} = React.useContext(AppContext)
+  const {pageName, month, year, loading} = React.useContext(AppContext)
 
   return (
     <section className={styles.mainBar}>
@@ -15,9 +15,9 @@ const MainBar = () => {
         <MainMenu />
         <span className={styles.pageName}>{pageName}</span>
         <span className={styles.monthYear}>{month}/{year}</span>
-          <div style={{width: "30px", height: "30px", margin: "1rem 1rem"}}>
+        {loading && <div style={{width: "30px", height: "30px", margin: "1rem 1rem"}}>
           <span className="loading"></span>
-        </div>
+        </div>}
       </div>
       <div className={styles.optionsContainer}>
         <MonthYearButton />

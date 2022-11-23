@@ -3,14 +3,14 @@ import React from 'react'
 const useFetch = () => {
 
   const [data, setData] = React.useState(null);
-  const [loading, setLoading] = React.useState(null);
+  const [fetchLoading, setFetchLoading] = React.useState(null);
 
   const request = React.useCallback(async(url, options) => {
     let response;
     let json;
     let error;
     try {
-      setLoading(true)
+      setFetchLoading(true)
       response = await fetch(url, options);
       json = await response.json();
       if (!response.ok){
@@ -23,12 +23,12 @@ const useFetch = () => {
       json = null;
     } finally {
       setData(json);
-      setLoading(false)
+      setFetchLoading(false)
       return {response, json, error}
     }
-  }, [setLoading])
+  }, [setFetchLoading])
 
-  return {request, data, loading}
+  return {request, data, fetchLoading}
 }
 
 export default useFetch

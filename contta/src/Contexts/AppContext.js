@@ -22,31 +22,32 @@ export const AppContextData = ({children}) => {
   const [monthYearModalIsOpen, setMonthYearModalIsOpen] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const [transactionToEdit, setTransactionToEdit] = React.useState(null);
+  const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
     if(pageName) document.title = `Contta - ${pageName}`
     else document.title = `Contta`
   }, [pageName])
 
-  const getFirstDay = React.useCallback(() => {
-    let first = new Date(year, +month-1, 1)
-    first = first.toISOString().split('T')[0]
-    return first;
-  }, [month, year])
+  // const getFirstDay = React.useCallback(() => {
+  //   let first = new Date(year, +month-1, 1)
+  //   first = first.toISOString().split('T')[0]
+  //   return first;
+  // }, [month, year])
 
-  const getLastDay = React.useCallback(() => {
-    let last = new Date(year, month, 0)
-    last = last.toISOString().split('T')[0]
-    return last;
-  }, [month, year])
+  // const getLastDay = React.useCallback(() => {
+  //   let last = new Date(year, month, 0)
+  //   last = last.toISOString().split('T')[0]
+  //   return last;
+  // }, [month, year])
 
-  const [firstDay, setFirstDay] = React.useState(getFirstDay());
-  const [lastDay, setLastDay] = React.useState(getLastDay());
+  // const [firstDay, setFirstDay] = React.useState(getFirstDay());
+  // const [lastDay, setLastDay] = React.useState(getLastDay());
 
-  React.useEffect(() => {
-    setFirstDay(getFirstDay())
-    setLastDay(getLastDay())
-  }, [month, year, getFirstDay, getLastDay])
+  // React.useEffect(() => {
+  //   setFirstDay(getFirstDay())
+  //   setLastDay(getLastDay())
+  // }, [month, year, getFirstDay, getLastDay])
 
   React.useEffect(() => {
     if(logged){
@@ -101,14 +102,14 @@ React.useEffect(() => {
         setMonth,
         year,
         setYear,
-        firstDay,
-        lastDay,
         monthYearModalIsOpen,
         setMonthYearModalIsOpen,
         reload,
         setReload,
         transactionToEdit,
-        setTransactionToEdit
+        setTransactionToEdit,
+        loading,
+        setLoading
       }}
       >
       {children}

@@ -7,7 +7,6 @@ import {ReactComponent as CloseIcon} from '../assets/icons/close_icon.svg'
 import Button from './Elements/Button'
 import useFetch from '../Hooks/useFetch'
 import useForm from '../Hooks/useForm'
-import { PATCH_INCOME, PATCH_EXPENSE, PATCH_TRANSFER, POST_EXPENSE, POST_INCOME, POST_TRANSFER } from '../api'
 import MessagesContext from '../Contexts/MessagesContext'
 import TransactionFormInput from './TransactionFormInput'
 import convertToInteger from '../Helpers/convertToInteger'
@@ -18,12 +17,12 @@ import TransactionsContext from '../Contexts/TransactionsContext'
 const TransactionForm = () => {
 
   const {setMessage} = React.useContext(MessagesContext);
-  const {request, loading} = useFetch();
+  const {loading} = useFetch();
   const {categories, accounts, transactionToEdit, setTransactionToEdit, transactionFormIsOpen, setTransactionFormIsOpen} = React.useContext(AppContext);
   const [modalIsFixed, setModalIsFixed] = React.useState(false);
   const [keepAllValues, setKeepAllValues] = React.useState(false);
   const [reload, setReload] = React.useState(false);
-  const {getTransactions, getTransactionById} = React.useContext(TransactionsContext);
+  const {getTransactions, getTransactionById, storeTransaction, editTransaction} = React.useContext(TransactionsContext);
 
   const [type, setType] = React.useState([]);
   const transactionDate = useForm();
@@ -187,9 +186,7 @@ const TransactionForm = () => {
 
   async function handleSubmit(event){
     event.preventDefault();
-    const token = window.localStorage.getItem('token');
     let body = {};
-    
     if (type.value === 'R' || type.value === 'D' || type.value === 'T') {
       if (type.value === 'R' || type.value === 'D'){
         let fields = [
@@ -238,35 +235,28 @@ const TransactionForm = () => {
           setMessage({content: "O tipo de transação deve ser informado", type: 'a'})
           return
       }
-      let url;
-      let options;
-      if(transactionToEdit){
-        if (type.value === 'R') {({url, options} = PATCH_INCOME(body, token, transactionToEdit.id, cascade.value))}
-        else if (type.value === 'D') {({url, options} = PATCH_EXPENSE(body, token, transactionToEdit.id, cascade.value))}
-        else if (type.value === 'T') {({url, options} = PATCH_TRANSFER(body, token, transactionToEdit.id, cascade.value))}  
-      } else {
-        if (type.value === 'R') {({url, options} = POST_INCOME(body, token))}
-        else if (type.value === 'D') {({url, options} = POST_EXPENSE(body, token))}
-        else if (type.value === 'T') {({url, options} = POST_TRANSFER(body, token))}  
-      }
-      try {
-        const {response, json, error} = await request(url, options);
-        if (response.ok){
-          setMessage({content: json.message, type: 's'})
+
+      if (transactionToEdit){
+        const stored = editTransaction(body, transactionToEdit.type, transactionToEdit.id, cascade)
+        if (stored){
           clearForm();
           setReload(true);
           getTransactions();
           if(!modalIsFixed){
             setTransactionFormIsOpen(false);
-          }
-        } else {
-          throw new Error(error)
+          }  
         }
-      } catch (error) {
-        console.log(error)
-        setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
+      } else {
+        const editted = storeTransaction(body, type.value)
+        if (editted){
+          clearForm();
+          setReload(true);
+          getTransactions();
+          if(!modalIsFixed){
+            setTransactionFormIsOpen(false);
+          }  
       }
-    }
+    }}
     
   return (
       transactionFormIsOpen &&

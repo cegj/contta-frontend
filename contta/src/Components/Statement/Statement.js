@@ -11,6 +11,8 @@ const Statement = () => {
   React.useEffect(() => {setPageName("Extrato")}, [setPageName])
   const {transactions} = React.useContext(TransactionsContext)
 
+  React.useEffect(() => {}, [transactions])
+
   return (
     <>
     <Header />
