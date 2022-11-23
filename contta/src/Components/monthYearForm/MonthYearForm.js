@@ -1,9 +1,10 @@
 import React from 'react'
 import AppContext from '../../Contexts/AppContext'
 import styles from './MonthYearForm.module.css'
-import {ReactComponent as CloseIcon} from '../../assets/icons/close_icon.svg'
+// import {ReactComponent as CloseIcon} from '../../assets/icons/close_icon.svg'
 import Button from '../Elements/Button'
 import MessagesContext from '../../Contexts/MessagesContext'
+import Modal from '../Elements/Modal'
 
 const MonthYearForm = () => {
 
@@ -15,9 +16,9 @@ const MonthYearForm = () => {
   React.useEffect(() => {}, [monthYearModalIsOpen])
   React.useEffect(() => {}, [month, year])
 
-  function handleCloseForm(){
-    setMonthYearModalIsOpen(false)
-  }
+  // function handleCloseForm(){
+  //   setMonthYearModalIsOpen(false)
+  // }
 
   function selectMonth({target}){
     window.localStorage.setItem('month', target.innerText)
@@ -65,14 +66,7 @@ const MonthYearForm = () => {
 
   return (
     monthYearModalIsOpen &&
-    <div className={styles.modalContainer}>
-      <div className={styles.formContainer}>
-        <div className={styles.titleBar}>
-          <h2>Editar mês/ano</h2>
-          <span className={styles.buttonsContainer}>
-            <span data-tip="Fechar" className={styles.closeButton} onClick={handleCloseForm} ><CloseIcon /></span>
-          </span>
-        </div>
+    <Modal title="Alterar mês/ano" isOpen={monthYearModalIsOpen} setIsOpen={setMonthYearModalIsOpen}>
         <form className={styles.form} onSubmit={handleSubmit}>
           <span className={styles.inputsContainer}>
           <input
@@ -109,8 +103,54 @@ const MonthYearForm = () => {
           <span onClick={selectYear}>{+year}</span>
           <span onClick={selectYear}>{+year+1}</span>
         </div>
-      </div>
-  </div>
+    </Modal>
+
+  //   <div className={styles.modalContainer}>
+  //     <div className={styles.formContainer}>
+  //       <div className={styles.titleBar}>
+  //         <h2>Editar mês/ano</h2>
+  //         <span className={styles.buttonsContainer}>
+  //           <span data-tip="Fechar" className={styles.closeButton} onClick={handleCloseForm} ><CloseIcon /></span>
+  //         </span>
+  //       </div>
+  //       <form className={styles.form} onSubmit={handleSubmit}>
+  //         <span className={styles.inputsContainer}>
+  //         <input
+  //           className={`${styles.input} ${styles.month}`}
+  //           type="number"
+  //           value={monthValue}
+  //           onChange={({target}) => {setMonthValue(target.value)}}
+  //           ></input>
+  //         /
+  //         <input
+  //           className={`${styles.input} ${styles.year}`}
+  //           type="number"
+  //           value={yearValue}
+  //           onChange={({target}) => {setYearValue(target.value)}}></input>
+  //         </span>
+  //       <Button type="confirm" style={{gridColumn: '6', alignSelf: 'end'}}>Selecionar</Button>
+  //       </form>
+  //       <div className={styles.monthSelector}>
+  //         <span onClick={selectMonth}>01</span>
+  //         <span onClick={selectMonth}>02</span>
+  //         <span onClick={selectMonth}>03</span>
+  //         <span onClick={selectMonth}>04</span>
+  //         <span onClick={selectMonth}>05</span>
+  //         <span onClick={selectMonth}>06</span>
+  //         <span onClick={selectMonth}>07</span>
+  //         <span onClick={selectMonth}>08</span>
+  //         <span onClick={selectMonth}>09</span>
+  //         <span onClick={selectMonth}>10</span>
+  //         <span onClick={selectMonth}>11</span>
+  //         <span onClick={selectMonth}>12</span>
+  //       </div>
+  //       <div className={styles.yearSelector}>
+  //         <span onClick={selectYear}>{+year-1}</span>
+  //         <span onClick={selectYear}>{+year}</span>
+  //         <span onClick={selectYear}>{+year+1}</span>
+  //       </div>
+  //     </div>
+  // </div>
 )
 }
 

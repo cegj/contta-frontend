@@ -97,7 +97,7 @@ const StatementItem = (transaction) => {
         <span className={styles.typeIcon}>{icon}</span>
       </div>
       <div className={styles.container}>
-        <span className={styles.description}>{transaction.description} {transaction.installments_key && `(${transaction.installment})`}</span>
+        <span className={styles.description}>{transaction.description} {transaction.installments_key && <span className={styles.statementNumber}>{transaction.installment}</span>}</span>
         <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
       </div>
       <div className={styles.container}>
