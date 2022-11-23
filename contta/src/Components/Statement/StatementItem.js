@@ -65,7 +65,7 @@ const StatementItem = (transaction) => {
     setOptionsIsOpen(false)
     const token = window.localStorage.getItem('token')
     const cascade = JSON.parse(target.dataset.cascade)
-    const confirmDelete = window.confirm(`Confirmar a exclusão de "${transaction.description}"${cascade ? ' e das suas parcelas seguintes?' : '?'}`)
+    const confirmDelete = window.confirm(`Confirmar a exclusão da transação "${transaction.description}" (${convertDateToBr(transaction.transaction_date)})${cascade ? ' e das suas parcelas seguintes?' : '?'}`)
     if (confirmDelete){
       const {url, options} = DELETE_TRANSACTION(token, transaction.id, transaction.type, cascade)
       const {response, error} = await request(url, options);
@@ -110,7 +110,7 @@ const StatementItem = (transaction) => {
         setMessage({content: `Erro ao alterar transação: ${error.message}`, type: "e"})
       }  
     } else {
-      setMessage({content: 'Não é possível definir uma transferência como previsão', type: 'a'})
+      setMessage({content: 'Não é possível definir uma transferência como prevista', type: 'a'})
     }
   }
 
@@ -140,7 +140,7 @@ const StatementItem = (transaction) => {
             <ul>
               <li data-menu-option className={styles.editIcon} onClick={handleEdit}>Editar</li>
               <li data-menu-option className={styles.deleteIcon} data-cascade="false" onClick={handleDelete}>Apagar</li>
-              {transaction.installments_key && <li data-menu-option className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar parcelas</li>}
+              {transaction.installments_key && <li data-menu-option className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar a partir desta</li>}
             </ul>
           </div>
       </div>
