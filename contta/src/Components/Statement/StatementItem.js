@@ -27,9 +27,21 @@ const StatementItem = (transaction) => {
   const [transactionToGetRelated, setTransactionToGetRelated] = React.useState(null);
   const [relatedModalIsOpen, setRelatedModalIsOpen] = React.useState(true);
 
+  const optionsMenu = React.useRef(null);
+
   React.useEffect(() => {
     ReactTooltip.rebuild()
   }, [])
+
+  const closeOptionsMenuOnClick = React.useCallback((event) => {
+    if (!event.target.dataset.menuOption){
+      setOptionsIsOpen(false)
+      window.removeEventListener('click', closeOptionsMenuOnClick)
+    }}, [])
+
+  React.useEffect(() => {
+    if (optionsIsOpen) window.addEventListener('click', closeOptionsMenuOnClick)
+  }, [optionsIsOpen, closeOptionsMenuOnClick])
 
   let icon;
   if(transaction.type === 'R'){
@@ -56,8 +68,7 @@ const StatementItem = (transaction) => {
     const confirmDelete = window.confirm(`Confirmar a exclusão de "${transaction.description}"${cascade ? ' e das suas parcelas seguintes?' : '?'}`)
     if (confirmDelete){
       const {url, options} = DELETE_TRANSACTION(token, transaction.id, transaction.type, cascade)
-      const {response, json, error} = await request(url, options);
-      console.log(response, json)
+      const {response, error} = await request(url, options);
       if (response.ok){
         setMessage({content: `${cascade ? 'Transação e parcelas seguintes apagadas com sucesso' : 'Transação apagada com sucesso'}`, type: 's'})
         setReload(true)
@@ -124,12 +135,12 @@ const StatementItem = (transaction) => {
         <div className={styles.container}>
           <span data-tip={transaction.type !== 'T' ? !transaction.preview ? "Marcar como prevista" : "Marcar como consolidada" : ''} className={`${styles.preview} ${transaction.type === 'T' ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
         </div>
-        <span className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive}`} onClick={toggleOptions}></span>
-        <div className={`${styles.menu} ${optionsIsOpen && styles.active}`}>
+        <span data-menu-option className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive}`} onClick={toggleOptions}></span>
+        <div ref={optionsMenu} className={`${styles.menu} ${optionsIsOpen && styles.active}`}>
             <ul>
-              <li className={styles.editIcon} onClick={handleEdit}>Editar</li>
-              <li className={styles.deleteIcon} data-cascade="false" onClick={handleDelete}>Apagar</li>
-              {transaction.installments_key && <li className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar parcelas</li>}
+              <li data-menu-option className={styles.editIcon} onClick={handleEdit}>Editar</li>
+              <li data-menu-option className={styles.deleteIcon} data-cascade="false" onClick={handleDelete}>Apagar</li>
+              {transaction.installments_key && <li data-menu-option className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar parcelas</li>}
             </ul>
           </div>
       </div>
