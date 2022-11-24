@@ -14,7 +14,7 @@ const Login = () => {
   const email = useForm('email');
   const password = useForm();
 
-  const { userLogin, loading } = React.useContext(UserContext);
+  const { userLogin, fetchLoading } = React.useContext(UserContext);
 
   async function handleSubmit(event){
     event.preventDefault();
@@ -44,7 +44,7 @@ const Login = () => {
               name="password"
               required={true}
               {...password}/>
-            {!loading
+            {!fetchLoading
             ? <Button style={{display: 'block', marginLeft: 'auto'}} type="confirm">Entrar</Button>
             : <Button style={{display: 'block', marginLeft: 'auto'}} type="confirm" disabled>Entrando...</Button>}
           </form>

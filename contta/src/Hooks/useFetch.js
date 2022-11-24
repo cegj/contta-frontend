@@ -30,7 +30,7 @@ const useFetch = () => {
       setFetchLoading(false)
       return {response, json, error}
     }
-  }, [setFetchLoading])
+  }, [setFetchLoading, navigate])
 
   return {request, data, fetchLoading}
 }

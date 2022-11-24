@@ -9,7 +9,7 @@ const UserContext = React.createContext();
 export const UserContextData = ({children}) => {
 
   const { setMessage } = React.useContext(MessagesContext);
-  const {request} = useFetch();
+  const {request, fetchLoading} = useFetch();
   const [user, setUser] = React.useState(null);
   const [logged, setLogged] = React.useState(false);
   const navigate = useNavigate();
@@ -68,7 +68,7 @@ export const UserContextData = ({children}) => {
     }}
 
   return (
-    <UserContext.Provider value={{ userLogin, userLogout, user, logged }}>
+    <UserContext.Provider value={{ userLogin, userLogout, user, logged, fetchLoading }}>
       {children}
     </UserContext.Provider>
   )
