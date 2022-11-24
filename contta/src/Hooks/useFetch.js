@@ -1,9 +1,11 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 const useFetch = () => {
 
   const [data, setData] = React.useState(null);
   const [fetchLoading, setFetchLoading] = React.useState(null);
+  const navigate = useNavigate();
 
   const request = React.useCallback(async(url, options) => {
     let response;
@@ -13,7 +15,9 @@ const useFetch = () => {
       setFetchLoading(true)
       response = await fetch(url, options);
       json = await response.json();
+      console.log(response)
       if (!response.ok){
+        if (response.status === 401) {navigate('/')}
         throw new Error();
       }
     } catch (e) {

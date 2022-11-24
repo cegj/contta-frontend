@@ -13,7 +13,7 @@ const AddTransactionButton = () => {
   }
 
   return (
-    logged && <div className={styles.addTransactionButton} onClick={handleClick}></div>
+    logged && <div data-tip="Adicionar transação" className={styles.addTransactionButton} onClick={handleClick}></div>
   )
 }
 
