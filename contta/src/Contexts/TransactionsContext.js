@@ -64,7 +64,7 @@ export const TransactionsContextData = ({children}) => {
       setTransactions(json.transactions)
     } else {
       console.log(error)
-      setMessage({content: `Não foi possível obter transações: ${error}}`, type: 'e'})
+      setMessage({content: `Não foi possível obter transações: ${error}`, type: 'e'})
     } 
   }, [year, month, request, setMessage])
 
