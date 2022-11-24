@@ -200,6 +200,7 @@
 
 .installmentNumber {
   display: inline-block;
+  margin-left: .5rem;
   background-color: rgba(121, 121, 121, .1);
   color: rgba(121, 121, 121, .9);
   width: 20px;
@@ -210,4 +211,8 @@
   font-weight: normal;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.installmentNumber.onModal {
+  cursor: default;
 }

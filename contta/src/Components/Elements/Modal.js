@@ -27,7 +27,7 @@ const Modal = ({title, isOpen, setIsOpen, children}) => {
 
   return (
     isOpen &&
-    <div ref={modalContainer} className={styles.modalContainer}>
+    <div id="modal" ref={modalContainer} className={styles.modalContainer}>
       <div className={styles.modal}>
         <div className={`${styles.titleBar} ${title ? '' : styles.noTitle}`}>
           {title &&<h2 className={styles.modalTitle}>{title}</h2>}
@@ -35,7 +35,7 @@ const Modal = ({title, isOpen, setIsOpen, children}) => {
             <span data-tip="Fechar" className={styles.closeButton} onClick={() => {setIsOpen(false)}} ><CloseIcon /></span>
           </span>
         </div>
-        <div className={styles.modalContent}>
+        <div id="modalContent" className={styles.modalContent}>
           {children}
         </div>
       </div>

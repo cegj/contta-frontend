@@ -22,7 +22,7 @@ const TransactionForm = () => {
   const [modalIsFixed, setModalIsFixed] = React.useState(false);
   const [keepAllValues, setKeepAllValues] = React.useState(false);
   const [reload, setReload] = React.useState(false);
-  const {getTransactions, getTransactionById, storeTransaction, editTransaction} = React.useContext(TransactionsContext);
+  const {getTransactions, getTransactionById, storeTransaction, editTransaction, typeOptions, categoryOptions, accountOptions} = React.useContext(TransactionsContext);
 
   const [type, setType] = React.useState([]);
   const transactionDate = useForm();
@@ -37,41 +37,6 @@ const TransactionForm = () => {
   const usual = useForm('checkbox');
   const cascade = useForm('checkbox');
 
-  const typeOptions = React.useMemo(() => {
-    return [
-      {value: 'D', label: 'Despesa'},
-      {value: 'R', label: 'Receita'},
-      {value: 'T', label: 'Transferência'},
-    ]
-  }, [])
-
-  //Set account options object to SELECT field
-  const accountOptions = React.useMemo(() => {return []}, []);
-  React.useEffect(() => {
-    accountOptions.length = 0;
-    accounts.forEach((account) => {
-      const accountOption = {label: account.name, value: account.id};
-      accountOptions.push(accountOption);
-    })
-  }, [accounts, accountOptions])
-
-  const categoryOptions = React.useMemo(() => {return []}, []);
-
-  //Set categories options object to SELECT field
-  React.useEffect(() => {
-    categories.forEach((group) => {
-      const categories = [];
-      group.categories.forEach((cat) => {
-        categories.push({value: cat.id, label: cat.name})
-      })
-      categoryOptions.push({
-        label: group.name,
-        options: categories
-      })
-    })
-  }, [categories, categoryOptions])
-
-
   React.useEffect(() => {
     ReactTooltip.rebuild()
     if(!transactionFormIsOpen) {ReactTooltip.hide()}
@@ -85,7 +50,7 @@ const TransactionForm = () => {
   }, [reload])
 
   //Update transaction form component if some of this dependencies changes
-  React.useEffect(() => {}, [transactionFormIsOpen, accounts, loading, accountOptions, categoryOptions]);
+  React.useEffect(() => {}, [transactionFormIsOpen, accounts, categories, loading, accountOptions, categoryOptions]);
 
   const setEditingTransactionValues = React.useCallback(async(transactionToEdit) => {
     async function getRelatedTransactions(id){
@@ -261,7 +226,6 @@ const TransactionForm = () => {
   return (
       transactionFormIsOpen &&
         <div className={styles.modalContainer}>
-          {/* <ReactTooltip /> */}
           <div className={styles.formContainer}>
             <div className={styles.titleBar}>
               <h2

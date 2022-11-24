@@ -15,10 +15,45 @@ export const TransactionsContextData = ({children}) => {
   const {request, fetchLoading} = useFetch();
   const {setLoading} = React.useContext(AppContext)
   const [transactions, setTransactions] = React.useState(null)
+  const {accounts, categories} = React.useContext(AppContext)
 
   React.useEffect(() => {
     setLoading(fetchLoading)
   }, [fetchLoading, setLoading])
+
+  //Set type options object to SELECT fields
+  const typeOptions = React.useMemo(() => {
+    return [
+      {value: 'D', label: 'Despesa'},
+      {value: 'R', label: 'Receita'},
+      {value: 'T', label: 'Transferência'},
+    ]
+  }, [])
+
+  //Set account options object to SELECT fields
+  const accountOptions = React.useMemo(() => {return []}, []);
+  React.useEffect(() => {
+    accountOptions.length = 0;
+    accounts.forEach((account) => {
+      const accountOption = {label: account.name, value: account.id};
+      accountOptions.push(accountOption);
+    })
+  }, [accounts, accountOptions])
+
+  //Set categories options object to SELECT fields
+  const categoryOptions = React.useMemo(() => {return []}, []);
+  React.useEffect(() => {
+    categories.forEach((group) => {
+      const categories = [];
+      group.categories.forEach((cat) => {
+        categories.push({value: cat.id, label: cat.name})
+      })
+      categoryOptions.push({
+        label: group.name,
+        options: categories
+      })
+    })
+  }, [categories, categoryOptions])
 
   const getTransactions = React.useCallback(async () => {
     const token = window.localStorage.getItem('token')
@@ -103,6 +138,9 @@ export const TransactionsContextData = ({children}) => {
       {     
         transactions,
         setTransactions,
+        typeOptions,
+        accountOptions,
+        categoryOptions,
         getTransactions,
         getTransactionById,
         storeTransaction,

@@ -26,11 +26,19 @@ const StatementItem = (transaction) => {
   const {getTransactions} = React.useContext(TransactionsContext)
   const [transactionToGetRelated, setTransactionToGetRelated] = React.useState(null);
   const [relatedModalIsOpen, setRelatedModalIsOpen] = React.useState(true);
+  const [isOnModal, setIsOnModal] = React.useState(false);
 
   const optionsMenu = React.useRef(null);
 
   React.useEffect(() => {
     ReactTooltip.rebuild()
+  }, [])
+
+  const statementItemElement = React.useRef(null)
+
+  React.useEffect(() => {
+    if (statementItemElement.current.parentElement.id === 'modalContent') setIsOnModal(true)
+    else setIsOnModal(false)
   }, [])
 
   const closeOptionsMenuOnClick = React.useCallback((event) => {
@@ -116,12 +124,19 @@ const StatementItem = (transaction) => {
 
   return (
     <>
-      <div className={`${styles.statementItem} ${styles[transaction.type]}`}>
+      <div ref={statementItemElement} className={`${styles.statementItem} ${styles[transaction.type]}`}>
         <div className={styles.container}>
           <span className={styles.typeIcon}>{icon}</span>
         </div>
         <div className={styles.container}>
-          <span className={styles.description}>{transaction.description} {transaction.installments_key && <span data-tip="Ver transações relacionadas" onClick={() => {setTransactionToGetRelated(transaction.id); setRelatedModalIsOpen(true)}} className={styles.installmentNumber}>{transaction.installment}</span>}</span>
+          <span className={styles.description}>{transaction.description}
+            {transaction.installments_key &&
+            <span
+              data-tip={!isOnModal ? "Ver transações relacionadas" : null}
+              onClick={!isOnModal ? () => {setTransactionToGetRelated(transaction.id); setRelatedModalIsOpen(true)} : null}
+              className={`${styles.installmentNumber} ${isOnModal ? styles.onModal : ''}`}>{transaction.installment}
+            </span>}
+            </span>
           <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
         </div>
         <div className={styles.container}>

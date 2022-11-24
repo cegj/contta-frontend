@@ -59,7 +59,7 @@
 :global(.m-type-a) {
   background-color: rgba(226, 220, 164, 0.95);
   color: #525030;
-  border: 1px solid rgba(161, 157, 117, 0.95);
+  border: 1px solid rgba(206, 202, 153, 0.95);
 }
 
 :global(.m-type-n) {
