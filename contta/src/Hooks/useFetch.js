@@ -15,7 +15,6 @@ const useFetch = () => {
       setFetchLoading(true)
       response = await fetch(url, options);
       json = await response.json();
-      console.log(response)
       if (!response.ok){
         if (response.status === 401) {navigate('/')}
         throw new Error();

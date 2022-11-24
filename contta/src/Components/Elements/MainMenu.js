@@ -11,6 +11,10 @@ import { ReactComponent as WalletIcon } from '../../assets/icons/wallet_icon.svg
 const MainMenu = () => {
 
   const [isOpen, setIsOpen] = React.useState(false);
+  const menu = React.useRef(null)
+  const menuBtn = React.useRef(null)
+  const menuContainer = React.useRef(null)
+
 
   function toggleMenu(){
     if (isOpen){
@@ -20,12 +24,21 @@ const MainMenu = () => {
     }
   }
 
-  React.useEffect(() => {}, [isOpen])
+  function closeOnCLickOutside({target}){
+    if (target !== menu.current && target !== menuBtn.current){
+      setIsOpen(false)
+      window.removeEventListener('click', closeOnCLickOutside)
+    }
+  }
+
+  React.useEffect(() => {
+    if(isOpen) window.addEventListener('click', closeOnCLickOutside)
+  }, [isOpen])
 
   return (
-    <div className={styles.menuContainer}>
-      <span className={`${styles.menuBtn} ${isOpen && styles.menuBtnActive}`} onClick={toggleMenu}></span>
-      {isOpen && <nav className={styles.menu} onClick={toggleMenu}>
+    <div ref={menuContainer} className={styles.menuContainer}>
+      <span ref={menuBtn} className={`${styles.menuBtn} ${isOpen && styles.menuBtnActive}`} onClick={toggleMenu}></span>
+      {isOpen && <nav ref={menu} className={styles.menu} onClick={toggleMenu}>
         <ul>
           <li><Link to="/board"><span className={styles.icon}><ChartIcon /></span>Painel</Link></li>
           <li><Link to="/statement"><span className={styles.icon}><StatementIcon /></span>Extrato</Link></li>
