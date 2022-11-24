@@ -12,6 +12,10 @@
   fill: rgb(139, 139, 139);
 }
 
+.filterIcon.hasFilter {
+  cursor: pointer;
+}
+
 .filterControl {
   display: flex;
   gap: 5px;
