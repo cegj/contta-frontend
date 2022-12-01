@@ -196,3 +196,17 @@ export function PATCH_TRANSFER(body, token, id, cascade = false){
     }
   }
 }
+
+export function GET_BALANCE(token, queryObject){
+  const query = objectToQueryString(queryObject)
+
+  return {
+    url: API_URL + `/balances?${query}`,
+    options: {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
+    }
+  }
+}
