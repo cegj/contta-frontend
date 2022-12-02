@@ -61,7 +61,7 @@ export const TransactionsContextData = ({children}) => {
     const {url, options} = GET_TRANSACTIONS(token, query)
     const {response, json, error} = await request(url, options);  
     if (response.ok){
-      setTransactions(json.transactions)
+      setTransactions([...json.transactions])
     } else {
       console.log(error)
       setMessage({content: `Não foi possível obter transações: ${error}`, type: 'e'})
