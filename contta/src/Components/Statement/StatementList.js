@@ -57,9 +57,9 @@ const StatementList = () => {
       setStatusFilter={setStatusFilter}
       hasFilter={hasFilter}
     />
-  {(elementsToRender)
+  {(elementsToRender && elementsToRender.length > 0)
     ? elementsToRender.map((element) => {return element})
-    : <span className={styles.noTransactions}>Não foram encontradas transações neste mês</span>     }   
+    : <span className={styles.noTransactions}>Nenhuma transação encontrada</span>     }   
  </div>
 
 }
