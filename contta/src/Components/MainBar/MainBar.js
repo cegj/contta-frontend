@@ -4,6 +4,7 @@ import MainMenu from '../Elements/MainMenu';
 import styles from './MainBar.module.css'
 import ExitButton from './ExitButton';
 import MonthYearButton from './MonthYearButton';
+import TypeOfDateButton from './TypeOfDateButton';
 
 const MainBar = () => {
 
@@ -20,6 +21,7 @@ const MainBar = () => {
         </div>}
       </div>
       <div className={styles.optionsContainer}>
+        <TypeOfDateButton />
         <MonthYearButton />
         <ExitButton />
       </div>

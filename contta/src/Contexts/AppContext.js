@@ -20,6 +20,8 @@ export const AppContextData = ({children}) => {
   const {request} = useFetch();
   const [transactionFormIsOpen, setTransactionFormIsOpen] = React.useState(false);
   const [monthYearModalIsOpen, setMonthYearModalIsOpen] = React.useState(false);
+  const [typeOfDateModalIsOpen, setTypeOfDateModalIsOpen] = React.useState(false);
+  const [typeOfDate, setTypeOfDate] = React.useState(window.localStorage.typeOfDate || false);
   const [reload, setReload] = React.useState(false);
   const [transactionToEdit, setTransactionToEdit] = React.useState(null);
   const [loading, setLoading] = React.useState(false)
@@ -109,7 +111,11 @@ React.useEffect(() => {
         transactionToEdit,
         setTransactionToEdit,
         loading,
-        setLoading
+        setLoading,
+        typeOfDateModalIsOpen,
+        setTypeOfDateModalIsOpen,
+        typeOfDate,
+        setTypeOfDate
       }}
       >
       {children}

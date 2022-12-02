@@ -1,0 +1,48 @@
+.typeOfDateSelector {
+  margin: .2rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 400px;
+}
+
+.info {
+  width: 400px;
+  font-size: .845rem;
+  background-color: #f1f1c3;
+  color: #6b6b54;
+  padding: .8rem;
+  margin: 0 auto;
+  margin-top: 1rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.typeOfDateSelector>span {
+  cursor: pointer;
+  display: inline-block;
+  height: 30px;
+  border-radius: 4px;
+  font-size: .875rem;
+  background-color: #e6e6e6;
+  color: #616161;
+  padding: .5rem;
+  margin: .3rem;
+  display: inline-flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.typeOfDateSelector>span {
+  width: 100%;
+}
+
+.typeOfDateSelector>span.active {
+  background-color: var(--main-color);
+  color: #f3f9fd;
+}
+
+.typeOfDateSelector>span:hover {
+  box-shadow: 0 0 0 2px #ddd;
+}

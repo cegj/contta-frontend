@@ -17,14 +17,14 @@
   height: fit-content;
   max-height: 500px;
   border-radius: 5px;
-  animation: animateModal .4s forwards;
+  animation: animateModal .2s forwards;
   box-shadow: 10px 10px 50px rgba(0, 0, 0, .1);
   overflow: auto;
 }
 
 @keyframes animateModal {
   from {
-    transform: translateY(-50px);
+    transform: scale(.8);
     opacity: 0;
   }
 
@@ -35,7 +35,7 @@
 }
 
 .titleBar {
-  border-bottom: 3px solid lightgray;
+  border-bottom: 2px solid #eee;
   padding: 1rem 1rem;
   display: flex;
   gap: 1rem;
