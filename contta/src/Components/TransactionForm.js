@@ -22,7 +22,7 @@ const TransactionForm = () => {
   const [modalIsFixed, setModalIsFixed] = React.useState(false);
   const [keepAllValues, setKeepAllValues] = React.useState(false);
   const [reload, setReload] = React.useState(false);
-  const {getTransactions, getTransactionById, storeTransaction, editTransaction, typeOptions, categoryOptions, accountOptions} = React.useContext(TransactionsContext);
+  const {getTransactionById, storeTransaction, editTransaction, typeOptions, categoryOptions, accountOptions} = React.useContext(TransactionsContext);
 
   const [type, setType] = React.useState([]);
   const transactionDate = useForm();
@@ -130,14 +130,12 @@ const TransactionForm = () => {
     }
     let invalidFieldsNames = []
     fields.forEach((field) => {
-      console.log(field)
       if(!validate(field.field)){
         invalidFieldsNames.push(field.name)
       }
     })
     if(invalidFieldsNames.length > 0){
       let fieldsAsString = invalidFieldsNames.toString().replace(/,(?=[^,]*$)/, ' e ').replace(/,/g, ', ')
-      console.log(fieldsAsString)
       if (invalidFieldsNames.length > 1){
         setMessage({content: `Os campos ${fieldsAsString} devem ser preenchidos`, type: 'a'})
       } else {
@@ -206,7 +204,6 @@ const TransactionForm = () => {
         if (stored){
           clearForm();
           setReload(true);
-          getTransactions();
           if(!modalIsFixed){
             setTransactionFormIsOpen(false);
           }  
@@ -216,7 +213,6 @@ const TransactionForm = () => {
         if (editted){
           clearForm();
           setReload(true);
-          getTransactions();
           if(!modalIsFixed){
             setTransactionFormIsOpen(false);
           }  

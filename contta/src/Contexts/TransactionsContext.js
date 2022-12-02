@@ -1,9 +1,10 @@
 import React from 'react'
 import AppContext from './AppContext';
-import { GET_TRANSACTIONS, GET_TRANSACTION_BY_ID, POST_INCOME, POST_EXPENSE, POST_TRANSFER, PATCH_INCOME, PATCH_EXPENSE, PATCH_TRANSFER } from '../api';
+import { GET_TRANSACTIONS, GET_TRANSACTION_BY_ID, POST_INCOME, POST_EXPENSE, POST_TRANSFER, PATCH_INCOME, PATCH_EXPENSE, PATCH_TRANSFER, GET_BALANCE } from '../api';
 import MessagesContext from './MessagesContext';
 import useFetch from '../Hooks/useFetch';
 import UserContext from './UserContext';
+import groupBy from '../Helpers/groupBy';
 
 const TransactionsContext = React.createContext();
 
@@ -15,6 +16,7 @@ export const TransactionsContextData = ({children}) => {
   const {request, fetchLoading} = useFetch();
   const {setLoading} = React.useContext(AppContext)
   const [transactions, setTransactions] = React.useState(null)
+  const [groupedTransactions, setGroupedTransactions] = React.useState(null)
   const {accounts, categories} = React.useContext(AppContext)
 
   React.useEffect(() => {
@@ -62,9 +64,12 @@ export const TransactionsContextData = ({children}) => {
     const {response, json, error} = await request(url, options);  
     if (response.ok){
       setTransactions([...json.transactions])
+      return true
     } else {
       console.log(error)
+      setTransactions(null)
       setMessage({content: `Não foi possível obter transações: ${error}`, type: 'e'})
+      return false
     } 
   }, [year, month, request, setMessage])
 
@@ -93,6 +98,7 @@ export const TransactionsContextData = ({children}) => {
       const {response, json, error} = await request(url, options);
       if (response.ok){
         setMessage({content: json.message, type: 's'})
+        getTransactions();
         return true;
       } else {
         throw new Error(error)
@@ -102,7 +108,7 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       return false;
     }
-  }, [request, setMessage])
+  }, [request, setMessage, getTransactions])
 
   const editTransaction = React.useCallback(async(body, type, id, cascade) => {
     const token = window.localStorage.getItem('token');
@@ -115,6 +121,7 @@ export const TransactionsContextData = ({children}) => {
       const {response, json, error} = await request(url, options);
       if (response.ok){
         setMessage({content: json.message, type: 's'})
+        getTransactions();
         return true;
       } else {
         throw new Error(error)
@@ -124,7 +131,7 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       return false;
     }
-  }, [request, setMessage])
+  }, [request, setMessage, getTransactions])
 
   React.useEffect(() => {
     if (logged){
@@ -132,6 +139,45 @@ export const TransactionsContextData = ({children}) => {
       setReload(false)  
     }
   }, [month, year, getTransactions, setReload, logged])
+
+  // React.useEffect(() => {
+  //   if (transactions) {
+  //     const grouped = Object.entries(groupBy(transactions, "transaction_date"));
+  //     const token = window.localStorage.getItem('token')
+  //     grouped.forEach(async(day) => {
+  //       const query = {date: day[0], typeofdate: "transaction"}
+  //       const {url, options} = GET_BALANCE(token, query)
+  //       const {json} = await request(url, options)
+  //       delete json.message;
+  //       day.push(json) 
+  //     })
+  //     setGroupedTransactions([...grouped])}
+  // }, [transactions, request])
+
+  React.useEffect(() => {
+    if (transactions) {
+      const grouped = Object.entries(groupBy(transactions, "transaction_date"));
+      const token = window.localStorage.getItem('token')
+      try {
+        async function getBalance(){
+          grouped.forEach(async (day) => {
+            const query = {date: day[0], typeofdate: "transaction"}
+            const {url, options} = GET_BALANCE(token, query)
+            const {json} = await request(url, options)
+            delete json.message;
+            day.push(json)
+          })}           
+        getBalance();
+      } catch (error) {
+        
+      } finally {
+        setGroupedTransactions([...grouped])
+      }}}, [setGroupedTransactions, request, transactions])
+
+  //     grouped.forEach(async(day) => {
+  //     })
+  //     }
+  // }, [transactions, request])
 
   return (
     <TransactionsContext.Provider value={
@@ -144,7 +190,8 @@ export const TransactionsContextData = ({children}) => {
         getTransactions,
         getTransactionById,
         storeTransaction,
-        editTransaction
+        editTransaction,
+        groupedTransactions
       }
       }>
       {children}
