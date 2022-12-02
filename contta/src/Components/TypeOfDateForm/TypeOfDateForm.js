@@ -1,6 +1,6 @@
 import React from 'react'
 import AppContext from '../../Contexts/AppContext'
-import styles from './TypeOfDate.module.css'
+import styles from './TypeOfDateForm.module.css'
 import MessagesContext from '../../Contexts/MessagesContext'
 import Modal from '../Elements/Modal'
 
@@ -25,7 +25,7 @@ const MonthYearForm = () => {
           <span data-value="transaction_date" className={typeOfDate === "transaction_date" ? styles.active : ""} onClick={selectTypeOfDate}>Data da transação</span>
           <span data-value="payment_date" className={typeOfDate === "payment_date" ? styles.active : ""} onClick={selectTypeOfDate}>Data do pagamento</span>
         </div>
-        <div className={styles.info}>Escolha o tipo de data a ser considerado para calcular os saldos por toda a aplicação</div>
+        <div className={styles.info}>Escolha o tipo de data a ser considerada para calcular os saldos por toda a aplicação</div>
     </Modal>
 )
 }
