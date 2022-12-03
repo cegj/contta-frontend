@@ -9,6 +9,7 @@ import Accounts from './Components/Accounts/Accounts';
 import Messages from './Components/Elements/Messages';
 import ProtectedRoute from './Helpers/ProtectedRoute';
 import AddTransactionButton from './Components/Elements/AddTransactionButton';
+import Loading from './Components/Elements/Loading';
 import TransactionForm from './Components/TransactionForm';
 import ReactTooltip from 'react-tooltip';
 import React from 'react';
@@ -34,6 +35,7 @@ function App() {
                 <TransactionForm />
                 <MonthYearForm />
                 <TypeOfDateForm />
+                <Loading />
                 <AddTransactionButton />
               </TransactionsContextData>
             </AppContextData>

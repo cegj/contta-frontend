@@ -21,7 +21,6 @@ const Modal = ({title, isOpen, setIsOpen, additionalBtns = null, children}) => {
         modalContainer.current.removeEventListener('click', closeOnClick)
       }
     }
-
     modalContainer.current.addEventListener('click', closeOnClick)
   }, [setIsOpen])
 
