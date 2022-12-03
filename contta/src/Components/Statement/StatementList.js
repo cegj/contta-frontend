@@ -33,10 +33,15 @@ const StatementList = () => {
             else render.push(<StatementItem key={transaction.id} {...transaction} />)
           } else render.push(<StatementItem key={transaction.id} {...transaction} />)
       })
-        if(!hasFilter && day[2]){render.push(<div className={styles.balanceLine} key={day[0]}>
-          <span><span>Dia:</span> R$ {convertToFloat(day[2].date.balance)}</span>
-          <span><span>Mês:</span> R$ {convertToFloat(day[2].month_to_date.balance)}</span>
-          <span><span>Total:</span> R$ {convertToFloat(day[2].all_to_date.balance)}</span>
+
+        const dateBalance = convertToFloat(day[2].date.balance);
+        const monthToDateBalance = convertToFloat(day[2].month_to_date.balance);
+        const allToDateBalance = convertToFloat(day[2].all_to_date.balance);
+        if(!hasFilter && day[2]){render.push(
+        <div className={styles.balanceLine} key={day[0]}>
+          {(dateBalance !== 'NaN') ? <span><span>Dia:</span> R$ {dateBalance}</span> : "."} 
+          {(monthToDateBalance !== 'NaN') ? <span><span>Mês:</span> R$ {monthToDateBalance}</span> : "."} 
+          {(allToDateBalance !== 'NaN') ? <span><span>Total:</span> R$ {allToDateBalance}</span> : "."} 
         </div>)}
       })
     }

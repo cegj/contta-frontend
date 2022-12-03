@@ -21,7 +21,6 @@ export const AppContextData = ({children}) => {
   const [transactionModalIsOpen, setTransactionModalIsOpen] = React.useState(false);
   const [monthYearModalIsOpen, setMonthYearModalIsOpen] = React.useState(false);
   const [settingModalIsOpen, setSettingModalIsOpen] = React.useState(false);
-  const [typeOfDate, setTypeOfDate] = React.useState(window.localStorage.typeOfDate || 'transaction_date');
   const [reload, setReload] = React.useState(false);
   const [transactionToEdit, setTransactionToEdit] = React.useState(null);
   const [loading, setLoading] = React.useState(false)
@@ -113,9 +112,7 @@ React.useEffect(() => {
         loading,
         setLoading,
         settingModalIsOpen,
-        setSettingModalIsOpen,
-        typeOfDate,
-        setTypeOfDate
+        setSettingModalIsOpen
       }}
       >
       {children}

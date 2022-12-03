@@ -18,6 +18,7 @@ export const TransactionsContextData = ({children}) => {
   const [transactions, setTransactions] = React.useState(null)
   const [groupedTransactions, setGroupedTransactions] = React.useState(null)
   const {accounts, categories} = React.useContext(AppContext)
+  const [typeOfDate, setTypeOfDate] = React.useState(window.localStorage.typeOfDate || 'transaction_date');
 
   React.useEffect(() => {
     setLoading(fetchLoading)
@@ -157,22 +158,25 @@ export const TransactionsContextData = ({children}) => {
   React.useEffect(() => {
     if (transactions) {
       const grouped = Object.entries(groupBy(transactions, "transaction_date"));
-      const token = window.localStorage.getItem('token')
+      grouped.forEach((day) => {
+        day.push({date: 0, month_to_date: 0, all_to_date: 0})
+      })
+
       try {
+        const token = window.localStorage.getItem('token')
         async function getBalance(){
           grouped.forEach(async (day) => {
-            const query = {date: day[0], typeofdate: "transaction"}
+            const query = {date: day[0], typeofdate: typeOfDate}
             const {url, options} = GET_BALANCE(token, query)
             const {json} = await request(url, options)
             delete json.message;
-            day.push(json)
-          })}           
+            day[2] = json}
+          )}           
         getBalance();
       } catch (error) {
-        
       } finally {
         setGroupedTransactions([...grouped])
-      }}}, [setGroupedTransactions, request, transactions])
+      }}}, [setGroupedTransactions, request, transactions, setMessage, typeOfDate])
 
   //     grouped.forEach(async(day) => {
   //     })
@@ -191,7 +195,9 @@ export const TransactionsContextData = ({children}) => {
         getTransactionById,
         storeTransaction,
         editTransaction,
-        groupedTransactions
+        groupedTransactions,
+        typeOfDate,
+        setTypeOfDate
       }
       }>
       {children}

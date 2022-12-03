@@ -1,10 +1,10 @@
 import React from 'react'
-import AppContext from '../../Contexts/AppContext'
+import TransactionsContext from '../../Contexts/TransactionsContext'
 import styles from './Settings.module.css'
 
 const MonthYearForm = () => {
 
-  const {typeOfDate, setTypeOfDate} = React.useContext(AppContext)
+  const {typeOfDate, setTypeOfDate} = React.useContext(TransactionsContext)
 
   function selectTypeOfDate({target}){
     window.localStorage.setItem('typeOfDate', target.dataset.value)
