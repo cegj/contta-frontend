@@ -18,7 +18,8 @@ export const TransactionsContextData = ({children}) => {
   const [transactions, setTransactions] = React.useState(null)
   const [groupedTransactions, setGroupedTransactions] = React.useState(null)
   const {accounts, categories} = React.useContext(AppContext)
-  const [typeOfDate, setTypeOfDate] = React.useState(window.localStorage.typeOfDate || 'transaction_date');
+  const [typeOfDateBalance, setTypeOfDateBalance] = React.useState(window.localStorage.typeOfDateBalance || 'transaction_date');
+  const [typeOfDateGroup, setTypeOfDateGroup] = React.useState(window.localStorage.typeOfDateGroup || 'transaction_date');
 
   React.useEffect(() => {
     setLoading(fetchLoading)
@@ -60,7 +61,7 @@ export const TransactionsContextData = ({children}) => {
 
   const getTransactions = React.useCallback(async () => {
     const token = window.localStorage.getItem('token')
-    const query = {from: `${year}-${month}`, to: `${year}-${month}`}
+    const query = {from: `${year}-${month}`, to: `${year}-${month}`, typeofdate: typeOfDateGroup}
     const {url, options} = GET_TRANSACTIONS(token, query)
     const {response, json, error} = await request(url, options);  
     if (response.ok){
@@ -72,7 +73,7 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Não foi possível obter transações: ${error}`, type: 'e'})
       return false
     } 
-  }, [year, month, request, setMessage])
+  }, [year, month, request, setMessage, typeOfDateGroup])
 
   const getTransactionById = React.useCallback(async(id) => {
     const token = window.localStorage.getItem('token')
@@ -141,23 +142,9 @@ export const TransactionsContextData = ({children}) => {
     }
   }, [month, year, getTransactions, setReload, logged])
 
-  // React.useEffect(() => {
-  //   if (transactions) {
-  //     const grouped = Object.entries(groupBy(transactions, "transaction_date"));
-  //     const token = window.localStorage.getItem('token')
-  //     grouped.forEach(async(day) => {
-  //       const query = {date: day[0], typeofdate: "transaction"}
-  //       const {url, options} = GET_BALANCE(token, query)
-  //       const {json} = await request(url, options)
-  //       delete json.message;
-  //       day.push(json) 
-  //     })
-  //     setGroupedTransactions([...grouped])}
-  // }, [transactions, request])
-
   React.useEffect(() => {
     if (transactions) {
-      const grouped = Object.entries(groupBy(transactions, "transaction_date"));
+      const grouped = Object.entries(groupBy(transactions, typeOfDateGroup));
       grouped.forEach((day) => {
         day.push({date: 0, month_to_date: 0, all_to_date: 0})
       })
@@ -166,7 +153,7 @@ export const TransactionsContextData = ({children}) => {
         const token = window.localStorage.getItem('token')
         async function getBalance(){
           grouped.forEach(async (day) => {
-            const query = {date: day[0], typeofdate: typeOfDate}
+            const query = {date: day[0], typeofdate: typeOfDateBalance}
             const {url, options} = GET_BALANCE(token, query)
             const {json} = await request(url, options)
             delete json.message;
@@ -176,7 +163,7 @@ export const TransactionsContextData = ({children}) => {
       } catch (error) {
       } finally {
         setGroupedTransactions([...grouped])
-      }}}, [setGroupedTransactions, request, transactions, setMessage, typeOfDate])
+      }}}, [setGroupedTransactions, request, transactions, setMessage, typeOfDateBalance, typeOfDateGroup])
 
   //     grouped.forEach(async(day) => {
   //     })
@@ -196,8 +183,10 @@ export const TransactionsContextData = ({children}) => {
         storeTransaction,
         editTransaction,
         groupedTransactions,
-        typeOfDate,
-        setTypeOfDate
+        typeOfDateBalance,
+        setTypeOfDateBalance,
+        typeOfDateGroup,
+        setTypeOfDateGroup
       }
       }>
       {children}

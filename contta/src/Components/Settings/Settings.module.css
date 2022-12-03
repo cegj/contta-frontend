@@ -1,15 +1,25 @@
-.settingsSection {
+.settingsGroup {
   border: 1px solid #e1e1e1;
   padding: 1rem;
   border-radius: 5px;
+  width: 500px;
 }
 
-.settingsSection>h3 {
-  margin-bottom: .5rem;
+.settingsGroup>h3 {
+  margin-bottom: 1rem;
   color: #2c2c2c;
 }
 
-.settingsSection>h4 {
+.setting {
+  margin-bottom: 1.5rem;
+}
+
+.setting:last-child {
+  margin-bottom: 0;
+}
+
+.setting h4 {
+  font-size: .875rem;
   margin-bottom: .5rem;
   color: #2c2c2c;
   font-weight: lighter;
@@ -25,13 +35,13 @@
   text-align: center;
 }
 
-.typeOfDateSelector {
+.optionsSelector {
   display: flex;
   gap: .8rem;
   margin-bottom: .5rem;
 }
 
-.typeOfDateSelector>span {
+.optionsSelector>span {
   cursor: pointer;
   display: inline-block;
   height: 30px;
@@ -46,15 +56,15 @@
   justify-content: center;
 }
 
-.typeOfDateSelector>span {
+.optionsSelector>span {
   width: 100%;
 }
 
-.typeOfDateSelector>span.active {
+.optionsSelector>span.active {
   background-color: var(--main-color);
   color: #f3f9fd;
 }
 
-.typeOfDateSelector>span:hover {
+.optionsSelector>span:hover {
   box-shadow: 0 0 0 2px #ddd;
 }

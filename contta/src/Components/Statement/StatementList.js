@@ -33,7 +33,6 @@ const StatementList = () => {
             else render.push(<StatementItem key={transaction.id} {...transaction} />)
           } else render.push(<StatementItem key={transaction.id} {...transaction} />)
       })
-
         const dateBalance = convertToFloat(day[2].date.balance);
         const monthToDateBalance = convertToFloat(day[2].month_to_date.balance);
         const allToDateBalance = convertToFloat(day[2].all_to_date.balance);

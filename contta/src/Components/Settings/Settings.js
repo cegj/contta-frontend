@@ -1,9 +1,9 @@
 import React from 'react'
 import AppContext from '../../Contexts/AppContext'
 import Modal from '../Elements/Modal'
-import BalanceSettings from './BalanceSettings'
+import StatementBalanceSettings from './StatementBalanceSettings'
 
-const MonthYearForm = () => {
+const Settings = () => {
 
   const {settingModalIsOpen, setSettingModalIsOpen} = React.useContext(AppContext)
 
@@ -12,9 +12,9 @@ const MonthYearForm = () => {
   return (
     settingModalIsOpen &&
     <Modal title="Configurações" isOpen={settingModalIsOpen} setIsOpen={setSettingModalIsOpen}>
-      <BalanceSettings />
+      <StatementBalanceSettings />
     </Modal>
 )
 }
 
-export default MonthYearForm
+export default Settings
