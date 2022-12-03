@@ -4,7 +4,12 @@ import styles from './Settings.module.css'
 
 const StatementBalanceSettings = () => {
 
-  const {typeOfDateBalance, setTypeOfDateBalance, typeOfDateGroup, setTypeOfDateGroup} = React.useContext(TransactionsContext)
+  const {typeOfDateBalance,
+        setTypeOfDateBalance,
+        typeOfDateGroup,
+        setTypeOfDateGroup,
+        includeExpectedOnBalance,
+        setIncludeExpectedOnBalance} = React.useContext(TransactionsContext)
 
   function selectTypeOfDateBalance({target}){
     window.localStorage.setItem('typeOfDateBalance', target.dataset.value)
@@ -14,6 +19,11 @@ const StatementBalanceSettings = () => {
   function selectTypeOfDateGroup({target}){
     window.localStorage.setItem('typeOfDateGroup', target.dataset.value)
     setTypeOfDateGroup(target.dataset.value)
+  }
+
+  function selectIncludeExpectedOnBalance({target}){
+    window.localStorage.setItem('includeExpectedOnBalance', target.dataset.value)
+    setIncludeExpectedOnBalance(target.dataset.value)
   }
 
   return (
@@ -32,6 +42,13 @@ const StatementBalanceSettings = () => {
           <div className={styles.optionsSelector}>
             <span data-value="transaction_date" className={typeOfDateBalance === "transaction_date" ? styles.active : ""} onClick={selectTypeOfDateBalance}>Data da transação</span>
             <span data-value="payment_date" className={typeOfDateBalance === "payment_date" ? styles.active : ""} onClick={selectTypeOfDateBalance}>Data do pagamento</span>
+          </div>
+        </section>
+        <section className={styles.setting}>
+        <h4>Considerar valores previstos nos saldos</h4>
+          <div className={styles.optionsSelector}>
+            <span data-value="false" className={includeExpectedOnBalance === 'false' ? styles.active : ""} onClick={selectIncludeExpectedOnBalance}>Não</span>
+            <span data-value="true" className={includeExpectedOnBalance === 'true' ? styles.active : ""} onClick={selectIncludeExpectedOnBalance}>Sim</span>
           </div>
         </section>
     </section>)

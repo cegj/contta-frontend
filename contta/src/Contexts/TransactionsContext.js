@@ -20,7 +20,8 @@ export const TransactionsContextData = ({children}) => {
   const {accounts, categories} = React.useContext(AppContext)
   const [typeOfDateBalance, setTypeOfDateBalance] = React.useState(window.localStorage.typeOfDateBalance || 'transaction_date');
   const [typeOfDateGroup, setTypeOfDateGroup] = React.useState(window.localStorage.typeOfDateGroup || 'transaction_date');
-
+  const [includeExpectedOnBalance, setIncludeExpectedOnBalance] = React.useState(window.localStorage.includeExpectedOnBalance ? JSON.parse(window.localStorage.includeExpectedOnBalance) : false);
+  
   React.useEffect(() => {
     setLoading(fetchLoading)
   }, [fetchLoading, setLoading])
@@ -153,7 +154,7 @@ export const TransactionsContextData = ({children}) => {
         const token = window.localStorage.getItem('token')
         async function getBalance(){
           grouped.forEach(async (day) => {
-            const query = {date: day[0], typeofdate: typeOfDateBalance}
+            const query = {date: day[0], typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance}
             const {url, options} = GET_BALANCE(token, query)
             const {json} = await request(url, options)
             delete json.message;
@@ -163,7 +164,7 @@ export const TransactionsContextData = ({children}) => {
       } catch (error) {
       } finally {
         setGroupedTransactions([...grouped])
-      }}}, [setGroupedTransactions, request, transactions, setMessage, typeOfDateBalance, typeOfDateGroup])
+      }}}, [setGroupedTransactions, request, transactions, setMessage, typeOfDateBalance, typeOfDateGroup, includeExpectedOnBalance])
 
   //     grouped.forEach(async(day) => {
   //     })
@@ -186,7 +187,9 @@ export const TransactionsContextData = ({children}) => {
         typeOfDateBalance,
         setTypeOfDateBalance,
         typeOfDateGroup,
-        setTypeOfDateGroup
+        setTypeOfDateGroup,
+        includeExpectedOnBalance,
+        setIncludeExpectedOnBalance
       }
       }>
       {children}
