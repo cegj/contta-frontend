@@ -6,10 +6,10 @@ import styles from './AddTransactionButton.module.css'
 const AddTransactionButton = () => {
 
   const {logged} = React.useContext(UserContext);
-  const {setTransactionFormIsOpen} = React.useContext(AppContext);
+  const {setTransactionModalIsOpen} = React.useContext(AppContext);
 
   function handleClick(){
-    setTransactionFormIsOpen(true);
+    setTransactionModalIsOpen(true);
   }
 
   return (

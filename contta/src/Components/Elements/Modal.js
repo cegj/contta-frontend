@@ -3,7 +3,7 @@ import styles from './Modal.module.css'
 import {ReactComponent as CloseIcon} from '../../assets/icons/close_icon.svg'
 import ReactTooltip from 'react-tooltip'
 
-const Modal = ({title, isOpen, setIsOpen, children}) => {
+const Modal = ({title, isOpen, setIsOpen, additionalBtns = null, children}) => {
   
   const modalContainer = React.useRef(null);
 
@@ -32,6 +32,7 @@ const Modal = ({title, isOpen, setIsOpen, children}) => {
         <div className={`${styles.titleBar} ${title ? '' : styles.noTitle}`}>
           {title &&<h2 className={styles.modalTitle}>{title}</h2>}
           <span className={styles.buttonsContainer}>
+            {additionalBtns && additionalBtns.map((btn) => {return btn})}
             <span data-tip="Fechar" className={styles.closeButton} onClick={() => {setIsOpen(false)}} ><CloseIcon /></span>
           </span>
         </div>
