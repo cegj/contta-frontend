@@ -15,7 +15,7 @@ import ReactTooltip from 'react-tooltip';
 import React from 'react';
 import Statement from './Components/Statement/Statement';
 import MonthYearForm from './Components/monthYearForm/MonthYearForm';
-import TypeOfDateForm from './Components/TypeOfDateForm/TypeOfDateForm';
+import Settings from './Components/Settings/Settings';
 
 function App() {
 
@@ -34,7 +34,7 @@ function App() {
                 </Routes>
                 <TransactionForm />
                 <MonthYearForm />
-                <TypeOfDateForm />
+                <Settings />
                 <Loading />
                 <AddTransactionButton />
               </TransactionsContextData>

@@ -1,21 +1,34 @@
-.typeOfDateSelector {
-  margin: .2rem 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 400px;
+.settingsSection {
+  border: 1px solid #e1e1e1;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.settingsSection>h3 {
+  margin-bottom: .5rem;
+  color: #2c2c2c;
+}
+
+.settingsSection>h4 {
+  margin-bottom: .5rem;
+  color: #2c2c2c;
+  font-weight: lighter;
 }
 
 .info {
   width: 400px;
   font-size: .845rem;
-  background-color: #f0f0dc;
-  color: #8f8f6e;
+  background-color: #f1f1d6;
+  color: #727251;
   padding: .8rem;
-  margin: .2rem 1rem;
-  margin-top: 1rem;
   line-height: 1.5;
   text-align: center;
+}
+
+.typeOfDateSelector {
+  display: flex;
+  gap: .8rem;
+  margin-bottom: .5rem;
 }
 
 .typeOfDateSelector>span {
@@ -27,7 +40,6 @@
   background-color: #e6e6e6;
   color: #616161;
   padding: .5rem;
-  margin: .3rem;
   display: inline-flex;
   align-items: center;
   align-content: center;

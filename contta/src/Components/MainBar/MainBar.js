@@ -4,7 +4,7 @@ import MainMenu from '../Elements/MainMenu';
 import styles from './MainBar.module.css'
 import ExitButton from './ExitButton';
 import MonthYearButton from './MonthYearButton';
-import TypeOfDateButton from './TypeOfDateButton';
+import SettingsButton from './SettingsButton';
 
 const MainBar = () => {
 
@@ -21,7 +21,7 @@ const MainBar = () => {
         </div>}
       </div>
       <div className={styles.optionsContainer}>
-        <TypeOfDateButton />
+        <SettingsButton />
         <MonthYearButton />
         <ExitButton />
       </div>

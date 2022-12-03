@@ -20,7 +20,7 @@ export const AppContextData = ({children}) => {
   const {request} = useFetch();
   const [transactionModalIsOpen, setTransactionModalIsOpen] = React.useState(false);
   const [monthYearModalIsOpen, setMonthYearModalIsOpen] = React.useState(false);
-  const [typeOfDateModalIsOpen, setTypeOfDateModalIsOpen] = React.useState(false);
+  const [settingModalIsOpen, setSettingModalIsOpen] = React.useState(false);
   const [typeOfDate, setTypeOfDate] = React.useState(window.localStorage.typeOfDate || 'transaction_date');
   const [reload, setReload] = React.useState(false);
   const [transactionToEdit, setTransactionToEdit] = React.useState(null);
@@ -112,8 +112,8 @@ React.useEffect(() => {
         setTransactionToEdit,
         loading,
         setLoading,
-        typeOfDateModalIsOpen,
-        setTypeOfDateModalIsOpen,
+        settingModalIsOpen,
+        setSettingModalIsOpen,
         typeOfDate,
         setTypeOfDate
       }}
