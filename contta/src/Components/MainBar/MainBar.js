@@ -21,8 +21,8 @@ const MainBar = () => {
         </div>}
       </div>
       <div className={styles.optionsContainer}>
-        <SettingsButton />
         <MonthYearButton />
+        <SettingsButton />
         <ExitButton />
       </div>
     </section>
