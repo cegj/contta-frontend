@@ -24,16 +24,16 @@ const MainMenu = () => {
     }
   }
 
-  function closeOnCLickOutside({target}){
+  const closeOnCLickOutside = React.useCallback(({target}) => {
+
     if (target !== menu.current && target !== menuBtn.current){
       setIsOpen(false)
       window.removeEventListener('click', closeOnCLickOutside)
-    }
-  }
+  }}, [])
 
   React.useEffect(() => {
     if(isOpen) window.addEventListener('click', closeOnCLickOutside)
-  }, [isOpen])
+  }, [isOpen, closeOnCLickOutside])
 
   return (
     <div ref={menuContainer} className={styles.menuContainer}>

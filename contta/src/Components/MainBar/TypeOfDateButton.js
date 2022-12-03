@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './MainBarButtons.module.css'
-import {ReactComponent as EditTypeOfDateIcon} from '../../assets/icons/change_typeofdate_icon.svg'
+import {ReactComponent as EditTypeOfDateIcon} from '../../assets/icons/settings_icon.svg'
 import AppContext from '../../Contexts/AppContext'
 import ReactTooltip from 'react-tooltip'
 
@@ -19,7 +19,7 @@ const TypeOfDateButton = () => {
   }
 
   return <span
-    data-tip="Alterar data dos saldos"
+    data-tip="Configurações"
     className={styles.button}
     onClick={handleClick}>
       <EditTypeOfDateIcon />

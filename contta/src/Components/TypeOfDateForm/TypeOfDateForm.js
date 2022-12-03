@@ -20,7 +20,7 @@ const MonthYearForm = () => {
 
   return (
     typeOfDateModalIsOpen &&
-    <Modal title="Alterar data dos saldos" isOpen={typeOfDateModalIsOpen} setIsOpen={setTypeOfDateModalIsOpen}>
+    <Modal title="Configurações" isOpen={typeOfDateModalIsOpen} setIsOpen={setTypeOfDateModalIsOpen}>
         <div className={styles.typeOfDateSelector}>
           <span data-value="transaction_date" className={typeOfDate === "transaction_date" ? styles.active : ""} onClick={selectTypeOfDate}>Data da transação</span>
           <span data-value="payment_date" className={typeOfDate === "payment_date" ? styles.active : ""} onClick={selectTypeOfDate}>Data do pagamento</span>
