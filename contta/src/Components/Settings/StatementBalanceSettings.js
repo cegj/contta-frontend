@@ -23,8 +23,12 @@ const StatementBalanceSettings = () => {
 
   function selectIncludeExpectedOnBalance({target}){
     window.localStorage.setItem('includeExpectedOnBalance', target.dataset.value)
-    setIncludeExpectedOnBalance(target.dataset.value)
+    setIncludeExpectedOnBalance(JSON.parse(target.dataset.value))
   }
+
+  React.useEffect(() => {
+    console.log(includeExpectedOnBalance)
+  }, [includeExpectedOnBalance])
 
   return (
     <section className={styles.settingsGroup}>
@@ -47,8 +51,8 @@ const StatementBalanceSettings = () => {
         <section className={styles.setting}>
         <h4>Considerar valores previstos nos saldos</h4>
           <div className={styles.optionsSelector}>
-            <span data-value="false" className={includeExpectedOnBalance === 'false' ? styles.active : ""} onClick={selectIncludeExpectedOnBalance}>Não</span>
-            <span data-value="true" className={includeExpectedOnBalance === 'true' ? styles.active : ""} onClick={selectIncludeExpectedOnBalance}>Sim</span>
+            <span data-value="false" className={includeExpectedOnBalance === false ? styles.active : ""} onClick={selectIncludeExpectedOnBalance}>Não</span>
+            <span data-value="true" className={includeExpectedOnBalance ? styles.active : ""} onClick={selectIncludeExpectedOnBalance}>Sim</span>
           </div>
         </section>
     </section>)
