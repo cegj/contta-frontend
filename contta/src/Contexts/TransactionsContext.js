@@ -89,6 +89,15 @@ export const TransactionsContextData = ({children}) => {
     } 
   }, [request, setMessage])
 
+  const getBalance = React.useCallback(async({date = "", from = "", to = "", typeofdate = typeOfDateBalance, includeexpected = includeExpectedOnBalance, category = "", account = ""}) => {
+    const token = window.localStorage.getItem('token')
+    const query = { date, from, to, typeofdate, includeexpected, category, account}
+    const {url, options} = GET_BALANCE(token, query)
+    const {json, error} = await request(url, options)
+    if (error) setMessage({content: `Erro ao obter saldo: ${error}`, type: 'e'})
+    else return json
+  }, [includeExpectedOnBalance, request, setMessage, typeOfDateBalance])
+
   const storeTransaction = React.useCallback(async(body, type) => {
     const token = window.localStorage.getItem('token');
     let url;
@@ -166,11 +175,6 @@ export const TransactionsContextData = ({children}) => {
         setGroupedTransactions([...grouped])
       }}}, [setGroupedTransactions, request, transactions, setMessage, typeOfDateBalance, typeOfDateGroup, includeExpectedOnBalance])
 
-  //     grouped.forEach(async(day) => {
-  //     })
-  //     }
-  // }, [transactions, request])
-
   return (
     <TransactionsContext.Provider value={
       {     
@@ -189,7 +193,8 @@ export const TransactionsContextData = ({children}) => {
         typeOfDateGroup,
         setTypeOfDateGroup,
         includeExpectedOnBalance,
-        setIncludeExpectedOnBalance
+        setIncludeExpectedOnBalance,
+        getBalance
       }
       }>
       {children}
