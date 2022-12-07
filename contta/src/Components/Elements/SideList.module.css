@@ -2,4 +2,23 @@
   background-color: #EEF2F5;
   border-radius: 10px;
   padding: 1rem;
+  line-height: 1.5;
+}
+
+.sideList div {
+  margin: 1rem 0;
+}
+
+.sideList h4 {
+  font-weight: bold;
+  margin-bottom: .3rem;
+}
+
+.sideList ul {
+  margin-left: 1rem;
+}
+
+.item>a {
+  display: flex;
+  justify-content: space-between;
 }

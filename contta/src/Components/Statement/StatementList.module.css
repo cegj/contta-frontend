@@ -1,6 +1,6 @@
 .statementContainer {
   display: block;
-  width: var(--container-width);
+  width: 100%;
   margin: 1rem auto;
 }
 

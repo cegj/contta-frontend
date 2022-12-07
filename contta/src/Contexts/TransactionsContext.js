@@ -15,7 +15,7 @@ export const TransactionsContextData = ({children}) => {
   const {logged} = React.useContext(UserContext);
   const {request, fetchLoading} = useFetch();
   const {setLoading} = React.useContext(AppContext)
-  const [transactions, setTransactions] = React.useState(null)
+  const [transactions, setTransactions] = React.useState([])
   const [groupedTransactions, setGroupedTransactions] = React.useState(null)
   const {accounts, categories} = React.useContext(AppContext)
   const [typeOfDateBalance, setTypeOfDateBalance] = React.useState(window.localStorage.typeOfDateBalance || 'transaction_date');
@@ -147,10 +147,11 @@ export const TransactionsContextData = ({children}) => {
 
   React.useEffect(() => {
     if (logged){
-      getTransactions()
-      setReload(false)  
-    }
-  }, [month, year, getTransactions, setReload, logged])
+      if (transactions.length === 0){
+        getTransactions()
+        setReload(false)  
+      }}
+  }, [month, year, getTransactions, setReload, logged, transactions.length])
 
   React.useEffect(() => {
     if (transactions) {

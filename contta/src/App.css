@@ -5,7 +5,7 @@
   --main-background-light: #FDFDFD;
   --main-background-light-focus: #fbfbfb;
   --main-color: #0B467B;
-  --container-width: 900px;
+  --container-width: 1200px;
 }
 
 * {
@@ -36,6 +36,7 @@ nav {
 
 a {
   text-decoration: none;
+  color: #333;
 }
 
 ul,
@@ -67,8 +68,9 @@ li {
 
 .grid-two {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: .8fr 2.2fr;
   width: var(--container-width);
   margin: 1rem auto;
   gap: 2rem;
+  width: var(--container-width);
 }

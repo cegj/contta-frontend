@@ -51,7 +51,8 @@
   min-width: 14rem;
   transform: .2s;
   animation: showMenu .2s forwards;
-  box-shadow: 3px 3px 20px rgba(0, 0, 0, .2)
+  box-shadow: 3px 3px 20px rgba(0, 0, 0, .2);
+  z-index: 1
 }
 
 @keyframes showMenu {

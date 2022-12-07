@@ -66,9 +66,9 @@ export const AppContextData = ({children}) => {
           setMessage({content: `Não foi possível recuperar categorias: ${error.message}`, type: 'e'});
         }
       }
-      getCategories();    
+      if (categories.length === 0) getCategories()
     }
-}, [request, setMessage, logged])
+}, [request, setMessage, logged, categories.length])
 
 React.useEffect(() => {
   if(logged){
@@ -86,9 +86,9 @@ React.useEffect(() => {
         setMessage({content: `Não foi possível recuperar contas: ${error.message}`, type: 'e'});
       }
     }
-    getAccounts();  
+    if (accounts.length === 0) getAccounts();  
   }
-}, [request, setMessage, logged])
+}, [request, setMessage, logged, accounts.length])
 
   return (
     <AppContext.Provider value={
