@@ -9,10 +9,15 @@ import { Link } from 'react-router-dom'
 
 const SideList = ({items, group}) => {
 
-  const grouped = groupBy(items, group)
+  const [grouped, setGrouped] = React.useState([])
+
   const {request} = useFetch()
 
-  const getAndSetBalance = React.useEffect(() => {
+  React.useEffect(() => {
+    setGrouped(groupBy(items, group))
+  }, [])
+
+  React.useEffect(() => {
     Object.entries(grouped).forEach((group,i) => {
       async function setBalance(id){
         const token = window.localStorage.getItem('token')
@@ -27,7 +32,7 @@ const SideList = ({items, group}) => {
         item.balance = await setBalance(item.id);
       })
     })
-  }, [])
+  }, [request, grouped])
 
   return (
     <section className={styles.sideList}>
