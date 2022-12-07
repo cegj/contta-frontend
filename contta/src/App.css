@@ -66,11 +66,19 @@ li {
   text-align: center;
 }
 
-.grid-two {
+.grid {
   display: grid;
-  grid-template-columns: .8fr 2.2fr;
-  width: var(--container-width);
   margin: 1rem auto;
   gap: 2rem;
+
+}
+
+.grid.g-one {
+  grid-template-columns: 1fr;
+  width: calc(var(--container-width) - 200px);
+}
+
+.grid.g-two {
+  grid-template-columns: .8fr 2.2fr;
   width: var(--container-width);
 }

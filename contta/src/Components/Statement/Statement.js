@@ -11,7 +11,9 @@ const Statement = () => {
   return (
     <>
     <Header />
-    <StatementList />
+    <div className="grid g-one">
+      <StatementList />
+    </div>
     </>
   )
 }

@@ -15,7 +15,7 @@ const Accounts = () => {
   return (
     <>
       <Header />
-      <div className="grid-two">
+      <div className="grid g-two">
         <SideList items={accounts} group="type"/>
         <Routes>
           <Route path="/:id" element={<StatementList />}/>
