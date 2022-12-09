@@ -1,22 +1,20 @@
 import React from 'react'
 import AppContext from '../../Contexts/AppContext'
-import SideList from '../Elements/SideList'
 import Header from '../Header'
 import { Routes, Route } from 'react-router-dom'
 import StatementList from '../Statement/StatementList'
+import AccountsList from './AccountsList'
 
 const Accounts = () => {
 
   const {setPageName} = React.useContext(AppContext)
   React.useEffect(() => {setPageName("Contas")}, [setPageName])
-
-  const {accounts} = React.useContext(AppContext)
   
   return (
     <>
       <Header />
       <div className="grid g-two">
-        <SideList items={accounts} group="type"/>
+        <AccountsList/>
         <Routes>
           <Route path="/:id" element={<StatementList />}/>
         </Routes>

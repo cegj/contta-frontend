@@ -16,49 +16,33 @@ export const TransactionsContextData = ({children}) => {
   const {request, fetchLoading} = useFetch();
   const {setLoading} = React.useContext(AppContext)
   const [transactions, setTransactions] = React.useState([])
-  const [groupedTransactions, setGroupedTransactions] = React.useState(null)
+  const [groupedTransactions, setGroupedTransactions] = React.useState([])
   const {accounts, categories} = React.useContext(AppContext)
-  const [typeOfDateBalance, setTypeOfDateBalance] = React.useState(window.localStorage.typeOfDateBalance || 'transaction_date');
-  const [typeOfDateGroup, setTypeOfDateGroup] = React.useState(window.localStorage.typeOfDateGroup || 'transaction_date');
-  const [includeExpectedOnBalance, setIncludeExpectedOnBalance] = React.useState(window.localStorage.includeExpectedOnBalance ? JSON.parse(window.localStorage.includeExpectedOnBalance) : false);
+  const {typeOfDateBalance} = React.useContext(AppContext)
+  const {typeOfDateGroup} = React.useContext(AppContext)
+  const {includeExpectedOnBalance} = React.useContext(AppContext);
+  const [updateTransactions, setUpdateTransactions] = React.useState(false);
   
-  React.useEffect(() => {
-    setLoading(fetchLoading)
-  }, [fetchLoading, setLoading])
-
-  //Set type options object to SELECT fields
-  const typeOptions = React.useMemo(() => {
-    return [
-      {value: 'D', label: 'Despesa'},
-      {value: 'R', label: 'Receita'},
-      {value: 'T', label: 'Transferência'},
-    ]
-  }, [])
-
-  //Set account options object to SELECT fields
-  const accountOptions = React.useMemo(() => {return []}, []);
-  React.useEffect(() => {
-    accountOptions.length = 0;
-    accounts.forEach((account) => {
-      const accountOption = {label: account.name, value: account.id};
-      accountOptions.push(accountOption);
+  const getGroupedTransactions = React.useCallback(() => {
+    const grouped = Object.entries(groupBy(transactions, typeOfDateGroup));
+    grouped.forEach((day) => {
+      day.push({date: 0, month_to_date: 0, all_to_date: 0})
     })
-  }, [accounts, accountOptions])
-
-  //Set categories options object to SELECT fields
-  const categoryOptions = React.useMemo(() => {return []}, []);
-  React.useEffect(() => {
-    categories.forEach((group) => {
-      const categories = [];
-      group.categories.forEach((cat) => {
-        categories.push({value: cat.id, label: cat.name})
-      })
-      categoryOptions.push({
-        label: group.name,
-        options: categories
-      })
-    })
-  }, [categories, categoryOptions])
+    try {
+      const token = window.localStorage.getItem('token')
+      async function getBalance(){
+        grouped.forEach(async (day) => {
+          const query = {date: day[0], typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance}
+          const {url, options} = GET_BALANCE(token, query)
+          const {json} = await request(url, options)
+          delete json.message;
+          day[2] = json}
+        )}           
+      getBalance();
+    } catch (error) {
+    } finally {
+      setGroupedTransactions([...grouped])
+    }}, [includeExpectedOnBalance, request, transactions, typeOfDateBalance, typeOfDateGroup])
 
   const getTransactions = React.useCallback(async () => {
     const token = window.localStorage.getItem('token')
@@ -67,6 +51,7 @@ export const TransactionsContextData = ({children}) => {
     const {response, json, error} = await request(url, options);  
     if (response.ok){
       setTransactions([...json.transactions])
+      getGroupedTransactions()
       return true
     } else {
       console.log(error)
@@ -74,7 +59,7 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Não foi possível obter transações: ${error}`, type: 'e'})
       return false
     } 
-  }, [year, month, request, setMessage, typeOfDateGroup])
+  }, [year, month, request, setMessage, typeOfDateGroup, getGroupedTransactions])
 
   const getTransactionById = React.useCallback(async(id) => {
     const token = window.localStorage.getItem('token')
@@ -89,15 +74,6 @@ export const TransactionsContextData = ({children}) => {
     } 
   }, [request, setMessage])
 
-  const getBalance = React.useCallback(async({date = "", from = "", to = "", typeofdate = typeOfDateBalance, includeexpected = includeExpectedOnBalance, category = "", account = ""}) => {
-    const token = window.localStorage.getItem('token')
-    const query = { date, from, to, typeofdate, includeexpected, category, account}
-    const {url, options} = GET_BALANCE(token, query)
-    const {json, error} = await request(url, options)
-    if (error) setMessage({content: `Erro ao obter saldo: ${error}`, type: 'e'})
-    else return json
-  }, [includeExpectedOnBalance, request, setMessage, typeOfDateBalance])
-
   const storeTransaction = React.useCallback(async(body, type) => {
     const token = window.localStorage.getItem('token');
     let url;
@@ -105,7 +81,6 @@ export const TransactionsContextData = ({children}) => {
     if (type === 'R') {({url, options} = POST_INCOME(body, token))}
     else if (type === 'D') {({url, options} = POST_EXPENSE(body, token))}
     else if (type === 'T') {({url, options} = POST_TRANSFER(body, token))} 
-    console.log(body) 
     try {
       const {response, json, error} = await request(url, options);
       if (response.ok){
@@ -145,6 +120,44 @@ export const TransactionsContextData = ({children}) => {
     }
   }, [request, setMessage, getTransactions])
 
+  //Set type options object to SELECT fields
+  const typeOptions = React.useMemo(() => {
+    return [
+      {value: 'D', label: 'Despesa'},
+      {value: 'R', label: 'Receita'},
+      {value: 'T', label: 'Transferência'},
+    ]
+  }, [])
+
+  //Set account options object to SELECT fields
+  const accountOptions = React.useMemo(() => {return []}, []);
+  React.useEffect(() => {
+    accountOptions.length = 0;
+    accounts.forEach((account) => {
+      const accountOption = {label: account.name, value: account.id};
+      accountOptions.push(accountOption);
+    })
+  }, [accounts, accountOptions])
+
+  //Set categories options object to SELECT fields
+  const categoryOptions = React.useMemo(() => {return []}, []);
+  React.useEffect(() => {
+    categories.forEach((group) => {
+      const categories = [];
+      group.categories.forEach((cat) => {
+        categories.push({value: cat.id, label: cat.name})
+      })
+      categoryOptions.push({
+        label: group.name,
+        options: categories
+      })
+    })
+  }, [categories, categoryOptions])
+
+  React.useEffect(() => {
+    setLoading(fetchLoading)
+  }, [fetchLoading, setLoading])
+
   React.useEffect(() => {
     if (logged){
       if (transactions.length === 0){
@@ -153,28 +166,13 @@ export const TransactionsContextData = ({children}) => {
       }}
   }, [month, year, getTransactions, setReload, logged, transactions.length])
 
-  React.useEffect(() => {
-    if (transactions) {
-      const grouped = Object.entries(groupBy(transactions, typeOfDateGroup));
-      grouped.forEach((day) => {
-        day.push({date: 0, month_to_date: 0, all_to_date: 0})
-      })
 
-      try {
-        const token = window.localStorage.getItem('token')
-        async function getBalance(){
-          grouped.forEach(async (day) => {
-            const query = {date: day[0], typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance}
-            const {url, options} = GET_BALANCE(token, query)
-            const {json} = await request(url, options)
-            delete json.message;
-            day[2] = json}
-          )}           
-        getBalance();
-      } catch (error) {
-      } finally {
-        setGroupedTransactions([...grouped])
-      }}}, [setGroupedTransactions, request, transactions, setMessage, typeOfDateBalance, typeOfDateGroup, includeExpectedOnBalance])
+  //Load grouped transactions with balance if it's empty
+  React.useEffect(() => {
+    if ((groupedTransactions.length === 0 && transactions.length > 0) || updateTransactions === true) {
+      getTransactions();
+      setUpdateTransactions(false)
+    }}, [groupedTransactions.length, transactions.length, getGroupedTransactions, updateTransactions, getTransactions])
 
   return (
     <TransactionsContext.Provider value={
@@ -189,13 +187,7 @@ export const TransactionsContextData = ({children}) => {
         storeTransaction,
         editTransaction,
         groupedTransactions,
-        typeOfDateBalance,
-        setTypeOfDateBalance,
-        typeOfDateGroup,
-        setTypeOfDateGroup,
-        includeExpectedOnBalance,
-        setIncludeExpectedOnBalance,
-        getBalance
+        setUpdateTransactions
       }
       }>
       {children}

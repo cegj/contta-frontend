@@ -1,29 +1,37 @@
 import React from 'react'
-import TransactionsContext from '../../Contexts/TransactionsContext'
 import styles from './Settings.module.css'
+import AppContext from '../../Contexts/AppContext'
+import TransactionsContext from '../../Contexts/TransactionsContext'
 
 const StatementBalanceSettings = () => {
 
-  const {typeOfDateBalance,
-        setTypeOfDateBalance,
-        typeOfDateGroup,
-        setTypeOfDateGroup,
-        includeExpectedOnBalance,
-        setIncludeExpectedOnBalance} = React.useContext(TransactionsContext)
+  const {
+    typeOfDateBalance,
+    setTypeOfDateBalance,
+    typeOfDateGroup,
+    setTypeOfDateGroup,
+    includeExpectedOnBalance,
+    setIncludeExpectedOnBalance
+  } = React.useContext(AppContext)
+
+  const {setUpdateTransactions} = React.useContext(TransactionsContext)
 
   function selectTypeOfDateBalance({target}){
     window.localStorage.setItem('typeOfDateBalance', target.dataset.value)
     setTypeOfDateBalance(target.dataset.value)
+    setUpdateTransactions(true)
   }
 
   function selectTypeOfDateGroup({target}){
     window.localStorage.setItem('typeOfDateGroup', target.dataset.value)
     setTypeOfDateGroup(target.dataset.value)
+    setUpdateTransactions(true)
   }
 
   function selectIncludeExpectedOnBalance({target}){
     window.localStorage.setItem('includeExpectedOnBalance', target.dataset.value)
     setIncludeExpectedOnBalance(JSON.parse(target.dataset.value))
+    setUpdateTransactions(true)
   }
 
   React.useEffect(() => {

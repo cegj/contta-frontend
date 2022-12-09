@@ -3,6 +3,8 @@ import { GET_ACCOUNTS, GET_CATEGORIES } from '../api';
 import useFetch from '../Hooks/useFetch';
 import MessagesContext from './MessagesContext';
 import UserContext from './UserContext';
+import groupBy from '../Helpers/groupBy';
+import { GET_BALANCE } from '../api';
 
 const AppContext = React.createContext();
 
@@ -24,6 +26,12 @@ export const AppContextData = ({children}) => {
   const [reload, setReload] = React.useState(false);
   const [transactionToEdit, setTransactionToEdit] = React.useState(null);
   const [loading, setLoading] = React.useState(false)
+  const [groupedAccounts, setGroupedAccounts] = React.useState([])
+  const [groupedCategories, setGroupedCategories] = React.useState([])
+  const [typeOfDateBalance, setTypeOfDateBalance] = React.useState(window.localStorage.typeOfDateBalance || 'transaction_date');
+  const [typeOfDateGroup, setTypeOfDateGroup] = React.useState(window.localStorage.typeOfDateGroup || 'transaction_date');
+  const [includeExpectedOnBalance, setIncludeExpectedOnBalance] = React.useState(window.localStorage.includeExpectedOnBalance ? JSON.parse(window.localStorage.includeExpectedOnBalance) : false);
+
 
   React.useEffect(() => {
     if(pageName) document.title = `Contta - ${pageName}`
@@ -49,6 +57,15 @@ export const AppContextData = ({children}) => {
   //   setFirstDay(getFirstDay())
   //   setLastDay(getLastDay())
   // }, [month, year, getFirstDay, getLastDay])
+
+  const getBalance = React.useCallback(async({date = "", from = "", to = "", typeofdate = typeOfDateBalance, includeexpected = includeExpectedOnBalance, category = "", account = ""}) => {
+    const token = window.localStorage.getItem('token')
+    const query = { date, from, to, typeofdate, includeexpected, category, account}
+    const {url, options} = GET_BALANCE(token, query)
+    const {json, error} = await request(url, options)
+    if (error) setMessage({content: `Erro ao obter saldo: ${error}`, type: 'e'})
+    else return json
+  }, [includeExpectedOnBalance, request, setMessage, typeOfDateBalance])
 
   React.useEffect(() => {
     if(logged){
@@ -88,33 +105,82 @@ React.useEffect(() => {
     }
     if (accounts.length === 0) getAccounts();  
   }
-}, [request, setMessage, logged, accounts.length])
+  }, [request, setMessage, logged, accounts.length])
+
+  React.useEffect(() => {
+    if (groupedAccounts.length === 0 && accounts.length > 0) {
+      const grouped = Object.entries(groupBy(accounts, 'type'));
+      grouped.forEach((typeGroup) => {
+        typeGroup[1].forEach((account) => {
+          account.balance = ""
+        })
+      })
+      try {
+        const token = window.localStorage.getItem('token')
+        async function getBalance(){
+          grouped.forEach((typeGroup) => {
+            typeGroup[1].forEach(async(account) => {
+              const query = {date: '2022-11-30', typeofdate: 'transaction_date', includeexpected: 'false', account: account.id}
+              const {url, options} = GET_BALANCE(token, query)
+              const {json} = await request(url, options)
+              delete json.message;
+              account.balance = json
+            })  
+        })}      
+        getBalance();
+      } catch (error) {
+      } finally {
+        setGroupedAccounts([...grouped])
+      }
+    }}, [accounts, groupedAccounts.length, request])
+
+  React.useEffect(() => {
+    if (groupedCategories.length === 0 && categories.length > 0) {
+      const grouped = [...categories]
+      grouped.forEach((group) => {
+        group.categories.forEach((category) => {
+          category.balance = ""
+        })
+      })
+      try {
+        const token = window.localStorage.getItem('token')
+        async function getBalance(){
+          grouped.forEach((group) => {
+            group.categories.forEach(async(category) => {
+              const query = {date: '2022-11-30', typeofdate: 'transaction_date', includeexpected: 'false', category: category.id}
+              const {url, options} = GET_BALANCE(token, query)
+              const {json} = await request(url, options)
+              delete json.message;
+              category.balance = json
+            })  
+        })}      
+        getBalance();
+      } catch (error) {
+      } finally {
+        setGroupedCategories([...grouped])
+      }
+    }}, [categories, groupedCategories.length, request])
 
   return (
     <AppContext.Provider value={
       {
-        categories,
-        accounts,
-        transactionModalIsOpen,
-        setTransactionModalIsOpen,
-        pageName,
-        setPageName,
-        month,
-        setMonth,
-        year,
-        setYear,
-        monthYearModalIsOpen,
-        setMonthYearModalIsOpen,
-        reload,
-        setReload,
-        transactionToEdit,
-        setTransactionToEdit,
-        loading,
-        setLoading,
-        settingModalIsOpen,
-        setSettingModalIsOpen
+        categories, groupedCategories,
+        accounts, groupedAccounts,
+        transactionModalIsOpen, setTransactionModalIsOpen,
+        pageName, setPageName,
+        month, setMonth,
+        year, setYear,
+        monthYearModalIsOpen, setMonthYearModalIsOpen,
+        reload, setReload,
+        transactionToEdit, setTransactionToEdit,
+        loading, setLoading,
+        settingModalIsOpen, setSettingModalIsOpen,
+        typeOfDateBalance, setTypeOfDateBalance,
+        typeOfDateGroup, setTypeOfDateGroup,
+        includeExpectedOnBalance, setIncludeExpectedOnBalance,
+        getBalance
       }}
-      >
+    >
       {children}
     </AppContext.Provider>
   )
