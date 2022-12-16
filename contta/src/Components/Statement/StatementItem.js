@@ -23,7 +23,7 @@ const StatementItem = (transaction) => {
   const {request} = useFetch();
   const {setMessage} = React.useContext(MessagesContext);
   const {setReload, setTransactionToEdit} = React.useContext(AppContext);
-  const {getTransactions} = React.useContext(TransactionsContext)
+  const {setUpdateTransactions} = React.useContext(TransactionsContext)
   const [transactionToGetRelated, setTransactionToGetRelated] = React.useState(null);
   const [relatedModalIsOpen, setRelatedModalIsOpen] = React.useState(true);
   const [isOnModal, setIsOnModal] = React.useState(false);
@@ -80,7 +80,7 @@ const StatementItem = (transaction) => {
       if (response.ok){
         setMessage({content: `${cascade ? 'Transação e parcelas seguintes apagadas com sucesso' : 'Transação apagada com sucesso'}`, type: 's'})
         setReload(true)
-        getTransactions()
+        setUpdateTransactions(true)
       } else {
         setMessage({content: error, type: 'e'})
       }
@@ -109,7 +109,7 @@ const StatementItem = (transaction) => {
       try {
         const {response, error} = await request(url, options);
         if (response.ok){
-          getTransactions();
+          setUpdateTransactions(true)
         } else {
           throw new Error(error)
         }

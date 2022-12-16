@@ -8,7 +8,6 @@ import convertToFloat from '../../Helpers/convertToFloat'
 const StatementList = () => {
 
   const {groupedTransactions} = React.useContext(TransactionsContext)
-
   const [typeFilter, setTypeFilter] = React.useState(null)
   const [categoryFilter, setCategoryFilter] = React.useState(null)
   const [accountFilter, setAccountFilter] = React.useState(null)

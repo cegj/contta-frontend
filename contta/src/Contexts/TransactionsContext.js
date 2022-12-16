@@ -11,7 +11,7 @@ const TransactionsContext = React.createContext();
 export const TransactionsContextData = ({children}) => {
 
   const {setMessage} = React.useContext(MessagesContext)
-  const {month, year, setReload} = React.useContext(AppContext)
+  const {month, year} = React.useContext(AppContext)
   const {logged} = React.useContext(UserContext);
   const {request, fetchLoading} = useFetch();
   const {setLoading} = React.useContext(AppContext)
@@ -21,7 +21,8 @@ export const TransactionsContextData = ({children}) => {
   const {typeOfDateBalance} = React.useContext(AppContext)
   const {typeOfDateGroup} = React.useContext(AppContext)
   const {includeExpectedOnBalance} = React.useContext(AppContext);
-  const [updateTransactions, setUpdateTransactions] = React.useState(false);
+  const [updateTransactions, setUpdateTransactions] = React.useState(false)
+  const [isEmpty, setIsEmpty] = React.useState(false)
   
   const getGroupedTransactions = React.useCallback(() => {
     const grouped = Object.entries(groupBy(transactions, typeOfDateGroup));
@@ -50,12 +51,14 @@ export const TransactionsContextData = ({children}) => {
     const {url, options} = GET_TRANSACTIONS(token, query)
     const {response, json, error} = await request(url, options);  
     if (response.ok){
+      if (json.transactions.length === 0) setIsEmpty(true)
+      else setIsEmpty(false)
       setTransactions([...json.transactions])
       getGroupedTransactions()
       return true
     } else {
       console.log(error)
-      setTransactions(null)
+      setTransactions([])
       setMessage({content: `Não foi possível obter transações: ${error}`, type: 'e'})
       return false
     } 
@@ -85,7 +88,7 @@ export const TransactionsContextData = ({children}) => {
       const {response, json, error} = await request(url, options);
       if (response.ok){
         setMessage({content: json.message, type: 's'})
-        getTransactions();
+        setUpdateTransactions(true)
         return true;
       } else {
         throw new Error(error)
@@ -95,7 +98,7 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       return false;
     }
-  }, [request, setMessage, getTransactions])
+  }, [request, setMessage])
 
   const editTransaction = React.useCallback(async(body, type, id, cascade) => {
     const token = window.localStorage.getItem('token');
@@ -108,7 +111,7 @@ export const TransactionsContextData = ({children}) => {
       const {response, json, error} = await request(url, options);
       if (response.ok){
         setMessage({content: json.message, type: 's'})
-        getTransactions();
+        setUpdateTransactions(true)
         return true;
       } else {
         throw new Error(error)
@@ -118,7 +121,7 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       return false;
     }
-  }, [request, setMessage, getTransactions])
+  }, [request, setMessage])
 
   //Set type options object to SELECT fields
   const typeOptions = React.useMemo(() => {
@@ -160,19 +163,28 @@ export const TransactionsContextData = ({children}) => {
 
   React.useEffect(() => {
     if (logged){
-      if (transactions.length === 0){
+      if (transactions.length === 0 && !isEmpty){
         getTransactions()
-        setReload(false)  
       }}
-  }, [month, year, getTransactions, setReload, logged, transactions.length])
+  }, [getTransactions, logged, transactions.length, isEmpty])
 
-
-  //Load grouped transactions with balance if it's empty
   React.useEffect(() => {
-    if ((groupedTransactions.length === 0 && transactions.length > 0) || updateTransactions === true) {
-      getTransactions();
+    setUpdateTransactions(true)
+    setIsEmpty(false)
+  }, [month, year])
+
+  React.useEffect(() => {
+    if (updateTransactions){
+      setTransactions([])
+      setGroupedTransactions([])
       setUpdateTransactions(false)
-    }}, [groupedTransactions.length, transactions.length, getGroupedTransactions, updateTransactions, getTransactions])
+    }}, [updateTransactions, getTransactions])
+
+  //Load grouped transactions with balance if groupedTansactions is empty
+  React.useEffect(() => {
+    if ((groupedTransactions.length === 0 && transactions.length > 0)) {
+      getTransactions();
+    }}, [groupedTransactions.length, transactions.length, getGroupedTransactions, getTransactions])
 
   return (
     <TransactionsContext.Provider value={
