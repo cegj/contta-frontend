@@ -44,6 +44,12 @@ li {
   list-style: none;
 }
 
+h3 {
+  font-size: 1.5rem;
+  font-family: 'Ubuntu', sans-serif;
+  color: var(--main-color);
+}
+
 #msg-placeholder {
   position: fixed;
   height: 0px;

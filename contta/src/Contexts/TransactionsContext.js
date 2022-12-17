@@ -5,6 +5,7 @@ import MessagesContext from './MessagesContext';
 import useFetch from '../Hooks/useFetch';
 import UserContext from './UserContext';
 import groupBy from '../Helpers/groupBy';
+import { useLocation } from 'react-router-dom';
 
 const TransactionsContext = React.createContext();
 
@@ -23,6 +24,9 @@ export const TransactionsContextData = ({children}) => {
   const {includeExpectedOnBalance} = React.useContext(AppContext);
   const [updateTransactions, setUpdateTransactions] = React.useState(false)
   const [isEmpty, setIsEmpty] = React.useState(false)
+  const location = useLocation()
+  const [selectedAccount, setSelectedAccount] = React.useState(null)
+  // const [selectedCategory, setSelectedCategory] = React.useState(null)
   
   const getGroupedTransactions = React.useCallback(() => {
     const grouped = Object.entries(groupBy(transactions, typeOfDateGroup));
@@ -47,7 +51,7 @@ export const TransactionsContextData = ({children}) => {
 
   const getTransactions = React.useCallback(async () => {
     const token = window.localStorage.getItem('token')
-    const query = {from: `${year}-${month}`, to: `${year}-${month}`, typeofdate: typeOfDateGroup}
+    const query = {from: `${year}-${month}`, to: `${year}-${month}`, typeofdate: typeOfDateGroup, account: (selectedAccount ? selectedAccount : '')}
     const {url, options} = GET_TRANSACTIONS(token, query)
     const {response, json, error} = await request(url, options);  
     if (response.ok){
@@ -62,7 +66,7 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Não foi possível obter transações: ${error}`, type: 'e'})
       return false
     } 
-  }, [year, month, request, setMessage, typeOfDateGroup, getGroupedTransactions])
+  }, [year, month, request, setMessage, typeOfDateGroup, getGroupedTransactions, selectedAccount])
 
   const getTransactionById = React.useCallback(async(id) => {
     const token = window.localStorage.getItem('token')
@@ -160,6 +164,18 @@ export const TransactionsContextData = ({children}) => {
   React.useEffect(() => {
     setLoading(fetchLoading)
   }, [fetchLoading, setLoading])
+
+  React.useEffect(() => {
+    if (location.pathname.includes('/statement')){
+      setSelectedAccount(null)
+      setUpdateTransactions(true)
+    }
+    if (location.pathname.includes('/accounts/')){
+      const account = location.pathname.split('/accounts/')[1]
+      if (account) setSelectedAccount(account)
+      setUpdateTransactions(true)
+    }
+  }, [location])
 
   React.useEffect(() => {
     if (logged){
