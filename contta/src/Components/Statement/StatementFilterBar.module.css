@@ -1,14 +1,15 @@
 .statementFilterBar {
   display: flex;
-  background-color: #eeeeee;
+  background-color: #f7f7f7;
   height: 50px;
   width: 100%;
   align-items: center;
   align-content: center;
   padding: 1rem;
   justify-content: center;
-  border-radius: 10px;
-  box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, .1);
+  border-radius: 4px;
+  border: 1px dashed #d4d4d4;
+  /* box-shadow: 0px 0px 2px 1px #d4d4d4; */
   margin-bottom: 20px;
 }
 

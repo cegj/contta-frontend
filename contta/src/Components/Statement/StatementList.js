@@ -1,18 +1,53 @@
 import React from 'react'
 import styles from './StatementList.module.css'
 import StatementItem from './StatementItem'
-import TransactionsContext from '../../Contexts/TransactionsContext'
 import StatementFilterBar from './StatementFilterBar'
 import convertToFloat from '../../Helpers/convertToFloat'
+import AppContext from '../../Contexts/AppContext'
+import { GET_BALANCE } from '../../api'
+import groupBy from '../../Helpers/groupBy'
+import useFetch from '../../Hooks/useFetch'
 
-const StatementList = () => {
+const StatementList = ({transactions}) => {
 
-  const {groupedTransactions} = React.useContext(TransactionsContext)
+  const [groupWithBalance, setGroupWithBalance] = React.useState(null)
   const [typeFilter, setTypeFilter] = React.useState(null)
   const [categoryFilter, setCategoryFilter] = React.useState(null)
   const [accountFilter, setAccountFilter] = React.useState(null)
   const [statusFilter, setStatusFilter] = React.useState(null)
   const [hasFilter, setHasFilter] = React.useState(false)
+  const {setMessage, typeOfDateGroup, typeOfDateBalance, includeExpectedOnBalance} = React.useContext(AppContext)
+  const {request} = useFetch();
+
+  const getGroupWithBalance = React.useCallback((transactions) => {
+    const grouped = Object.entries(groupBy(transactions, typeOfDateGroup));
+    grouped.forEach((day) => {
+      day.push({date: 0, month_to_date: 0, all_to_date: 0})
+    })
+    try {
+      const token = window.localStorage.getItem('token')
+      async function getBalance(){
+        grouped.forEach(async (day) => {
+          const query = {date: day[0], typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance}
+          const {url, options} = GET_BALANCE(token, query)
+          const {response, json, error} = await request(url, options)
+          delete json.message;
+          day[2] = json
+          if (response.ok){
+            delete json.message;
+            day[2] = json;
+            return true
+          }
+          else throw new Error(error)    
+        })}           
+      getBalance();
+    } catch (error) {
+        console.log(error)
+        setMessage({content: `Erro ao obter saldos: ${error.message}`, type: "e"})
+        return false;
+    } finally {
+      setGroupWithBalance([...grouped])
+    }}, [includeExpectedOnBalance, request, typeOfDateBalance, typeOfDateGroup, setMessage])
 
   React.useEffect(() => {
     if(typeFilter || categoryFilter || accountFilter || statusFilter) setHasFilter(true)
@@ -21,8 +56,8 @@ const StatementList = () => {
 
   const criateElementsToRender = React.useCallback(() => {
     const render = [];
-    if(groupedTransactions && groupedTransactions.length > 0){
-      groupedTransactions.forEach((day) => {
+    if(groupWithBalance && groupWithBalance.length > 0){
+      groupWithBalance.forEach((day) => {
         day[1].forEach((transaction) => {
           if (hasFilter){
             if (typeFilter && (transaction.type !== typeFilter.value)) return null
@@ -44,8 +79,12 @@ const StatementList = () => {
       })
     }
     return render;
-  }, [groupedTransactions, hasFilter, typeFilter, categoryFilter, accountFilter, statusFilter])
+  }, [groupWithBalance, hasFilter, typeFilter, categoryFilter, accountFilter, statusFilter])
   
+  React.useEffect(() => {
+      getGroupWithBalance(transactions)
+  }, [transactions, getGroupWithBalance])
+
   const elementsToRender = criateElementsToRender()
 
   return <div className={styles.statementContainer}>

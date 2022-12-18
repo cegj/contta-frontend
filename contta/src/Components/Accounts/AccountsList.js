@@ -8,6 +8,8 @@ const AccountsList = () => {
 
   const {groupedAccounts} = React.useContext(AppContext)
 
+  console.log(groupedAccounts)
+
   return (
     <section className={styles.sideList}>
       {groupedAccounts.map((group, i) => {

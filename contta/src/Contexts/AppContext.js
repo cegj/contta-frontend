@@ -53,11 +53,6 @@ export const AppContextData = ({children}) => {
   // const [firstDay, setFirstDay] = React.useState(getFirstDay());
   // const [lastDay, setLastDay] = React.useState(getLastDay());
 
-  // React.useEffect(() => {
-  //   setFirstDay(getFirstDay())
-  //   setLastDay(getLastDay())
-  // }, [month, year, getFirstDay, getLastDay])
-
   const getBalance = React.useCallback(async({date = "", from = "", to = "", typeofdate = typeOfDateBalance, includeexpected = includeExpectedOnBalance, category = "", account = ""}) => {
     const token = window.localStorage.getItem('token')
     const query = { date, from, to, typeofdate, includeexpected, category, account}
@@ -120,7 +115,7 @@ React.useEffect(() => {
         async function getBalance(){
           grouped.forEach((typeGroup) => {
             typeGroup[1].forEach(async(account) => {
-              const query = {date: '2022-11-30', typeofdate: 'transaction_date', includeexpected: 'false', account: account.id}
+              const query = {date: '2022-12-31', typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, account: account.id}
               const {url, options} = GET_BALANCE(token, query)
               const {json} = await request(url, options)
               delete json.message;
@@ -132,7 +127,7 @@ React.useEffect(() => {
       } finally {
         setGroupedAccounts([...grouped])
       }
-    }}, [accounts, groupedAccounts.length, request])
+    }}, [accounts, groupedAccounts.length, request, includeExpectedOnBalance, typeOfDateBalance])
 
   React.useEffect(() => {
     if (groupedCategories.length === 0 && categories.length > 0) {

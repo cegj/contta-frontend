@@ -4,7 +4,6 @@ import styles from './MonthYearForm.module.css'
 import Button from '../Elements/Button'
 import MessagesContext from '../../Contexts/MessagesContext'
 import Modal from '../Elements/Modal'
-import TransactionsContext from '../../Contexts/TransactionsContext'
 
 const MonthYearForm = () => {
 
@@ -12,7 +11,6 @@ const MonthYearForm = () => {
   const {monthYearModalIsOpen, setMonthYearModalIsOpen, month, year, setMonth, setYear} = React.useContext(AppContext)
   const [monthValue, setMonthValue] = React.useState(month);
   const [yearValue, setYearValue] = React.useState(year);
-  const {setUpdateTransactions} = React.useContext(TransactionsContext)
 
   React.useEffect(() => {}, [monthYearModalIsOpen])
   React.useEffect(() => {}, [month, year])
@@ -22,7 +20,6 @@ const MonthYearForm = () => {
     window.localStorage.setItem('month', target.innerText)
     setMonth(target.innerText)
     setMonthYearModalIsOpen(false)
-    setUpdateTransactions(true)
   }
 
   function selectYear({target}){
