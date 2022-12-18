@@ -13,6 +13,7 @@ export const AppContextData = ({children}) => {
   const date = new Date();
 
   const [pageName, setPageName] = React.useState(null);
+  const [pageSubName, setPageSubName] = React.useState(null);
   const [month, setMonth] = React.useState(window.localStorage.getItem('month') || date.getMonth());
   const [year, setYear] = React.useState(window.localStorage.getItem('year') || date.getFullYear());
   const [categories, setCategories] = React.useState([]);
@@ -34,9 +35,9 @@ export const AppContextData = ({children}) => {
 
 
   React.useEffect(() => {
-    if(pageName) document.title = `Contta - ${pageName}`
+    if(pageName) document.title = `Contta - ${pageName} ${pageSubName ? ` / ${pageSubName}` : ""}`
     else document.title = `Contta`
-  }, [pageName])
+  }, [pageName, pageSubName])
 
   // const getFirstDay = React.useCallback(() => {
   //   let first = new Date(year, +month-1, 1)
@@ -163,6 +164,7 @@ React.useEffect(() => {
         accounts, groupedAccounts,
         transactionModalIsOpen, setTransactionModalIsOpen,
         pageName, setPageName,
+        pageSubName, setPageSubName,
         month, setMonth,
         year, setYear,
         monthYearModalIsOpen, setMonthYearModalIsOpen,

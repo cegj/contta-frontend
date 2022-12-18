@@ -9,7 +9,7 @@ import useDate from '../../Hooks/useDate'
 
 const Accounts = () => {
 
-  const {setPageName, accounts} = React.useContext(AppContext)
+  const {setPageName, setPageSubName, accounts} = React.useContext(AppContext)
   const [accountId, setAccountId] = React.useState(null)
   const [accountName, setAccountName] = React.useState(null)
   const {month, year, typeOfDateBalance} = React.useContext(AppContext)
@@ -29,7 +29,8 @@ const Accounts = () => {
 
   React.useEffect(() => {
     setPageName('Contas')
-  }, [setPageName, accountName])
+    if(accountName) setPageSubName(accountName)
+  }, [setPageName, setPageSubName, accountName])
 
   const firstDay = getFirstDay(year, month);
   const lastDay = getLastDay(year, month);
