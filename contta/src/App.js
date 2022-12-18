@@ -16,6 +16,7 @@ import React from 'react';
 import Statement from './Components/Statement/Statement';
 import MonthYearForm from './Components/monthYearForm/MonthYearForm';
 import Settings from './Components/Settings/Settings';
+import Categories from './Components/Categories/Categories';
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Login />}/>
                   <Route path="/statement/*" element={<ProtectedRoute><Statement /></ProtectedRoute>}/>
+                  <Route path="/categories/*" element={<ProtectedRoute><Categories /></ProtectedRoute>}/>
                   <Route path="/accounts/*" element={<ProtectedRoute><Accounts /></ProtectedRoute>}/>
                 </Routes>
                 <TransactionForm />

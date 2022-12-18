@@ -31,6 +31,7 @@ export const AppContextData = ({children}) => {
   const [typeOfDateGroup, setTypeOfDateGroup] = React.useState(window.localStorage.typeOfDateGroup || 'transaction_date');
   const [includeExpectedOnBalance, setIncludeExpectedOnBalance] = React.useState(window.localStorage.includeExpectedOnBalance ? JSON.parse(window.localStorage.includeExpectedOnBalance) : false);
   const [updateAccountBalances, setUpdateAccountBalances] = React.useState(true);
+  const [updateCategoryBalances, setUpdateCategoryBalances] = React.useState(true);
 
   React.useEffect(() => {
     if(pageName) document.title = `Contta - ${pageName} ${pageSubName ? ` / ${pageSubName}` : ""}`
@@ -133,6 +134,7 @@ React.useEffect(() => {
         typeOfDateGroup, setTypeOfDateGroup,
         includeExpectedOnBalance, setIncludeExpectedOnBalance,
         updateAccountBalances, setUpdateAccountBalances,
+        updateCategoryBalances, setUpdateCategoryBalances,
         getBalance
       }}
     >

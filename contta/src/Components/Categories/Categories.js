@@ -3,19 +3,19 @@ import AppContext from '../../Contexts/AppContext'
 import Header from '../Header'
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import StatementList from '../Statement/StatementList'
-import AccountsList from './AccountsList'
+import CategoriesList from './CategoriesList'
 import TransactionsContext from '../../Contexts/TransactionsContext'
 import useDate from '../../Hooks/useDate'
 import {ReactComponent as CloseIcon} from '../../assets/icons/close_icon.svg'
-import styles from './Accounts.module.css'
+import styles from './Categories.module.css'
 import ReactTooltip from 'react-tooltip'
 
-const Accounts = () => {
+const Categories = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const {setPageName, setPageSubName, accounts} = React.useContext(AppContext)
-  const [accountName, setAccountName] = React.useState(null)
+  const {setPageName, setPageSubName, categories} = React.useContext(AppContext)
+  const [categoryName, setCategoryName] = React.useState(null)
   const {month, year, typeOfDateBalance} = React.useContext(AppContext)
   const {getTransactions, updateTransactions, setUpdateTransactions} = React.useContext(TransactionsContext);
   const {getFirstDay, getLastDay} = useDate();
@@ -24,8 +24,10 @@ const Accounts = () => {
   const firstDay = getFirstDay(year, month);
   const lastDay = getLastDay(year, month);
 
-  const getAndSet = React.useCallback(async(accountId) => {
-    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance, account: accountId})
+  console.log(categories)
+
+  const getAndSet = React.useCallback(async(categoryId) => {
+    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance, category: categoryId})
     setTransactions(transactions)    
   }, [firstDay, lastDay, typeOfDateBalance, getTransactions])
 
@@ -35,41 +37,45 @@ const Accounts = () => {
   }, [transactions])
 
   React.useEffect(() => {
-    const accountId = location.pathname.split('/accounts/')[1]
-    if (accountId){
-      const {name} = accounts.find(account => account.id === +accountId)
-      setAccountName(name)
+    const categoryId = location.pathname.split('/categories/')[1]
+    if (categoryId){
+      let name;
+      categories.forEach((group) => {
+        const result = group.categories.find(cat => cat.id === +categoryId)
+        if (result) name = result.name
+      })
+      setCategoryName(name)
     } else {
-      setAccountName(null)
+      setCategoryName(null)
       setTransactions(null)
     }
-}, [location, accounts])
+}, [location, categories])
 
   React.useEffect(() => {
-    const accountId = location.pathname.split('/accounts/')[1]
-    if (accountId) getAndSet(accountId)
+    const categoryId = location.pathname.split('/categories/')[1]
+    if (categoryId) getAndSet(categoryId)
     setUpdateTransactions(false)
   }, [location, year, month, updateTransactions, setUpdateTransactions, getAndSet])
 
   React.useEffect(() => {
-    setPageName('Contas')
-    if(accountName) setPageSubName(accountName)
+    setPageName('Categorias')
+    if(categoryName) setPageSubName(categoryName)
     else setPageSubName(null)
-  }, [setPageName, setPageSubName, accountName])
+  }, [setPageName, setPageSubName, categoryName])
   
   return (
     <>
       <Header />
       <div className="grid g-two">
-        <AccountsList accounts={accounts}/>
+        <CategoriesList categories={categories}/>
         <div>
-          {accountName && 
+          {categoryName && 
           <div className={styles.titleBar}>
-            <h3>{accountName}</h3>
-            <span data-tip="Fechar extrato" className={styles.closeButton} onClick={() => {navigate('/accounts')}} ><CloseIcon /></span>
+            <h3>{categoryName}</h3>
+            <span data-tip="Fechar extrato" className={styles.closeButton} onClick={() => {navigate('/categories')}} ><CloseIcon /></span>
           </div>}
           <Routes>
-            <Route path="/:id" element={transactions && <StatementList transactions={transactions} accountId={transactions.length > 0 && transactions[0].account_id}/>}/>
+            <Route path="/:id" element={transactions && <StatementList transactions={transactions} categoryId={transactions.length > 0 && transactions[0].category_id}/>}/>
           </Routes>
         </div>
       </div>
@@ -77,4 +83,4 @@ const Accounts = () => {
   )
 }
 
-export default Accounts
+export default Categories

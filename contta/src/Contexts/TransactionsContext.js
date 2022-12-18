@@ -10,7 +10,7 @@ export const TransactionsContextData = ({children}) => {
 
   const {setMessage} = React.useContext(MessagesContext)
   const {request, fetchLoading} = useFetch();
-  const {setLoading, setUpdateAccountBalances} = React.useContext(AppContext)
+  const {setLoading, setUpdateAccountBalances, setUpdateCategoryBalances} = React.useContext(AppContext)
   const {accounts, categories} = React.useContext(AppContext)
   const [updateTransactions, setUpdateTransactions] = React.useState(true)
   
@@ -55,6 +55,7 @@ export const TransactionsContextData = ({children}) => {
         setMessage({content: json.message, type: 's'})
         setUpdateTransactions(true)
         setUpdateAccountBalances(true)
+        setUpdateCategoryBalances(true)
         return true;
       } else {
         throw new Error(error)
@@ -64,7 +65,7 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       return false;
     }
-  }, [request, setMessage, setUpdateAccountBalances])
+  }, [request, setMessage, setUpdateAccountBalances, setUpdateCategoryBalances])
 
   const editTransaction = React.useCallback(async(body, type, id, cascade) => {
     const token = window.localStorage.getItem('token');
@@ -79,6 +80,7 @@ export const TransactionsContextData = ({children}) => {
         setMessage({content: json.message, type: 's'})
         setUpdateTransactions(true)
         setUpdateAccountBalances(true)
+        setUpdateCategoryBalances(true)
         return true;
       } else {
         throw new Error(error)
@@ -88,7 +90,7 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       return false;
     }
-  }, [request, setMessage, setUpdateAccountBalances])
+  }, [request, setMessage, setUpdateAccountBalances, setUpdateCategoryBalances])
 
   const deleteTransaction = React.useCallback(async (transaction, cascade) => {
     const token = window.localStorage.getItem('token')
@@ -99,6 +101,7 @@ export const TransactionsContextData = ({children}) => {
         setMessage({content: `${cascade ? 'Transação e parcelas seguintes apagadas' : 'Transação apagada'}`, type: 's'})
         setUpdateTransactions(true)
         setUpdateAccountBalances(true)
+        setUpdateCategoryBalances(true)
         return true;
       } else {
         throw new Error(error)
@@ -108,7 +111,7 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Erro ao apagar transação: ${error.message}`, type: "e"})
       return false;
     }
-  }, [request, setMessage, setUpdateAccountBalances])
+  }, [request, setMessage, setUpdateAccountBalances, setUpdateCategoryBalances])
 
   //Set type options object to SELECT fields
   const typeOptions = React.useMemo(() => {

@@ -1,0 +1,23 @@
+.titleBar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.closeButton>svg {
+  fill: #717171;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  width: 35px;
+  cursor: pointer;
+  background-color: #f3f3f3;
+  border-radius: 50%;
+}
+
+.closeButton:hover>svg {
+  fill: red;
+}

@@ -22,7 +22,7 @@ const StatementItem = (transaction) => {
   const [optionsIsOpen, setOptionsIsOpen] = React.useState(false);
   const {request} = useFetch();
   const {setMessage} = React.useContext(MessagesContext);
-  const {setTransactionToEdit} = React.useContext(AppContext);
+  const {setTransactionToEdit, setUpdateAccountBalances, setUpdateCategoryBalances} = React.useContext(AppContext);
   const {setUpdateTransactions, deleteTransaction} = React.useContext(TransactionsContext)
   const [transactionToGetRelated, setTransactionToGetRelated] = React.useState(null);
   const [relatedModalIsOpen, setRelatedModalIsOpen] = React.useState(true);
@@ -101,6 +101,8 @@ const StatementItem = (transaction) => {
         const {response, error} = await request(url, options);
         if (response.ok){
           setUpdateTransactions(true)
+          setUpdateAccountBalances(true)
+          setUpdateCategoryBalances(true)
         } else {
           throw new Error(error)
         }
