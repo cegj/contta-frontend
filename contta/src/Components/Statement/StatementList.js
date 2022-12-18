@@ -8,7 +8,7 @@ import { GET_BALANCE } from '../../api'
 import groupBy from '../../Helpers/groupBy'
 import useFetch from '../../Hooks/useFetch'
 
-const StatementList = ({transactions}) => {
+const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
 
   const [groupWithBalance, setGroupWithBalance] = React.useState(null)
   const [typeFilter, setTypeFilter] = React.useState(null)
@@ -28,11 +28,9 @@ const StatementList = ({transactions}) => {
       const token = window.localStorage.getItem('token')
       async function getBalance(){
         grouped.forEach(async (day) => {
-          const query = {date: day[0], typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance}
+          const query = {date: day[0], typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, account: accountId, category: categoryId}
           const {url, options} = GET_BALANCE(token, query)
           const {response, json, error} = await request(url, options)
-          delete json.message;
-          day[2] = json
           if (response.ok){
             delete json.message;
             day[2] = json;
@@ -47,7 +45,7 @@ const StatementList = ({transactions}) => {
         return false;
     } finally {
       setGroupWithBalance([...grouped])
-    }}, [includeExpectedOnBalance, request, typeOfDateBalance, typeOfDateGroup, setMessage])
+    }}, [includeExpectedOnBalance, request, typeOfDateBalance, typeOfDateGroup, accountId, categoryId, setMessage])
 
   React.useEffect(() => {
     if(typeFilter || categoryFilter || accountFilter || statusFilter) setHasFilter(true)

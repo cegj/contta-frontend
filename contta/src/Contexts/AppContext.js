@@ -3,7 +3,6 @@ import { GET_ACCOUNTS, GET_CATEGORIES } from '../api';
 import useFetch from '../Hooks/useFetch';
 import MessagesContext from './MessagesContext';
 import UserContext from './UserContext';
-import groupBy from '../Helpers/groupBy';
 import { GET_BALANCE } from '../api';
 
 const AppContext = React.createContext();
@@ -27,32 +26,16 @@ export const AppContextData = ({children}) => {
   const [reload, setReload] = React.useState(false);
   const [transactionToEdit, setTransactionToEdit] = React.useState(null);
   const [loading, setLoading] = React.useState(false)
-  const [groupedAccounts, setGroupedAccounts] = React.useState([])
   const [groupedCategories, setGroupedCategories] = React.useState([])
   const [typeOfDateBalance, setTypeOfDateBalance] = React.useState(window.localStorage.typeOfDateBalance || 'transaction_date');
   const [typeOfDateGroup, setTypeOfDateGroup] = React.useState(window.localStorage.typeOfDateGroup || 'transaction_date');
   const [includeExpectedOnBalance, setIncludeExpectedOnBalance] = React.useState(window.localStorage.includeExpectedOnBalance ? JSON.parse(window.localStorage.includeExpectedOnBalance) : false);
-
+  const [updateAccountBalances, setUpdateAccountBalances] = React.useState(true);
 
   React.useEffect(() => {
     if(pageName) document.title = `Contta - ${pageName} ${pageSubName ? ` / ${pageSubName}` : ""}`
     else document.title = `Contta`
   }, [pageName, pageSubName])
-
-  // const getFirstDay = React.useCallback(() => {
-  //   let first = new Date(year, +month-1, 1)
-  //   first = first.toISOString().split('T')[0]
-  //   return first;
-  // }, [month, year])
-
-  // const getLastDay = React.useCallback(() => {
-  //   let last = new Date(year, month, 0)
-  //   last = last.toISOString().split('T')[0]
-  //   return last;
-  // }, [month, year])
-
-  // const [firstDay, setFirstDay] = React.useState(getFirstDay());
-  // const [lastDay, setLastDay] = React.useState(getLastDay());
 
   const getBalance = React.useCallback(async({date = "", from = "", to = "", typeofdate = typeOfDateBalance, includeexpected = includeExpectedOnBalance, category = "", account = ""}) => {
     const token = window.localStorage.getItem('token')
@@ -103,32 +86,6 @@ React.useEffect(() => {
   }
   }, [request, setMessage, logged, accounts.length])
 
-  React.useEffect(() => {
-    if (groupedAccounts.length === 0 && accounts.length > 0) {
-      const grouped = Object.entries(groupBy(accounts, 'type'));
-      grouped.forEach((typeGroup) => {
-        typeGroup[1].forEach((account) => {
-          account.balance = ""
-        })
-      })
-      try {
-        const token = window.localStorage.getItem('token')
-        async function getBalance(){
-          grouped.forEach((typeGroup) => {
-            typeGroup[1].forEach(async(account) => {
-              const query = {date: '2022-12-31', typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, account: account.id}
-              const {url, options} = GET_BALANCE(token, query)
-              const {json} = await request(url, options)
-              delete json.message;
-              account.balance = json
-            })  
-        })}      
-        getBalance();
-      } catch (error) {
-      } finally {
-        setGroupedAccounts([...grouped])
-      }
-    }}, [accounts, groupedAccounts.length, request, includeExpectedOnBalance, typeOfDateBalance])
 
   React.useEffect(() => {
     if (groupedCategories.length === 0 && categories.length > 0) {
@@ -161,7 +118,7 @@ React.useEffect(() => {
     <AppContext.Provider value={
       {
         categories, groupedCategories,
-        accounts, groupedAccounts,
+        accounts,
         transactionModalIsOpen, setTransactionModalIsOpen,
         pageName, setPageName,
         pageSubName, setPageSubName,
@@ -175,6 +132,7 @@ React.useEffect(() => {
         typeOfDateBalance, setTypeOfDateBalance,
         typeOfDateGroup, setTypeOfDateGroup,
         includeExpectedOnBalance, setIncludeExpectedOnBalance,
+        updateAccountBalances, setUpdateAccountBalances,
         getBalance
       }}
     >

@@ -10,7 +10,7 @@ import {ReactComponent as DoneIcon} from '../../assets/icons/done_fill_icon_smal
 import {ReactComponent as NotDoneIcon} from '../../assets/icons/done_icon_small.svg'
 import convertDateToBr from '../../Helpers/convertDateToBr'
 import useFetch from '../../Hooks/useFetch'
-import { DELETE_TRANSACTION, PATCH_EXPENSE, PATCH_INCOME, PATCH_TRANSFER } from '../../api'
+import { PATCH_EXPENSE, PATCH_INCOME, PATCH_TRANSFER } from '../../api'
 import MessagesContext from '../../Contexts/MessagesContext'
 import AppContext from '../../Contexts/AppContext'
 import TransactionsContext from '../../Contexts/TransactionsContext'
@@ -22,8 +22,8 @@ const StatementItem = (transaction) => {
   const [optionsIsOpen, setOptionsIsOpen] = React.useState(false);
   const {request} = useFetch();
   const {setMessage} = React.useContext(MessagesContext);
-  const {setReload, setTransactionToEdit} = React.useContext(AppContext);
-  const {setUpdateTransactions} = React.useContext(TransactionsContext)
+  const {setTransactionToEdit} = React.useContext(AppContext);
+  const {setUpdateTransactions, deleteTransaction} = React.useContext(TransactionsContext)
   const [transactionToGetRelated, setTransactionToGetRelated] = React.useState(null);
   const [relatedModalIsOpen, setRelatedModalIsOpen] = React.useState(true);
   const [isOnModal, setIsOnModal] = React.useState(false);
@@ -71,19 +71,10 @@ const StatementItem = (transaction) => {
 
   async function handleDelete({target}){
     setOptionsIsOpen(false)
-    const token = window.localStorage.getItem('token')
     const cascade = JSON.parse(target.dataset.cascade)
     const confirmDelete = window.confirm(`Confirmar a exclusão da transação "${transaction.description}" (${convertDateToBr(transaction.transaction_date)})${cascade ? ' e das suas parcelas seguintes?' : '?'}`)
     if (confirmDelete){
-      const {url, options} = DELETE_TRANSACTION(token, transaction.id, transaction.type, cascade)
-      const {response, error} = await request(url, options);
-      if (response.ok){
-        setMessage({content: `${cascade ? 'Transação e parcelas seguintes apagadas com sucesso' : 'Transação apagada com sucesso'}`, type: 's'})
-        setReload(true)
-        setUpdateTransactions(true)
-      } else {
-        setMessage({content: error, type: 'e'})
-      }
+      deleteTransaction(transaction, cascade)
     }
   }
 

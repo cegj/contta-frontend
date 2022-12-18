@@ -1,6 +1,6 @@
 import React from 'react'
 import AppContext from './AppContext';
-import { GET_TRANSACTIONS, GET_TRANSACTION_BY_ID, POST_INCOME, POST_EXPENSE, POST_TRANSFER, PATCH_INCOME, PATCH_EXPENSE, PATCH_TRANSFER } from '../api';
+import { GET_TRANSACTIONS, GET_TRANSACTION_BY_ID, POST_INCOME, POST_EXPENSE, POST_TRANSFER, PATCH_INCOME, PATCH_EXPENSE, PATCH_TRANSFER, DELETE_TRANSACTION } from '../api';
 import MessagesContext from './MessagesContext';
 import useFetch from '../Hooks/useFetch';
 
@@ -10,31 +10,10 @@ export const TransactionsContextData = ({children}) => {
 
   const {setMessage} = React.useContext(MessagesContext)
   const {request, fetchLoading} = useFetch();
-  const {setLoading} = React.useContext(AppContext)
+  const {setLoading, setUpdateAccountBalances} = React.useContext(AppContext)
   const {accounts, categories} = React.useContext(AppContext)
   const [updateTransactions, setUpdateTransactions] = React.useState(true)
   
-  // const getGroupedTransactions = React.useCallback((transactions) => {
-  //   const grouped = Object.entries(groupBy(transactions, typeOfDateGroup));
-  //   grouped.forEach((day) => {
-  //     day.push({date: 0, month_to_date: 0, all_to_date: 0})
-  //   })
-  //   try {
-  //     const token = window.localStorage.getItem('token')
-  //     async function getBalance(){
-  //       grouped.forEach(async (day) => {
-  //         const query = {date: day[0], typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance}
-  //         const {url, options} = GET_BALANCE(token, query)
-  //         const {json} = await request(url, options)
-  //         delete json.message;
-  //         day[2] = json}
-  //       )}           
-  //     getBalance();
-  //   } catch (error) {
-  //   } finally {
-  //     setGroupedTransactions([...grouped])
-  //   }}, [includeExpectedOnBalance, request, typeOfDateBalance, typeOfDateGroup])
-
   const getTransactions = React.useCallback(async (query = {from: '', to: '', typeofdate: '', account: '', category: ''}) => {
     try {
       const token = window.localStorage.getItem('token')
@@ -75,6 +54,7 @@ export const TransactionsContextData = ({children}) => {
       if (response.ok){
         setMessage({content: json.message, type: 's'})
         setUpdateTransactions(true)
+        setUpdateAccountBalances(true)
         return true;
       } else {
         throw new Error(error)
@@ -84,7 +64,7 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       return false;
     }
-  }, [request, setMessage])
+  }, [request, setMessage, setUpdateAccountBalances])
 
   const editTransaction = React.useCallback(async(body, type, id, cascade) => {
     const token = window.localStorage.getItem('token');
@@ -98,6 +78,7 @@ export const TransactionsContextData = ({children}) => {
       if (response.ok){
         setMessage({content: json.message, type: 's'})
         setUpdateTransactions(true)
+        setUpdateAccountBalances(true)
         return true;
       } else {
         throw new Error(error)
@@ -107,7 +88,27 @@ export const TransactionsContextData = ({children}) => {
       setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       return false;
     }
-  }, [request, setMessage])
+  }, [request, setMessage, setUpdateAccountBalances])
+
+  const deleteTransaction = React.useCallback(async (transaction, cascade) => {
+    const token = window.localStorage.getItem('token')
+    const {url, options} = DELETE_TRANSACTION(token, transaction.id, transaction.type, cascade)
+    try {
+      const {response, error} = await request(url, options);
+      if (response.ok){
+        setMessage({content: `${cascade ? 'Transação e parcelas seguintes apagadas' : 'Transação apagada'}`, type: 's'})
+        setUpdateTransactions(true)
+        setUpdateAccountBalances(true)
+        return true;
+      } else {
+        throw new Error(error)
+      }
+    } catch (error) {
+      console.log(error)
+      setMessage({content: `Erro ao apagar transação: ${error.message}`, type: "e"})
+      return false;
+    }
+  }, [request, setMessage, setUpdateAccountBalances])
 
   //Set type options object to SELECT fields
   const typeOptions = React.useMemo(() => {
@@ -157,6 +158,7 @@ export const TransactionsContextData = ({children}) => {
         getTransactionById,
         storeTransaction,
         editTransaction,
+        deleteTransaction,
         updateTransactions, setUpdateTransactions
       }
       }>
