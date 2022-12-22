@@ -2,10 +2,11 @@ import React from 'react'
 import styles from '../Elements/SideList.module.css'
 import AppContext from '../../Contexts/AppContext'
 import convertToFloat from '../../Helpers/convertToFloat'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import useDate from '../../Hooks/useDate'
 import { GET_BALANCE } from '../../api'
 import useFetch from '../../Hooks/useFetch'
+import {ReactComponent as AddIcon} from '../../assets/icons/add_icon.svg'
 
 const CategoriesList = ({categories}) => {
 
@@ -14,6 +15,7 @@ const {getLastDay} = useDate()
 const [groupWithBalance, setGroupWithBalance] = React.useState(null)
 const {request, fetchLoading} = useFetch();
 const lastDay = getLastDay(year, month);
+const navigate = useNavigate();
 
 const getGroupWithBalance = React.useCallback((categories) => {
   // const grouped = Object.entries(groupBy(categories, 'type'));
@@ -93,6 +95,9 @@ React.useEffect(() => {
   if (groupWithBalance)
   return (
     <section className={styles.sideList}>
+      <div className={styles.buttonsContainer}>
+        <span data-tip="Criar categoria" className={styles.closeButton} onClick={() => {navigate('/categories/add')}} ><AddIcon /></span>
+      </div>
       {groupWithBalance.map((group, i) => {
         return (
           <div key={i}>

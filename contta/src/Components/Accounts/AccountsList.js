@@ -7,8 +7,9 @@ import useDate from '../../Hooks/useDate'
 import { GET_BALANCE } from '../../api'
 import useFetch from '../../Hooks/useFetch'
 import groupBy from '../../Helpers/groupBy'
+import {ReactComponent as AddIcon} from '../../assets/icons/add_icon.svg'
 
-const AccountsList = ({accounts}) => {
+const AccountsList = ({accounts, setFormIsOpen}) => {
 
 const {setMessage, month, year, typeOfDateBalance, includeExpectedOnBalance, updateAccountBalances, setUpdateAccountBalances, setLoading} = React.useContext(AppContext)
 const {getLastDay} = useDate()
@@ -64,6 +65,9 @@ React.useEffect(() => {
   if (groupWithBalance)
   return (
     <section className={styles.sideList}>
+      <div className={styles.buttonsContainer}>
+        <span data-tip="Criar conta" className={styles.closeButton} onClick={() => {setFormIsOpen(true)}} ><AddIcon /></span>
+      </div>
       {groupWithBalance.map((group, i) => {
         return (
           <div key={i}>

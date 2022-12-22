@@ -119,7 +119,7 @@ React.useEffect(() => {
     <AppContext.Provider value={
       {
         categories, groupedCategories,
-        accounts,
+        accounts, setAccounts,
         transactionModalIsOpen, setTransactionModalIsOpen,
         pageName, setPageName,
         pageSubName, setPageSubName,

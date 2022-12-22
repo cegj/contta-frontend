@@ -9,6 +9,7 @@ import useDate from '../../Hooks/useDate'
 import {ReactComponent as CloseIcon} from '../../assets/icons/close_icon.svg'
 import styles from './Accounts.module.css'
 import ReactTooltip from 'react-tooltip'
+import AccountsForm from './AccountsForm'
 
 const Accounts = () => {
 
@@ -20,6 +21,7 @@ const Accounts = () => {
   const {getTransactions, updateTransactions, setUpdateTransactions} = React.useContext(TransactionsContext);
   const {getFirstDay, getLastDay} = useDate();
   const [transactions, setTransactions] = React.useState(null)
+  const [formIsOpen, setFormIsOpen] = React.useState(false)
 
   const firstDay = getFirstDay(year, month);
   const lastDay = getLastDay(year, month);
@@ -61,7 +63,7 @@ const Accounts = () => {
     <>
       <Header />
       <div className="grid g-two">
-        <AccountsList accounts={accounts}/>
+        <AccountsList accounts={accounts} setFormIsOpen={setFormIsOpen}/>
         <div>
           {accountName && 
           <div className={styles.titleBar}>
@@ -72,6 +74,7 @@ const Accounts = () => {
             <Route path="/:id" element={transactions && <StatementList transactions={transactions} accountId={transactions.length > 0 && transactions[0].account_id}/>}/>
           </Routes>
         </div>
+        <AccountsForm isOpen={formIsOpen} setIsOpen={setFormIsOpen} />
       </div>
     </>
   )

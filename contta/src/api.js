@@ -97,6 +97,21 @@ export function POST_TRANSFER(body, token){
   }
 }
 
+export function POST_INITIAL_BALANCE(body, token){
+  return {
+    url: API_URL + '/transactions/initialbalances',
+    options: {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
 export function GET_TRANSACTIONS(token, queryObject){
   const query = objectToQueryString(queryObject)
 
@@ -207,6 +222,21 @@ export function GET_BALANCE(token, queryObject){
       headers: {
         Authorization: 'Bearer ' + token
       }  
+    }
+  }
+}
+
+export function POST_ACCOUNT(body, token){
+  return {
+    url: API_URL + '/accounts',
+    options: {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
     }
   }
 }
