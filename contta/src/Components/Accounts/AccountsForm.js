@@ -6,11 +6,13 @@ import styles from './AccountsForm.module.css'
 import Button from '../Elements/Button'
 import convertToInteger from '../../Helpers/convertToInteger'
 import MessagesContext from '../../Contexts/MessagesContext'
-import { POST_ACCOUNT, POST_INITIAL_BALANCE } from '../../api'
+import { DELETE_ACCOUNT, PATCH_ACCOUNT, PATCH_INITIAL_BALANCE, POST_ACCOUNT, POST_INITIAL_BALANCE } from '../../api'
 import useFetch from '../../Hooks/useFetch'
 import AppContext from '../../Contexts/AppContext'
+import convertToFloat from '../../Helpers/convertToFloat'
+import { useNavigate } from 'react-router-dom'
 
-const AccountsForm = ({isOpen, setIsOpen}) => {
+const AccountsForm = ({isOpen, setIsOpen, setUpdateAccountsList, accountToEdit, setAccountToEdit}) => {
 
   const {setLoading, setAccounts} = React.useContext(AppContext)
   const {setMessage} = React.useContext(MessagesContext)
@@ -19,6 +21,7 @@ const AccountsForm = ({isOpen, setIsOpen}) => {
   const initialBalance = useForm();
   const show = useForm('checkbox');
   const {request, fetchLoading} = useFetch();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     setLoading(fetchLoading)
@@ -32,6 +35,22 @@ const AccountsForm = ({isOpen, setIsOpen}) => {
       {value: 'Investimentos', label: 'Investimentos'},
     ]
   }, [])
+
+  React.useEffect(() => {
+    function setEdittingValues(){
+
+      const typeOfEditting = typeOptions.find(type => type.value === accountToEdit.type)
+      const showParsed = (accountToEdit.show === 1 || accountToEdit.show === true || accountToEdit.show === "1" || accountToEdit.show === "true") ? true : false;
+
+      name.setValue(accountToEdit.name)
+      setType(typeOfEditting)
+      initialBalance.setValue(convertToFloat(accountToEdit.initial_balance.toString()))
+      show.setValue(showParsed)
+    }
+    if (accountToEdit){
+      setEdittingValues()
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountToEdit]) 
 
   function validateSubmit(fields){
     function validate(field){
@@ -61,21 +80,37 @@ const AccountsForm = ({isOpen, setIsOpen}) => {
   }
 
   function closeForm(){
-    name.setValue("")
-    setType(null)
-    initialBalance.setValue("")
-    show.setValue(false)  
     setIsOpen(false)
   }
 
-  const storeInitialBalance = React.useCallback(async(body) => {
+  React.useEffect(() => {
+    if (!isOpen){
+      name.setValue("")
+      setType(null)
+      initialBalance.setValue("")
+      show.setValue(false)  
+      setAccountToEdit(null)
+      setIsOpen(false)
+    }
+  }, [isOpen, initialBalance, name, setAccountToEdit, setIsOpen, show])
+
+  const storeInitialBalance = React.useCallback(async(body, idToEdit = null) => {
     try {
+      let url;
+      let options;
       const token = window.localStorage.getItem('token')
-      const {url, options} = POST_INITIAL_BALANCE(body, token)
+      if (idToEdit){
+        const apiParams = PATCH_INITIAL_BALANCE(body, token, idToEdit)
+        url = apiParams.url;
+        options = apiParams.options;
+      } else {
+        const apiParams = POST_INITIAL_BALANCE(body, token)
+        url = apiParams.url;
+        options = apiParams.options;
+      }
       const {response, json, error} = await request(url, options)  
       if (response.ok){
-        setMessage({content: json.message, type: 's'})
-        return json;
+        return {response, json, error};
       } else {
         throw new Error(error)
       }
@@ -86,22 +121,67 @@ const AccountsForm = ({isOpen, setIsOpen}) => {
     }
   }, [request, setMessage])
 
-
-  const storeAccount = React.useCallback(async(body) => {
+  const editAccount = React.useCallback(async(bodyAccount, id) => {
     try {
+      let jsonAccount;
+      let jsonInitialBalance;
       const token = window.localStorage.getItem('token');
-      const {url, options} = POST_ACCOUNT(body, token)
+      const {url, options} = PATCH_ACCOUNT(bodyAccount, token, id)
       const {response, json, error} = await request(url, options)  
-      if (response.ok){
-        setMessage({content: json.message, type: 's'})
-        setAccounts([])
-        const bodybalance = {
-          account_id: json.createdAccount.id,
-          value: body.initial_balance
+      jsonAccount = json;
+      if (response.ok){ //Account is edited
+        const initialBalanceBody = { value: bodyAccount.initial_balance }
+        const {response, json} = await storeInitialBalance(initialBalanceBody, id)
+        jsonInitialBalance = json;
+        if (response.ok){ //Initialbalance is stored
+          setMessage({content: 'Conta editada com sucesso', type: 's'})
+          setAccounts([])
+          setUpdateAccountsList(true)
+          return {jsonAccount, jsonInitialBalance}
+        } else { // Account is edited, but initialbalance isn't
+            throw new Error("A conta foi editada, mas não foi possível atualizar o saldo inicial.")
+          }
+      } else { // Account isn't stored
+        throw new Error(error)
+      }
+    } catch (error) {
+      console.log(error)
+      setMessage({content: `Erro ao editar conta: ${error.message}`, type: "e"})
+      return false;
+    }
+  }, [request, setMessage, setAccounts, storeInitialBalance, setUpdateAccountsList])
+
+  const storeAccount = React.useCallback(async(bodyAccount) => {
+    try {
+      let jsonAccount;
+      let jsonInitialBalance;
+      const token = window.localStorage.getItem('token');
+      const {url, options} = POST_ACCOUNT(bodyAccount, token)
+      const {response, json, error} = await request(url, options)  
+      jsonAccount = json;
+      if (response.ok){ //Account is stored
+        const initialBalanceBody = {
+          account_id: jsonAccount.createdAccount.id,
+          value: bodyAccount.initial_balance
         }
-        await storeInitialBalance(bodybalance)
-        return json.createdAccount;
-      } else {
+        const {response, json} = await storeInitialBalance(initialBalanceBody)
+        jsonInitialBalance = json;
+        if (response.ok){ //Initialbalance is stored
+          setMessage({content: 'Conta criada com sucesso', type: 's'})
+          setAccounts([])
+          setUpdateAccountsList(true)
+          return {jsonAccount, jsonInitialBalance}
+        } else { // Account is stored, but initialbalance isn't
+          const {url, options} = DELETE_ACCOUNT(token, jsonAccount.createdAccount.id)
+          const {response, error} = await request(url, options)
+          if (response.ok){
+            throw new Error("criação desfeita devido a um erro ao salvar saldo inicial")
+          } else {
+            console.log(error)
+            throw new Error("Erro ao salvar saldo inicial. Não foi possível desfazer criação da conta, exclua manualmente e cria novamente.")
+          }
+        }
+      } else { // Account isn't stored
         throw new Error(error)
       }
     } catch (error) {
@@ -109,7 +189,7 @@ const AccountsForm = ({isOpen, setIsOpen}) => {
       setMessage({content: `Erro ao criar conta: ${error.message}`, type: "e"})
       return false;
     }
-  }, [request, setMessage, setAccounts, storeInitialBalance])
+  }, [request, setMessage, setAccounts, storeInitialBalance, setUpdateAccountsList])
 
 
   async function handleSubmit(event){
@@ -125,19 +205,29 @@ const AccountsForm = ({isOpen, setIsOpen}) => {
     const body = {
       name: name.value,
       type: type.value,
-      initial_balance: convertToInteger(initialBalance.value) || 0,
+      initial_balance: +convertToInteger(initialBalance.value) || 0,
       show: show.value
     }
 
-    const storedAccount = await storeAccount(body);
+    const storedAccount = accountToEdit
+    ? await editAccount(body, accountToEdit.id)
+    : await storeAccount(body);
+
     if (storedAccount){
+      console.log(storedAccount)
       closeForm()
+
+      let dest = "";
+      if (storedAccount.jsonAccount.editedAccount) {dest = storedAccount.jsonAccount.editedAccount.id}
+      else if (storedAccount.jsonAccount.createdAccount) {dest = storedAccount.jsonAccount.createdAccount.id}
+
+      navigate(`/accounts/${dest}`)
     }
   }
 
   return (
     isOpen && 
-    <Modal title="Criar conta" isOpen={isOpen} setIsOpen={setIsOpen}>
+    <Modal title={accountToEdit ? "Editar conta" : "Criar conta"} isOpen={isOpen} setIsOpen={setIsOpen}>
       <form className={styles.accountsForm} onSubmit={handleSubmit}>
         <TransactionFormInput 
           label='Nome da conta'
@@ -175,12 +265,12 @@ const AccountsForm = ({isOpen, setIsOpen}) => {
           onChange={show.onChange}
           setValue={show.setValue}
         />
-        {/* {fetchLoading 
+        {fetchLoading 
           ?
-          <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}} disabled>Registrando...</Button>
-          : */}
-          <Button type="confirm">Criar conta</Button>
-        {/* } */}
+          <Button type="confirm" disabled>{accountToEdit ? "Editando..." : "Criando..."}</Button>
+          :
+          <Button type="confirm">{accountToEdit ? "Editar conta" : "Criar conta"}</Button>
+        }
       </form>
     </Modal>
   )

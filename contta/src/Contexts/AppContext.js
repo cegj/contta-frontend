@@ -55,7 +55,7 @@ export const AppContextData = ({children}) => {
           const {response, json, error} = await request(url, options);
           if (response.ok){
             setCategories(json.groups);
-            setMessage({content: `${json.message}`, type: 'n'});
+            // setMessage({content: `${json.message}`, type: 'n'});
           } else {
             throw new Error(error)
           }
@@ -75,7 +75,7 @@ React.useEffect(() => {
         const {response, json, error} = await request(url, options);
         if (response.ok){
           setAccounts(json.accounts);
-          setMessage({content: `${json.message}`, type: 'n'});
+          // setMessage({content: `${json.message}`, type: 'n'});
         } else {
           throw new Error(error)
         }

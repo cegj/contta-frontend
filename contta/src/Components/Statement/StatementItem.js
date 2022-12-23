@@ -4,6 +4,7 @@ import styles from './StatementItem.module.css'
 import {ReactComponent as IncomeIcon} from '../../assets/icons/income_icon.svg'
 import {ReactComponent as ExpenseIcon} from '../../assets/icons/expense_icon.svg'
 import {ReactComponent as TransferIcon} from '../../assets/icons/transfer_icon.svg'
+import {ReactComponent as InitialBalanceIcon} from '../../assets/icons/initial_balance_icon.svg'
 import {ReactComponent as TransactionDateIcon} from '../../assets/icons/calendar_date_icon.svg'
 import {ReactComponent as PaymentDateIcon} from '../../assets/icons/calendar_pay_icon.svg'
 import {ReactComponent as DoneIcon} from '../../assets/icons/done_fill_icon_small.svg'
@@ -16,6 +17,7 @@ import AppContext from '../../Contexts/AppContext'
 import TransactionsContext from '../../Contexts/TransactionsContext'
 import RelatedTransactions from './RelatedTransactions'
 import ReactTooltip from 'react-tooltip'
+import { Link } from 'react-router-dom'
 
 const StatementItem = (transaction) => {
 
@@ -56,8 +58,10 @@ const StatementItem = (transaction) => {
     icon = <IncomeIcon />
   } else if (transaction.type === 'D'){
     icon = <ExpenseIcon />
-  } else {
+  } else if (transaction.type === 'T'){
     icon = <TransferIcon />
+  } else if (transaction.type === 'I'){
+    icon = <InitialBalanceIcon />
   }
 
   React.useEffect(() => {
@@ -65,8 +69,13 @@ const StatementItem = (transaction) => {
   }, [relatedModalIsOpen])
 
   function toggleOptions(){
-    if (optionsIsOpen) setOptionsIsOpen(false)
-    else setOptionsIsOpen(true)
+    if (transaction.type !== 'I'){
+      if (optionsIsOpen) setOptionsIsOpen(false)
+      else setOptionsIsOpen(true)  
+    }
+    else {
+      setMessage({content: `Não existem opções para saldo inicial. Edite a conta ${transaction.account.name} para alterar ou excluir.`, type: "a"})
+    }
   }
 
   async function handleDelete({target}){
@@ -84,7 +93,7 @@ const StatementItem = (transaction) => {
   }
 
   async function togglePreview(){
-    if (transaction.type !== 'T'){
+    if (transaction.type !== 'T' && transaction.type !== 'I'){
       const token = window.localStorage.getItem('token');
       let body;
       if (transaction.preview === 1){
@@ -111,7 +120,12 @@ const StatementItem = (transaction) => {
         setMessage({content: `Erro ao alterar transação: ${error.message}`, type: "e"})
       }  
     } else {
-      setMessage({content: 'Não é possível definir uma transferência como prevista', type: 'a'})
+      if (transaction.type === 'T'){
+        setMessage({content: 'Não é possível definir uma transferência como prevista', type: 'a'})
+      }
+      if (transaction.type === 'I'){
+        setMessage({content: 'Não é possível definir um saldo inicial como previsto', type: 'a'})
+      }
     }
   }
 
@@ -133,24 +147,24 @@ const StatementItem = (transaction) => {
           <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
         </div>
         <div className={styles.container}>
-          <span className={styles.account}>{transaction.account.name}</span>
-          {transaction.category ? <span className={styles.category}>{transaction.category.name}</span> : <span></span>}
+          <span className={styles.account}>{transaction.account ? <Link to={`/accounts/${transaction.account_id}`}>{transaction.account.name}</Link> : "Sem conta"}</span>
+          {transaction.category ? <span className={styles.category}>{transaction.category ? transaction.category.name : "Sem categoria"}</span> : <span></span>}
         </div>
         <div className={styles.container}>
           <span className={styles.date}><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
           <span className={styles.date}><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
-        </div>
+        </div> 
         <div className={styles.container}>
-          <span data-tip={transaction.type !== 'T' ? !transaction.preview ? "Marcar como prevista" : "Marcar como consolidada" : ''} className={`${styles.preview} ${transaction.type === 'T' ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
+          <span data-tip={(transaction.type !== 'T' && transaction.type !== 'I') ? !transaction.preview ? "Marcar como prevista" : "Marcar como consolidada" : ''} className={`${styles.preview} ${(transaction.type === 'T' || transaction.type === 'I') ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
         </div>
-        <span data-menu-option className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive}`} onClick={toggleOptions}></span>
+        <span data-menu-option className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive} ${(transaction.type === 'I') ? styles.notPointer : ''}`} onClick={toggleOptions}></span>
         <div ref={optionsMenu} className={`${styles.menu} ${optionsIsOpen && styles.active}`}>
-            <ul>
-              <li data-menu-option className={styles.editIcon} onClick={handleEdit}>Editar</li>
-              <li data-menu-option className={styles.deleteIcon} data-cascade="false" onClick={handleDelete}>Apagar</li>
-              {transaction.installments_key && <li data-menu-option className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar a partir desta</li>}
-            </ul>
-          </div>
+          <ul>
+            <li data-menu-option className={styles.editIcon} onClick={handleEdit}>Editar</li>
+            <li data-menu-option className={styles.deleteIcon} data-cascade="false" onClick={handleDelete}>Apagar</li>
+            {transaction.installments_key && <li data-menu-option className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar a partir desta</li>}
+          </ul>
+        </div>
       </div>
       {transactionToGetRelated && <RelatedTransactions id={transactionToGetRelated} isOpen={relatedModalIsOpen} setIsOpen={setRelatedModalIsOpen}/>}
     </>

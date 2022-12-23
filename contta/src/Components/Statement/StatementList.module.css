@@ -4,16 +4,6 @@
   margin: 1rem auto;
 }
 
-.noTransactions {
-  display: block;
-  width: fit-content;
-  background-color: #eee;
-  color: #444;
-  padding: .5rem 1rem;
-  border-radius: 5px;
-  margin: 0 auto;
-}
-
 .balanceLine {
   background-color: #f0f0f0;
   color: #9c9c9c;

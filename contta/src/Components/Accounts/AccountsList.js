@@ -9,7 +9,7 @@ import useFetch from '../../Hooks/useFetch'
 import groupBy from '../../Helpers/groupBy'
 import {ReactComponent as AddIcon} from '../../assets/icons/add_icon.svg'
 
-const AccountsList = ({accounts, setFormIsOpen}) => {
+const AccountsList = ({accounts, setFormIsOpen, updateAccountsList, setUpdateAccountsList}) => {
 
 const {setMessage, month, year, typeOfDateBalance, includeExpectedOnBalance, updateAccountBalances, setUpdateAccountBalances, setLoading} = React.useContext(AppContext)
 const {getLastDay} = useDate()
@@ -56,11 +56,12 @@ React.useEffect(() => {
 }, [month, year, includeExpectedOnBalance, setUpdateAccountBalances, typeOfDateBalance])
 
 React.useEffect(() => {
-  if (accounts && updateAccountBalances){
+  if (accounts.length > 0 && (updateAccountBalances || updateAccountsList)){
     getGroupWithBalance(accounts)
     setUpdateAccountBalances(false)
+    setUpdateAccountsList(false)
   }
-}, [accounts, updateAccountBalances, setUpdateAccountBalances, getGroupWithBalance])
+}, [accounts, accounts.length, updateAccountBalances, setUpdateAccountBalances, updateAccountsList, setUpdateAccountsList, getGroupWithBalance])
 
   if (groupWithBalance)
   return (

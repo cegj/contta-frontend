@@ -112,6 +112,33 @@ export function POST_INITIAL_BALANCE(body, token){
   }
 }
 
+export function PATCH_INITIAL_BALANCE(body, token, id){
+  return {
+    url: API_URL + `/transactions/initialbalances/${id}`,
+    options: {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
+export function DELETE_INITIAL_BALANCE(token, id){
+  return {
+    url: API_URL + `/transactions/initialbalances/${id}`,
+    options: {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
+    }
+  }
+}
+
 export function GET_TRANSACTIONS(token, queryObject){
   const query = objectToQueryString(queryObject)
 
@@ -237,6 +264,33 @@ export function POST_ACCOUNT(body, token){
         Accept: 'application/json'
       },
       body: JSON.stringify(body)
+    }
+  }
+}
+
+export function PATCH_ACCOUNT(body, token, id){
+  return {
+    url: API_URL + `/accounts/${id}`,
+    options: {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
+export function DELETE_ACCOUNT(token, id){
+  return {
+    url: API_URL + `/accounts/${id}`,
+    options: {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
     }
   }
 }

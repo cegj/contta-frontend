@@ -99,7 +99,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
     />
   {(elementsToRender && elementsToRender.length > 0)
     ? elementsToRender.map((element) => {return element})
-    : <span className={styles.noTransactions}>Nenhuma transação encontrada</span>     }   
+    : <span className="noTransactions">Nenhuma transação encontrada</span>     }   
  </div>
 
 }

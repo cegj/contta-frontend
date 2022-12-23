@@ -30,6 +30,10 @@
   background-color: #F6EDED;
 }
 
+.I {
+  background-color: #f5f2db;
+}
+
 .description {
   color: #333;
   font-weight: bold;
@@ -48,6 +52,10 @@
   fill: #D6B6FF;
 }
 
+.I>.container>.typeIcon {
+  fill: #bebb8b;
+}
+
 .D>.container>.value {
   color: #BA3939;
 }
@@ -58,6 +66,10 @@
 
 .T>.container>.value {
   color: #7139BA;
+}
+
+.I>.container>.value {
+  color: #7e7c24;
 }
 
 .account,
@@ -86,8 +98,8 @@
   cursor: pointer;
 }
 
-.preview.notPointer {
-  cursor: default;
+.notPointer {
+  cursor: not-allowed !important;
 }
 
 .container {
