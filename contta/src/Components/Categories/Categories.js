@@ -14,6 +14,7 @@ import ReactTooltip from 'react-tooltip'
 import useFetch from '../../Hooks/useFetch'
 import { DELETE_CATEGORY } from '../../api'
 import MessagesContext from '../../Contexts/MessagesContext'
+import CategoriesForm from './CategoriesForm'
 
 const Categories = () => {
 
@@ -29,6 +30,8 @@ const Categories = () => {
   const [transactions, setTransactions] = React.useState(null)
   const [selectedCategory, setSelectedCategory] = React.useState(null)
   const [updateCategoriesList, setUpdateCategoriesList] = React.useState(true)
+  const [formIsOpen, setFormIsOpen] = React.useState(false)
+  const [categoryToEdit, setCategoryToEdit] = React.useState(null)
 
   const firstDay = getFirstDay(year, month);
   const lastDay = getLastDay(year, month);
@@ -106,7 +109,7 @@ const Categories = () => {
     <>
       <Header />
       <div className="grid g-two">
-        <CategoriesList categories={categories} updateCategoriesList={updateCategoriesList} setUpdateCategoriesList={setUpdateCategoriesList}/>
+        <CategoriesList categories={categories} updateCategoriesList={updateCategoriesList} setUpdateCategoriesList={setUpdateCategoriesList} setFormIsOpen={setFormIsOpen}/>
         <div>
           {categoryName && 
           <div className={styles.titleBar}>
@@ -119,8 +122,11 @@ const Categories = () => {
           </div>}
           <Routes>
             <Route path="/:id" element={transactions && <StatementList transactions={transactions} categoryId={transactions.length > 0 && transactions[0].category_id}/>}/>
+            <Route path="/groups/:id" element={<div>Grupo</div>}/>
+
           </Routes>
         </div>
+        <CategoriesForm isOpen={formIsOpen} setIsOpen={setFormIsOpen} setUpdateCategoriesList={setUpdateCategoriesList} categoryToEdit={categoryToEdit} setCategoryToEdit={setCategoryToEdit}/>
       </div>
     </>
   )

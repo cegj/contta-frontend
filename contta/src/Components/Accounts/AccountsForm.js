@@ -214,7 +214,6 @@ const AccountsForm = ({isOpen, setIsOpen, setUpdateAccountsList, accountToEdit, 
     : await storeAccount(body);
 
     if (storedAccount){
-      console.log(storedAccount)
       closeForm()
 
       let dest = "";

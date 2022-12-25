@@ -8,7 +8,7 @@ import { GET_BALANCE } from '../../api'
 import useFetch from '../../Hooks/useFetch'
 import {ReactComponent as AddIcon} from '../../assets/icons/add_icon.svg'
 
-const CategoriesList = ({categories, updateCategoriesList, setUpdateCategoriesList}) => {
+const CategoriesList = ({categories, updateCategoriesList, setUpdateCategoriesList, setFormIsOpen}) => {
 
 const {setMessage, month, year, typeOfDateBalance, includeExpectedOnBalance, updateCategoryBalances, setUpdateCategoryBalances, setLoading} = React.useContext(AppContext)
 const {getLastDay} = useDate()
@@ -97,12 +97,12 @@ React.useEffect(() => {
   return (
     <section className={styles.sideList}>
       <div className={styles.buttonsContainer}>
-        <span data-tip="Criar categoria" className={styles.closeButton} onClick={() => {navigate('/categories/add')}} ><AddIcon /></span>
+        <span data-tip="Criar categoria/grupo" className={styles.closeButton} onClick={() => {setFormIsOpen(true)}} ><AddIcon /></span>
       </div>
       {groupWithBalance.map((group, i) => {
         return (
           <div key={i}>
-            <h4>{group.name}</h4>
+            <h4><Link to={`groups/${group.id}`}>{group.name}</Link></h4>
             <ul>
               {group.categories.map((category) => {
               return(

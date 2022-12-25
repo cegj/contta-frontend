@@ -52,6 +52,66 @@ export function GET_CATEGORIES(token){
   }
 }
 
+export function POST_CATEGORY(body, token){
+  return {
+    url: API_URL + '/categories',
+    options: {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
+export function POST_CATEGORY_GROUP(body, token){
+  return {
+    url: API_URL + '/categories/groups',
+    options: {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
+export function PATCH_CATEGORY(body, token, id){
+  return {
+    url: API_URL + `/categories/${id}`,
+    options: {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
+export function PATCH_CATEGORY_GROUP(body, token, id){
+  return {
+    url: API_URL + `/categories/groups/${id}`,
+    options: {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
 export function DELETE_CATEGORY(token, id){
   return {
     url: API_URL + `/categories/${id}`,
