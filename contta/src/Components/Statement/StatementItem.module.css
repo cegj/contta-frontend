@@ -73,7 +73,9 @@
 }
 
 .account,
-.category {
+.category,
+.account>a,
+.category>a {
   font-weight: lighter;
   color: #00000095;
 }

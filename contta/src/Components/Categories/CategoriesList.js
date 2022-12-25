@@ -8,7 +8,7 @@ import { GET_BALANCE } from '../../api'
 import useFetch from '../../Hooks/useFetch'
 import {ReactComponent as AddIcon} from '../../assets/icons/add_icon.svg'
 
-const CategoriesList = ({categories}) => {
+const CategoriesList = ({categories, updateCategoriesList, setUpdateCategoriesList}) => {
 
 const {setMessage, month, year, typeOfDateBalance, includeExpectedOnBalance, updateCategoryBalances, setUpdateCategoryBalances, setLoading} = React.useContext(AppContext)
 const {getLastDay} = useDate()
@@ -86,11 +86,12 @@ React.useEffect(() => {
 }, [month, year, includeExpectedOnBalance, setUpdateCategoryBalances, typeOfDateBalance])
 
 React.useEffect(() => {
-  if (categories && updateCategoryBalances){
+  if (categories.length > 0 && (updateCategoryBalances || updateCategoriesList)){
     getGroupWithBalance(categories)
     setUpdateCategoryBalances(false)
+    setUpdateCategoriesList(false)
   }
-}, [categories, updateCategoryBalances, setUpdateCategoryBalances, getGroupWithBalance])
+}, [categories, updateCategoryBalances, setUpdateCategoryBalances, getGroupWithBalance, updateCategoriesList, setUpdateCategoriesList])
 
   if (groupWithBalance)
   return (

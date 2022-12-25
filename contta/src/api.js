@@ -52,6 +52,18 @@ export function GET_CATEGORIES(token){
   }
 }
 
+export function DELETE_CATEGORY(token, id){
+  return {
+    url: API_URL + `/categories/${id}`,
+    options: {
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
+    }
+  }
+}
+
 export function POST_INCOME(body, token){
   return {
     url: API_URL + '/transactions/incomes',

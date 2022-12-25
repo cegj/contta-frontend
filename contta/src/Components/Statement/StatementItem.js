@@ -148,7 +148,7 @@ const StatementItem = (transaction) => {
         </div>
         <div className={styles.container}>
           <span className={styles.account}>{transaction.account ? <Link to={`/accounts/${transaction.account_id}`}>{transaction.account.name}</Link> : "Sem conta"}</span>
-          {transaction.category ? <span className={styles.category}>{transaction.category ? transaction.category.name : "Sem categoria"}</span> : <span></span>}
+          <span className={styles.category}>{transaction.category ? <Link to={`/categories/${transaction.category_id}`}>{transaction.category.name}</Link> : "Sem categoria"}</span>
         </div>
         <div className={styles.container}>
           <span className={styles.date}><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
