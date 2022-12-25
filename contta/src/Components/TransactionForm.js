@@ -23,7 +23,7 @@ const TransactionForm = () => {
   const [keepAllValues, setKeepAllValues] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const {getTransactionById, storeTransaction, editTransaction, typeOptions, categoryOptions, accountOptions} = React.useContext(TransactionsContext);
-
+  
   const [type, setType] = React.useState([]);
   const transactionDate = useForm();
   const paymentDate = useForm();
@@ -36,6 +36,24 @@ const TransactionForm = () => {
   const preview = useForm('checkbox');
   const usual = useForm('checkbox');
   const cascade = useForm('checkbox');
+
+  // React.useEffect(() => {
+  //   const regex = /^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$/
+  //   if (regex.test(transactionDate.value)){
+  //     if (paymentDate.value === ""){
+  //       paymentDate.setValue(transactionDate.value)
+  //     }  
+  //   }
+  // }, [transactionDate, paymentDate])
+
+  React.useEffect(() => {
+    if (!transactionToEdit){
+      const date = new Date()
+      const today = date.toISOString().split('T')[0]
+      transactionDate.setValue(today)
+      paymentDate.setValue(today)
+    }
+  }, [paymentDate, transactionDate, transactionToEdit])
 
   const clearForm = React.useCallback(() => {
     setType([]);
@@ -389,179 +407,6 @@ const TransactionForm = () => {
             }
             </form>
         </Modal>
-
-      //   <div className={styles.modalContainer}>
-      //     <div className={styles.formContainer}>
-      //       <div className={styles.titleBar}>
-      //         <h2
-      //           className={`${styles.modalTitle}
-      //            ${(type && type.value === 'D') ? styles.d : ''}
-      //            ${(type && type.value === 'R') ? styles.r : ''}
-      //            ${(type && type.value === 'T') ? styles.t : ''}`}>
-      //             {transactionToEdit ? 'Editar transação' : 'Registrar transação'}
-      //         </h2>
-      //         <span className={styles.buttonsContainer}>
-      //           <span data-tip="Manter valores" className={`${styles.pinButton} ${keepAllValues && styles.active}`} onClick={() => {keepAllValues ? setKeepAllValues(false) : setKeepAllValues(true)}}><AttachIcon /></span>
-      //           <span data-tip="Manter janela aberta após envio" className={`${styles.pinButton} ${modalIsFixed && styles.active}`} onClick={() => {modalIsFixed ? setModalIsFixed(false) : setModalIsFixed(true)}}><PinIcon /></span>
-      //           <span data-tip="Fechar" className={styles.closeButton} onClick={handleCloseForm} ><CloseIcon /></span>
-      //         </span>
-      //       </div>
-      //       <form className={styles.transactionForm} onSubmit={handleSubmit}>
-      //         {<TransactionFormInput 
-      //           label="Tipo"
-      //           name='type'
-      //           type='select'
-      //           value={type}
-      //           onChange={setType}
-      //           options={typeOptions}
-      //           setValue={setType}
-      //           style={{gridColumn: 'span 2'}}
-      //           reload={reload}
-      //           keepAllValues={keepAllValues}
-      //           disabled={transactionToEdit ? true : false}
-      //         />}
-      //         <TransactionFormInput 
-      //           label='Data da transação'
-      //           name='transaction-date'
-      //           type='date'
-      //           value={transactionDate.value}
-      //           onChange={transactionDate.onChange}
-      //           setValue={transactionDate.setValue}
-      //           style={{gridColumn: 'span 2'}}
-      //           reload={reload}
-      //           keepAllValues={keepAllValues}
-      //         />
-      //         {(!type || type.value !== 'T') &&
-      //           <TransactionFormInput 
-      //           label='Data do pagamento'
-      //           name='payment-date'
-      //           type='date'
-      //           value={paymentDate.value}
-      //           onChange={paymentDate.onChange}
-      //           setValue={paymentDate.setValue}
-      //           style={{gridColumn: 'span 2'}}
-      //           reload={reload}
-      //           keepAllValues={keepAllValues}
-      //         />}
-      //         <TransactionFormInput 
-      //           label='Valor'
-      //           name='value'
-      //           type='string'
-      //           value={value.value}
-      //           onChange={value.onChange}
-      //           setValue={value.setValue}
-      //           style={{gridColumn: 'span 2'}}
-      //           reload={reload}
-      //           currency={true}
-      //           keepAllValues={keepAllValues}
-      //         /> 
-      //         <TransactionFormInput 
-      //           label='Descrição'
-      //           name='description'
-      //           type='string'
-      //           value={description.value}
-      //           onChange={description.onChange}
-      //           setValue={description.setValue}
-      //           style={(type && type.value === 'T') ? {gridColumn: 'span 6'} : {gridColumn: 'span 4'}}
-      //           reload={reload}
-      //           keepAllValues={keepAllValues}
-      //         />
-      //         <TransactionFormInput 
-      //           label={`Conta ${(type && type.value === 'T') ? 'de origem' : ''}`}
-      //           name='account'
-      //           type='select'
-      //           value={account}
-      //           onChange={setAccount}
-      //           options={accountOptions}
-      //           setValue={setAccount}
-      //           style={{gridColumn: 'span 2'}}
-      //           reload={reload}
-      //           keepAllValues={keepAllValues}
-      //         />       
-      //         {type && type.value === 'T'
-      //         ?
-      //         <TransactionFormInput 
-      //           label="Conta de destino"
-      //           name='destination_account'
-      //           type='select'
-      //           value={destinationAccount}
-      //           onChange={setDestinationAccount}
-      //           options={accountOptions}
-      //           setValue={setDestinationAccount}
-      //           style={{gridColumn: 'span 3'}}
-      //           reload={reload}
-      //           keepAllValues={keepAllValues}
-      //         />   
-      //         :
-      //         <TransactionFormInput 
-      //           label="Categoria"
-      //           name='category'
-      //           type='select'
-      //           value={category}
-      //           onChange={setCategory}
-      //           options={categoryOptions}
-      //           setValue={setCategory}
-      //           style={{gridColumn: 'span 2'}}
-      //           reload={reload}
-      //           keepAllValues={keepAllValues}
-      //         />
-      //         }
-      //         {(!transactionToEdit && (!type || type.value !== 'T')) && 
-      //         <TransactionFormInput 
-      //           label="Parcelas"
-      //           name="total_installments"
-      //           type="text"
-      //           value={totalInstallments.value}
-      //           onChange={totalInstallments.onChange}
-      //           setValue={totalInstallments.setValue}
-      //           style={{gridColumn: 'span 1'}}
-      //           reload={reload}
-      //           keepAllValues={keepAllValues}
-      //         />
-      //         }
-      //       <span className={styles.checkboxesContainer}>
-      //       {(!type || type.value !== 'T') && 
-      //         <TransactionFormInput
-      //           label="Previsão"
-      //           name="preview"
-      //           type="checkbox"
-      //           value={preview.value}
-      //           onChange={preview.onChange}
-      //           setValue={preview.setValue}
-      //           reload={reload}
-      //           keepAllValues={keepAllValues}
-      //         />}
-      //         <TransactionFormInput
-      //           label="Habitual"
-      //           name="usual"
-      //           type="checkbox"
-      //           value={usual.value}
-      //           onChange={usual.onChange}
-      //           setValue={usual.setValue}
-      //           reload={reload}
-      //           keepAllValues={keepAllValues}
-      //         />
-      //       </span>
-      //       {(transactionToEdit && type.value !== 'T') && <TransactionFormInput
-      //           label="Aplicar mudanças às parcelas seguintes"
-      //           name="cascade"
-      //           type="checkbox"
-      //           value={cascade.value}
-      //           onChange={cascade.onChange}
-      //           setValue={cascade.setValue}
-      //           reload={reload}
-      //           keepAllValues={keepAllValues}
-      //           style={{gridRow: '4', gridColumn: 'span 5', alignSelf: 'center'}}
-      //         />}
-      //       {fetchLoading 
-      //       ?
-      //       <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}} disabled>Registrando...</Button>
-      //       :
-      //       <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}}>{transactionToEdit ? 'Editar' : 'Registrar'}</Button>
-      //       }
-      //       </form>
-      //     </div>
-      // </div>
   )
 }
 
