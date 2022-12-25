@@ -39,7 +39,7 @@ const StatementItem = (transaction) => {
   const statementItemElement = React.useRef(null)
 
   React.useEffect(() => {
-    if (statementItemElement.current.parentElement.id === 'modalContent') setIsOnModal(true)
+    if (statementItemElement.current.parentElement.dataset.onModal === 'true') setIsOnModal(true)
     else setIsOnModal(false)
   }, [])
 
