@@ -40,10 +40,16 @@ const Categories = () => {
     setLoading(fetchLoading)
   }, [fetchLoading, setLoading])
 
+  React.useEffect(() => {
+    ReactTooltip.rebuild()
+    if(!formIsOpen) {ReactTooltip.hide()}
+  }, [formIsOpen])
+
+
   const handleDelete = React.useCallback(async() => {
     if (
-      window.confirm(`Tem certeza de que deseja excluir a categoria ${categoryName.toUpperCase()}?`) &&
-      window.confirm(`ATENÇÃO: Esta ação é irreversível. Ao excluir uma categoria, as transações associadas a ela serão mantidas sem uma categoria associada. Confirme novamente para prosseguir com a exclusão da categoria ${categoryName.toUpperCase()}, ou cancele para voltar atrás.`)
+      window.confirm(`Tem certeza de que deseja excluir ${selectedCategory.group_id ? 'a categoria' : 'o grupo'} ${categoryName.toUpperCase()}?`) &&
+      window.confirm(`ATENÇÃO: Esta ação é irreversível. ${selectedCategory.group_id ? 'Ao excluir uma categoria, as transações associadas a ela serão mantidas sem uma categoria.' : 'Ao excluir um grupo, todas as categorias associadas a ele também serão removidas, e as transações associadas a elas serão mantidas sem uma categoria.'} Confirme novamente para prosseguir com a exclusão ${selectedCategory.group_id ? 'da categoria' : 'do  grupo'} ${categoryName.toUpperCase()}, ou cancele para voltar atrás.`)
       ){
         try {
           const categoryId = location.pathname.split('/categories/')[1]
@@ -62,7 +68,12 @@ const Categories = () => {
           console.log(error)
           setMessage({content: `Erro ao excluir categoria: ${error.message}`, type: "e"})
           return false;
-        }}}, [location, request, setMessage, setCategories, categoryName])
+  }}}, [location, request, setMessage, setCategories, categoryName])
+
+  const handleEdit = React.useCallback(() => {
+    setCategoryToEdit(selectedCategory)
+    setFormIsOpen(true)
+  }, [selectedCategory])
 
   const getAndSet = React.useCallback(async(categoryId) => {
     const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance, category: categoryId})
@@ -75,18 +86,34 @@ const Categories = () => {
   }, [transactions])
 
   React.useEffect(() => {
+    const pathItems = window.location.pathname.split('/')
+    const id = pathItems.slice(-1)[0]
+    const isIdOfGroup = pathItems.includes('groups')
+
     const categoryId = location.pathname.split('/categories/')[1]
-    if (categoryId && categories.length > 0){
-      let categoryWasFound = false;
-      categories.forEach((group) => {
-        const category = group.categories.find(cat => cat.id === +categoryId)
-        if (category){
-          setCategoryName(category.name)
-          setSelectedCategory(category)
+
+    let categoryWasFound = false;
+    if (id && categories.length > 0){
+      if (isIdOfGroup){
+        const group = categories.find(group => group.id === +id)
+        if (group) {
+          setCategoryName(group.name)
+          setSelectedCategory(group)
           categoryWasFound = true;
           return
-        }})
-        if (!categoryWasFound) navigate('/categories/')
+        }
+      } else {
+        categories.forEach((group) => {
+          const category = group.categories.find(cat => cat.id === +categoryId)
+          if (category){
+            setCategoryName(category.name)
+            setSelectedCategory(category)
+            categoryWasFound = true;
+            return
+          }})
+      }
+      if (!categoryWasFound){
+        navigate('/categories/')}  
     } else {
       setCategoryName(null)
       setTransactions(null)
@@ -116,13 +143,13 @@ const Categories = () => {
             <h3>{categoryName}</h3>
             <div className={styles.btnsContainer}>
               <span data-tip="Excluir categoria" className={styles.closeButton} onClick={handleDelete} ><DeleteIcon /></span>
-              <span data-tip="Editar categoria" className={styles.closeButton} ><EditIcon /></span>
+              <span data-tip="Editar categoria" className={styles.closeButton} onClick={handleEdit} ><EditIcon /></span>
               <span data-tip="Fechar extrato" className={styles.closeButton} onClick={() => {navigate('/categories')}} ><CloseIcon /></span>
             </div>
           </div>}
           <Routes>
             <Route path="/:id" element={transactions && <StatementList transactions={transactions} categoryId={transactions.length > 0 && transactions[0].category_id}/>}/>
-            <Route path="/groups/:id" element={<div>Grupo</div>}/>
+            <Route path="/groups/:id" element={<div style={{marginTop: '1rem'}}className="noTransactions">Este é um grupo de categorias. Um grupo não tem categorias associadas diretamente a ele.</div>}/>
 
           </Routes>
         </div>

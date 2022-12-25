@@ -9,7 +9,6 @@ import useFetch from '../../Hooks/useFetch'
 import AppContext from '../../Contexts/AppContext'
 import { useNavigate } from 'react-router-dom'
 import { PATCH_CATEGORY, PATCH_CATEGORY_GROUP, POST_CATEGORY, POST_CATEGORY_GROUP } from '../../api'
-import TransactionsContext from '../../Contexts/TransactionsContext'
 
 const CategoriesForm = ({isOpen, setIsOpen, setUpdateCategoriesList, categoryToEdit, setCategoryToEdit}) => {
 
@@ -36,21 +35,23 @@ const CategoriesForm = ({isOpen, setIsOpen, setUpdateCategoriesList, categoryToE
     setLoading(fetchLoading)
   }, [fetchLoading, setLoading])
 
-  // React.useEffect(() => {
-  //   function setEdittingValues(){
+  React.useEffect(() => {
+    function setEdittingValues(){
 
-  //     const typeOfEditting = typeOptions.find(type => type.value === accountToEdit.type)
-  //     const showParsed = (accountToEdit.show === 1 || accountToEdit.show === true || accountToEdit.show === "1" || accountToEdit.show === "true") ? true : false;
+      console.log(categoryToEdit)
 
-  //     name.setValue(accountToEdit.name)
-  //     setType(typeOfEditting)
-  //     initialBalance.setValue(convertToFloat(accountToEdit.initial_balance.toString()))
-  //     show.setValue(showParsed)
-  //   }
-  //   if (accountToEdit){
-  //     setEdittingValues()
-  //   } // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [accountToEdit]) 
+      const editIsGroup = categoryToEdit.group_id ? false : true;
+
+      const groupOfEditting = groupOptions.find(group => group.value === categoryToEdit.group_id)
+
+      name.setValue(categoryToEdit.name)
+      if(editIsGroup) isGroup.setValue(true)
+      if(!editIsGroup) setGroup(groupOfEditting)
+    }
+    if (categoryToEdit){
+      setEdittingValues()
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryToEdit]) 
 
   function validateSubmit(fields){
     function validate(field){
@@ -88,6 +89,7 @@ const CategoriesForm = ({isOpen, setIsOpen, setUpdateCategoriesList, categoryToE
       name.setValue("")
       isGroup.setValue(false)
       setGroup(null)
+      setCategoryToEdit(null)
     }
   }, [isOpen, name, isGroup, setGroup, setCategoryToEdit, setIsOpen])
 
@@ -190,14 +192,15 @@ const CategoriesForm = ({isOpen, setIsOpen, setUpdateCategoriesList, categoryToE
     isOpen && 
     <Modal title={categoryToEdit ? `Editar ${!isGroup.value ? 'categoria' : 'grupo'}` : `Criar ${!isGroup.value ? 'categoria' : 'grupo'}`} isOpen={isOpen} setIsOpen={setIsOpen}>
       <form className={styles.CategoriesForm} onSubmit={handleSubmit}>
-        <TransactionFormInput
-            label="Criar grupo de categorias"
+        {!categoryToEdit && 
+          <TransactionFormInput
+            label="Grupo de categorias"
             name="isGroup"
             type="checkbox"
             value={isGroup.value}
             onChange={isGroup.onChange}
             setValue={isGroup.setValue}
-          />
+          />}
         <TransactionFormInput 
           label={`Nome ${!isGroup.value ? 'da categoria' : 'do grupo'}`}
           name='name'
