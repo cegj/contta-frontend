@@ -68,7 +68,7 @@ const Categories = () => {
           console.log(error)
           setMessage({content: `Erro ao excluir categoria: ${error.message}`, type: "e"})
           return false;
-  }}}, [location, request, setMessage, setCategories, categoryName])
+  }}}, [location, request, setMessage, setCategories, categoryName, selectedCategory.group_id])
 
   const handleEdit = React.useCallback(() => {
     setCategoryToEdit(selectedCategory)
