@@ -68,7 +68,7 @@ const Categories = () => {
           console.log(error)
           setMessage({content: `Erro ao excluir categoria: ${error.message}`, type: "e"})
           return false;
-  }}}, [location, request, setMessage, setCategories, categoryName, selectedCategory.group_id])
+  }}}, [location, request, setMessage, setCategories, categoryName, selectedCategory])
 
   const handleEdit = React.useCallback(() => {
     setCategoryToEdit(selectedCategory)
@@ -148,8 +148,9 @@ const Categories = () => {
             </div>
           </div>}
           <Routes>
+            <Route path="/" element={<div className="noTransactions">Selecione uma categoria para ver o seu extrato e demais opções.</div>}/>
             <Route path="/:id" element={transactions && <StatementList transactions={transactions} categoryId={transactions.length > 0 && transactions[0].category_id}/>}/>
-            <Route path="/groups/:id" element={<div style={{marginTop: '1rem'}}className="noTransactions">Este é um grupo de categorias. Um grupo não tem categorias associadas diretamente a ele.</div>}/>
+            <Route path="/groups/:id" element={<div style={{marginTop: '1rem'}}className="noTransactions">Este é um grupo de categorias. Um grupo não tem transações associadas diretamente a ele.</div>}/>
 
           </Routes>
         </div>
