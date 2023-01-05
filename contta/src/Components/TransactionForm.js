@@ -46,14 +46,14 @@ const TransactionForm = () => {
   //   }
   // }, [transactionDate, paymentDate])
 
-  React.useEffect(() => {
-    if (!transactionToEdit){
-      const date = new Date()
-      const today = date.toISOString().split('T')[0]
-      transactionDate.setValue(today)
-      paymentDate.setValue(today)
-    }
-  }, [paymentDate, transactionDate, transactionToEdit])
+  // React.useEffect(() => {
+  //   if (!transactionToEdit){
+  //     const date = new Date()
+  //     const today = date.toISOString().split('T')[0]
+  //     transactionDate.setValue(today)
+  //     paymentDate.setValue(today)
+  //   }
+  // }, [paymentDate, transactionDate, transactionToEdit])
 
   const clearForm = React.useCallback(() => {
     setType([]);
