@@ -1,5 +1,6 @@
 import React from 'react'
 import { GET_BALANCE } from '../../api'
+import AppContext from '../../Contexts/AppContext'
 import useFetch from '../../Hooks/useFetch'
 import Header from '../Header'
 import styles from './Budget.module.css'
@@ -7,6 +8,8 @@ import styles from './Budget.module.css'
 const Budget = () => {
 
   const {request} = useFetch()
+
+  const {categories} = React.useContext(AppContext)
 
   const get = React.useCallback(async () => {
     const token = window.localStorage.getItem('token')
@@ -25,12 +28,31 @@ const Budget = () => {
 
   }, [request])
 
-  React.useEffect(() => {get()}, [get])
+  React.useEffect(() => {get()
+  console.log(categories)}, [get])
 
   return (
     <>
       <Header />
-      <div style={styles.div}>Budget</div>    
+      <div style={styles.div}>Budget
+      
+      {categories.map((group) => {
+        return (
+          <div>
+            <div style={{fontWeight: 'bold'}}>{group.name}</div>
+            {group.categories.map((cat) => {
+              return (
+                <div>
+                  <div>{cat.name}</div>
+                  <div>Jan</div>
+                </div>
+              )
+            })}
+          </div>
+        )
+      })}
+
+      </div>    
     </>
   )
 }
