@@ -1,0 +1,16 @@
+.table {
+  overflow: scroll;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+  font-size: .875rem;
+}
+
+.table th,
+.table td {
+  border: 1px solid lightgray;
+  padding: .2rem;
+}
+
+.table [data-cell-type="group-title"] {
+  background-color: antiquewhite;
+}
