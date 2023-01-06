@@ -6,6 +6,7 @@ import Header from '../Header'
 import styles from './Budget.module.css'
 import useDate from '../../Hooks/useDate'
 import convertToFloat from '../../Helpers/convertToFloat'
+import TransactionsOnBudget from './TransactionsOnBudget'
 
 const Budget = () => {
 
@@ -15,6 +16,9 @@ const Budget = () => {
   const {getLastDay} = useDate();
   const {request, fetchLoading} = useFetch()
   const {year, categories, setLoading, setMonth} = React.useContext(AppContext)
+  const {transactionsModalIsOpen, setTransactionsModalIsOpen} = React.useState(false)
+  const {selectedCatId, setSelectedCatId} = React.useState(null)
+  const {selectedMonth, setSelectedMonth} = React.useState(null)
 
   React.useEffect(() => {
     setLoading(fetchLoading)
@@ -38,20 +42,23 @@ const Budget = () => {
     cell.innerText = convertToFloat(all_to_date.balance);
   }, [])
 
-  const handleClickOnCell = React.useCallback(({target}) => {
+  function handleClickOnCell({target}){
     const month = target.dataset.lastDay.split('-')[1]
     const {catId} = target.dataset;
     console.log(month, catId)
-  }, [])
+    setSelectedMonth(month)
+    setSelectedCatId(catId)
+    setTransactionsModalIsOpen(true)
+  }
 
   React.useEffect(() => {
     const prevCells = document.querySelectorAll("td[data-cell-type='cat-prev']")
     prevCells.forEach((cell) => {
-      getPrev(cell)
+      // getPrev(cell)
     })
     const execCells = document.querySelectorAll("td[data-cell-type='cat-exec']")
     execCells.forEach((cell) => {
-      getExec(cell)
+      // getExec(cell)
     })
   }, [])
 
@@ -91,12 +98,13 @@ const Budget = () => {
       {categories.map((group) => {
         return (
           <>
-            <tr>
+            <tr key={group.id}>
               <td data-cell-type="group-title">{group.name}</td>
               <td>R$ 0,00</td>
             </tr>
             {group.categories.map((cat) => {
-              return (<tr>
+              return (
+              <tr key={cat.id}>
                 <td>{cat.name}</td>
                 <td>0,00</td>
                 <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 1)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
@@ -170,7 +178,8 @@ const Budget = () => {
         )
       })} */}
       {elementsToRender}
-      </div>    
+      </div>
+      {transactionsModalIsOpen && <TransactionsOnBudget catId={selectedCatId} month={selectedMonth} isOpen={transactionsModalIsOpen} setIsOpen={setTransactionsModalIsOpen}/>}
     </>
   )
 }
