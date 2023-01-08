@@ -1,5 +1,5 @@
 import React from 'react'
-import { GET_BALANCE } from '../../api'
+import { GET_BALANCE_FOR_BUDGET } from '../../api'
 import AppContext from '../../Contexts/AppContext'
 import useFetch from '../../Hooks/useFetch'
 import Header from '../Header'
@@ -15,7 +15,7 @@ const Budget = () => {
 
   const {getLastDay} = useDate();
   const {request, fetchLoading} = useFetch()
-  const {year, categories, setLoading, setMonth} = React.useContext(AppContext)
+  const {year, categories, setLoading} = React.useContext(AppContext)
   const {transactionsModalIsOpen, setTransactionsModalIsOpen} = React.useState(false)
   const {selectedCatId, setSelectedCatId} = React.useState(null)
   const {selectedMonth, setSelectedMonth} = React.useState(null)
@@ -24,23 +24,31 @@ const Budget = () => {
     setLoading(fetchLoading)
   }, [fetchLoading, setLoading])
 
-  const getPrev = React.useCallback(async (cell) => {
-    const token = window.localStorage.getItem('token')
-    const {lastDay, catId} = cell.dataset
-    const {url, options} = GET_BALANCE(token, {date: lastDay, typeofdate: 'transaction_date', includeexpected: 'true', category: catId})
-    const req = await request(url, options)
-    const {all_to_date} = req.json;
-    cell.innerText = convertToFloat(all_to_date.balance);
-  }, [])
+  const lastDays = React.useMemo(() => {
+    const arr = []
+    for (let i = 0; i < 12; i++){
+      arr.push(getLastDay(year, i))
+    }
+    return arr
+  }, [year, getLastDay])
 
-  const getExec = React.useCallback(async (cell) => {
+  const getBudget = React.useCallback(async(date) => {
     const token = window.localStorage.getItem('token')
-    const {lastDay, catId} = cell.dataset
-    const {url, options} = GET_BALANCE(token, {date: lastDay, typeofdate: 'transaction_date', includeexpected: 'false', category: catId})
-    const req = await request(url, options)
-    const {all_to_date} = req.json;
-    cell.innerText = convertToFloat(all_to_date.balance);
-  }, [])
+    const {url, options} = GET_BALANCE_FOR_BUDGET(token, {date: '2022-11-30', typeofdate: 'transaction_date'})
+    const {json} = await request(url, options)
+    
+    const cells = Array.from(document.querySelectorAll(`td[data-last-day='${date}']`))
+    const prevCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-prev']"))
+    const execCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-exec']"))
+
+    prevCells.forEach((cell) => {
+      cell.innerText = convertToFloat(json.balances[cell.dataset.catId].expected)
+    })
+
+    execCells.forEach((cell) => {
+      cell.innerText = convertToFloat(json.balances[cell.dataset.catId].made)
+    })
+  }, [request])
 
   function handleClickOnCell({target}){
     const month = target.dataset.lastDay.split('-')[1]
@@ -52,15 +60,12 @@ const Budget = () => {
   }
 
   React.useEffect(() => {
-    const prevCells = document.querySelectorAll("td[data-cell-type='cat-prev']")
-    prevCells.forEach((cell) => {
-      // getPrev(cell)
-    })
-    const execCells = document.querySelectorAll("td[data-cell-type='cat-exec']")
-    execCells.forEach((cell) => {
-      // getExec(cell)
-    })
-  }, [])
+    if (lastDays.length > 0) {
+      lastDays.forEach((lastDayOfMonth) => {
+        getBudget(lastDayOfMonth)
+      })
+      // eslint-disable-next-line
+    }}, [getBudget, year])
 
   const elementsToRender = 
   <table id="budget-table" className={styles.table}>
@@ -107,7 +112,15 @@ const Budget = () => {
               <tr key={cat.id}>
                 <td>{cat.name}</td>
                 <td>0,00</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 1)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
+                {lastDays.map((lastDayOfMonth) => {
+                  return (
+                    <>
+                    <td data-cell-type='cat-prev' data-last-day={lastDayOfMonth} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
+                    <td data-cell-type='cat-exec' data-last-day={lastDayOfMonth} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
+                    </>
+                  )
+                })}
+                {/* <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 1)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
                 <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 1)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
                 <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 2)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
                 <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 2)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
@@ -130,7 +143,7 @@ const Budget = () => {
                 <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 11)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
                 <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 11)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
                 <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 12)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 12)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
+                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 12)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td> */}
               </tr>
               )
             })}

@@ -325,6 +325,20 @@ export function GET_BALANCE(token, queryObject){
   }
 }
 
+export function GET_BALANCE_FOR_BUDGET(token, queryObject){
+  const query = objectToQueryString(queryObject)
+
+  return {
+    url: API_URL + `/balances/budget?${query}`,
+    options: {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
+    }
+  }
+}
+
 export function POST_ACCOUNT(body, token){
   return {
     url: API_URL + '/accounts',
