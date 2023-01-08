@@ -11,7 +11,7 @@ import TransactionsOnBudget from './TransactionsOnBudget'
 const Budget = () => {
 
   const {setPageName} = React.useContext(AppContext)
-  React.useEffect(() => {setPageName("Extrato")}, [setPageName])
+  React.useEffect(() => {setPageName("Orçamento")}, [setPageName])
 
   const {getLastDay} = useDate();
   const {request, fetchLoading} = useFetch()
@@ -174,7 +174,7 @@ const Budget = () => {
   return (
     <>
       <Header />
-      <div>      
+      <div className={styles.tableContainer}>      
       {/* {categories.map((group) => {
         return (
           <div>

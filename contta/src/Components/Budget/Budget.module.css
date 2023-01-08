@@ -1,14 +1,30 @@
+.tableContainer {
+  width: 1200px;
+  overflow: auto;
+  margin: 1rem auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+}
+
 .table {
   overflow: scroll;
   background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, .2);
   font-size: .875rem;
 }
 
 .table th,
 .table td {
-  border: 1px solid lightgray;
-  padding: .2rem;
+  padding: .2rem .8rem;
+  margin: 0;
+}
+
+td[data-cell-type="cat-prev"] {
+  background-color: rgb(240, 240, 240);
+  height: 40px;
+}
+
+td[data-cell-type="cat-exec"] {
+  background-color: rgb(228, 228, 228);
+  height: 40px;
 }
 
 .table [data-cell-type="group-title"] {
