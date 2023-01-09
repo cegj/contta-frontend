@@ -26,7 +26,7 @@ const Budget = () => {
 
   const lastDays = React.useMemo(() => {
     const arr = []
-    for (let i = 0; i < 12; i++){
+    for (let i = 1; i <= 12; i++){
       arr.push(getLastDay(year, i))
     }
     return arr
@@ -34,7 +34,7 @@ const Budget = () => {
 
   const getBudget = React.useCallback(async(date) => {
     const token = window.localStorage.getItem('token')
-    const {url, options} = GET_BALANCE_FOR_BUDGET(token, {date: '2022-11-30', typeofdate: 'transaction_date'})
+    const {url, options} = GET_BALANCE_FOR_BUDGET(token, {date: date, typeofdate: 'transaction_date'})
     const {json} = await request(url, options)
     
     const cells = Array.from(document.querySelectorAll(`td[data-last-day='${date}']`))
@@ -60,12 +60,11 @@ const Budget = () => {
   }
 
   React.useEffect(() => {
-    if (lastDays.length > 0) {
-      lastDays.forEach((lastDayOfMonth) => {
-        getBudget(lastDayOfMonth)
-      })
+      lastDays.forEach((lastDay) => {
+        console.log(lastDay)
+        getBudget(lastDay)
       // eslint-disable-next-line
-    }}, [getBudget, year])
+    })}, [getBudget, year])
 
   const elementsToRender = 
   <table id="budget-table" className={styles.table}>
@@ -100,9 +99,9 @@ const Budget = () => {
         <th>Prev.</th><th>Exec.</th>
         <th>Prev.</th><th>Exec.</th>
       </tr>
-      {categories.map((group) => {
+      {categories.map((group, i) => {
         return (
-          <>
+          <React.Fragment key={i}>
             <tr key={group.id}>
               <td data-cell-type="group-title">{group.name}</td>
               <td>R$ 0,00</td>
@@ -112,42 +111,17 @@ const Budget = () => {
               <tr key={cat.id}>
                 <td>{cat.name}</td>
                 <td>0,00</td>
-                {lastDays.map((lastDayOfMonth) => {
+                {lastDays.map((lastDay, i) => {
                   return (
-                    <>
-                    <td data-cell-type='cat-prev' data-last-day={lastDayOfMonth} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                    <td data-cell-type='cat-exec' data-last-day={lastDayOfMonth} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                    </>
-                  )
-                })}
-                {/* <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 1)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 1)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 2)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 2)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 3)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 3)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 4)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 4)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 5)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 5)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 6)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 6)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 7)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 7)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 8)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 8)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 9)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 9)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 10)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 10)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 11)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 11)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-prev' data-last-day={getLastDay(year, 12)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
-                <td data-cell-type='cat-exec' data-last-day={getLastDay(year, 12)} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td> */}
+                    <React.Fragment key={i}>
+                      <td data-cell-type='cat-prev' data-last-day={lastDay} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td> 
+                      <td data-cell-type='cat-exec' data-last-day={lastDay} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
+                    </React.Fragment>
+                  )})}
               </tr>
               )
             })}
-          </>
+          </React.Fragment>
         )})}
 
 
