@@ -7,22 +7,29 @@ import styles from './Budget.module.css'
 import useDate from '../../Hooks/useDate'
 import convertToFloat from '../../Helpers/convertToFloat'
 import TransactionsOnBudget from './TransactionsOnBudget'
+import ReactTooltip from 'react-tooltip'
 
 const Budget = () => {
 
   const {setPageName} = React.useContext(AppContext)
   React.useEffect(() => {setPageName("Orçamento")}, [setPageName])
 
-  const {getLastDay} = useDate();
+  const {getFirstDay, getLastDay} = useDate();
   const {request, fetchLoading} = useFetch()
-  const {year, categories, setLoading} = React.useContext(AppContext)
+  const {year, month, categories, setLoading} = React.useContext(AppContext)
   const [transactionsModalIsOpen, setTransactionsModalIsOpen] = React.useState(false)
   const [selectedCatId, setSelectedCatId] = React.useState(null)
   const [selectedMonth, setSelectedMonth] = React.useState(null)
+  const [includeExpectedOnTransactionsModal, setIncludeExpectedOnTransactionsModal] = React.useState(null)
 
   React.useEffect(() => {
     setLoading(fetchLoading)
   }, [fetchLoading, setLoading])
+
+  React.useEffect(() => {
+    ReactTooltip.rebuild()
+    if(!transactionsModalIsOpen) {ReactTooltip.hide()}
+  }, [transactionsModalIsOpen])
 
   const lastDays = React.useMemo(() => {
     const arr = []
@@ -32,28 +39,33 @@ const Budget = () => {
     return arr
   }, [year, getLastDay])
 
-  const getBudget = React.useCallback(async(date) => {
+  const getBudget = React.useCallback(async(lastDay) => {
     const token = window.localStorage.getItem('token')
-    const {url, options} = GET_BALANCE_FOR_BUDGET(token, {date: date, typeofdate: 'transaction_date'})
+    const firstDay = getFirstDay(lastDay.split('-')[0], lastDay.split('-')[1])
+    const {url, options} = GET_BALANCE_FOR_BUDGET(token, {from: firstDay, to: lastDay, typeofdate: 'transaction_date'})
     const {json} = await request(url, options)
     
-    const cells = Array.from(document.querySelectorAll(`td[data-last-day='${date}']`))
+    const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
     const prevCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-prev']"))
     const execCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-exec']"))
 
     prevCells.forEach((cell) => {
-      cell.innerText = convertToFloat(json.balances[cell.dataset.catId].expected)
+      if (cell.dataset.catId) { cell.innerText = convertToFloat(json.balances.categories[cell.dataset.catId].expected) }
+      else { cell.innerText = convertToFloat(json.balances.all_month.expected) }
     })
 
     execCells.forEach((cell) => {
-      cell.innerText = convertToFloat(json.balances[cell.dataset.catId].made)
+      if (cell.dataset.catId){ cell.innerText = convertToFloat(json.balances.categories[cell.dataset.catId].made) }
+      else { cell.innerText = convertToFloat(json.balances.all_month.made) }
     })
+      // eslint-disable-next-line
   }, [request])
 
   function handleClickOnCell({target}){
     const month = target.dataset.lastDay.split('-')[1]
     const {catId} = target.dataset;
-    console.log(month, catId)
+    if (target.dataset.cellType === 'cat-exec') setIncludeExpectedOnTransactionsModal('false')
+    else setIncludeExpectedOnTransactionsModal('true')
     setSelectedCatId(catId)
     setSelectedMonth(month)
     setTransactionsModalIsOpen(true)
@@ -113,8 +125,8 @@ const Budget = () => {
                 {lastDays.map((lastDay, i) => {
                   return (
                     <React.Fragment key={i}>
-                      <td data-cell-type='cat-prev' data-last-day={lastDay} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td> 
-                      <td data-cell-type='cat-exec' data-last-day={lastDay} data-cat-id={cat.id} data-load="true" onClick={handleClickOnCell}>...</td>
+                      <td data-cell-type='cat-prev' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"} data-cat-id={cat.id} onDoubleClick={handleClickOnCell}>...</td> 
+                      <td data-cell-type='cat-exec' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"} data-cat-id={cat.id} onDoubleClick={handleClickOnCell}>...</td>
                     </React.Fragment>
                   )})}
               </tr>
@@ -122,50 +134,38 @@ const Budget = () => {
             })}
           </React.Fragment>
         )})}
-
-
-          {/* // <tr>
-          //   <td style={{fontWeight: 'bold'}}>{group.name}</div>
-          //   {group.categories.map((cat) => {
-          //     return (
-          //       <div>
-          //         <div>{cat.name}</div>
-          //         <div>Jan</div>
-          //       </div>
-          //     )
-          //     </td>
-          //   })}
-          // </tr>
-      //   )
-      // })} */}
+      <tr>
+        <th data-cell-type="result-title" data-sticky="left-1">Result. mês</th>
+        <td>R$ 0,00</td>
+        {lastDays.map((lastDay, i) => {
+          return (
+            <React.Fragment key={i}>
+              <td data-cell-type='cat-prev' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td> 
+              <td data-cell-type='cat-exec' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td>
+            </React.Fragment>
+        )})}
+      </tr>
+      <tr>
+        <th data-cell-type="result-title" data-sticky="left-1">Result. acum.</th>
+        <td>R$ 0,00</td>
+        {lastDays.map((lastDay, i) => {
+          return (
+            <React.Fragment key={i}>
+              <td data-cell-type='cat-prev' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td> 
+              <td data-cell-type='cat-exec' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td>
+            </React.Fragment>
+        )})}
+      </tr>
     </thead>
-    <tbody>
-        {/* <?php echo $budgetLines; ?> */}
-    </tbody>
 </table>
 
   return (
     <>
       <Header />
-      <div className={styles.tableContainer}>      
-      {/* {categories.map((group) => {
-        return (
-          <div>
-            <div style={{fontWeight: 'bold'}}>{group.name}</div>
-            {group.categories.map((cat) => {
-              return (
-                <div>
-                  <div>{cat.name}</div>
-                  <div>Jan</div>
-                </div>
-              )
-            })}
-          </div>
-        )
-      })} */}
-      {elementsToRender}
+      <div className={styles.tableContainer}>
+        {elementsToRender}
       </div>
-      {transactionsModalIsOpen && <TransactionsOnBudget catId={selectedCatId} month={selectedMonth} isOpen={transactionsModalIsOpen} setIsOpen={setTransactionsModalIsOpen}/>}
+      {transactionsModalIsOpen && <TransactionsOnBudget catId={selectedCatId} month={selectedMonth} includeExpected={includeExpectedOnTransactionsModal} isOpen={transactionsModalIsOpen} setIsOpen={setTransactionsModalIsOpen}/>}
     </>
   )
 }

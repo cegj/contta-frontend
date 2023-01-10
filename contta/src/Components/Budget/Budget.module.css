@@ -3,6 +3,7 @@
   overflow: auto;
   margin: 1rem auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+  border-radius: 10px;
 }
 
 .table {
@@ -10,6 +11,7 @@
   overflow: scroll;
   background-color: white;
   font-size: .875rem;
+  border-collapse: collapse;
 }
 
 .table th,
@@ -23,18 +25,16 @@
   left: 0;
 }
 
-[data-sticky="left-1"] {}
-
 td[data-cell-type="cat-prev"] {
-  background-color: rgb(240, 240, 240);
+  background-color: #f0f0f0;
   height: 40px;
-  cursor: pointer;
+  cursor: default;
 }
 
 td[data-cell-type="cat-exec"] {
-  background-color: rgb(228, 228, 228);
+  background-color: #e4e4e4;
   height: 40px;
-  cursor: pointer;
+  cursor: default;
 }
 
 .table [data-cell-type="group-title"] {
@@ -42,7 +42,16 @@ td[data-cell-type="cat-exec"] {
   width: 300px;
 }
 
-.table [data-cell-type="category-title"] {
+.table [data-cell-type="category-title"],
+.table [data-cell-type="result-title"] {
   background-color: #ffffff;
   width: 300px;
+}
+
+.table [data-cell-type="cat-prev"][data-is-selected="true"] {
+  background-color: #fffabb;
+}
+
+.table [data-cell-type="cat-exec"][data-is-selected="true"] {
+  background-color: #e6e1a8;
 }
