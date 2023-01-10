@@ -32,7 +32,7 @@ const TransactionsOnBudget = ({catId, month, includeExpected, isOpen, setIsOpen}
     if (transactions.length === 0) setHasNoTransactions(true)
     else setTransactionsOfSelected(transactions)
     console.log(transactions)
-  }, [getTransactions, getFirstDay, getLastDay, month, year, typeOfDateBalance, setHasNoTransactions])
+  }, [getTransactions, getFirstDay, getLastDay, month, year, typeOfDateBalance, setHasNoTransactions, includeExpected])
 
   React.useEffect(() => {
     if(isOpen && transactionsOfSelected.length === 0){

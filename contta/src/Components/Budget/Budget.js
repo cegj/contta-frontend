@@ -8,6 +8,7 @@ import useDate from '../../Hooks/useDate'
 import convertToFloat from '../../Helpers/convertToFloat'
 import TransactionsOnBudget from './TransactionsOnBudget'
 import ReactTooltip from 'react-tooltip'
+import TransactionsContext from '../../Contexts/TransactionsContext'
 
 const Budget = () => {
 
@@ -21,6 +22,7 @@ const Budget = () => {
   const [selectedCatId, setSelectedCatId] = React.useState(null)
   const [selectedMonth, setSelectedMonth] = React.useState(null)
   const [includeExpectedOnTransactionsModal, setIncludeExpectedOnTransactionsModal] = React.useState(null)
+  const {updateTransactions, setUpdateTransactions} = React.useContext(TransactionsContext)
 
   React.useEffect(() => {
     setLoading(fetchLoading)
@@ -44,6 +46,7 @@ const Budget = () => {
     const firstDay = getFirstDay(lastDay.split('-')[0], lastDay.split('-')[1])
     const {url, options} = GET_BALANCE_FOR_BUDGET(token, {from: firstDay, to: lastDay, typeofdate: 'transaction_date'})
     const {json} = await request(url, options)
+    setUpdateTransactions(false)
     
     const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
     const prevCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-prev']"))
@@ -73,9 +76,9 @@ const Budget = () => {
 
   React.useEffect(() => {
       lastDays.forEach((lastDay) => {
-        getBudget(lastDay)
+        if (setUpdateTransactions) getBudget(lastDay)
       // eslint-disable-next-line
-    })}, [getBudget, year])
+    })}, [getBudget, year, updateTransactions])
 
   const elementsToRender = 
   <table id="budget-table" className={styles.table}>
