@@ -6,6 +6,7 @@
 }
 
 .table {
+  max-width: 1200px;
   overflow: scroll;
   background-color: white;
   font-size: .875rem;
@@ -17,16 +18,31 @@
   margin: 0;
 }
 
+[data-sticky="left-1"] {
+  position: sticky;
+  left: 0;
+}
+
+[data-sticky="left-1"] {}
+
 td[data-cell-type="cat-prev"] {
   background-color: rgb(240, 240, 240);
   height: 40px;
+  cursor: pointer;
 }
 
 td[data-cell-type="cat-exec"] {
   background-color: rgb(228, 228, 228);
   height: 40px;
+  cursor: pointer;
 }
 
 .table [data-cell-type="group-title"] {
   background-color: antiquewhite;
+  width: 300px;
+}
+
+.table [data-cell-type="category-title"] {
+  background-color: #ffffff;
+  width: 300px;
 }

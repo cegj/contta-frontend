@@ -16,9 +16,9 @@ const Budget = () => {
   const {getLastDay} = useDate();
   const {request, fetchLoading} = useFetch()
   const {year, categories, setLoading} = React.useContext(AppContext)
-  const {transactionsModalIsOpen, setTransactionsModalIsOpen} = React.useState(false)
-  const {selectedCatId, setSelectedCatId} = React.useState(null)
-  const {selectedMonth, setSelectedMonth} = React.useState(null)
+  const [transactionsModalIsOpen, setTransactionsModalIsOpen] = React.useState(false)
+  const [selectedCatId, setSelectedCatId] = React.useState(null)
+  const [selectedMonth, setSelectedMonth] = React.useState(null)
 
   React.useEffect(() => {
     setLoading(fetchLoading)
@@ -54,14 +54,13 @@ const Budget = () => {
     const month = target.dataset.lastDay.split('-')[1]
     const {catId} = target.dataset;
     console.log(month, catId)
-    setSelectedMonth(month)
     setSelectedCatId(catId)
+    setSelectedMonth(month)
     setTransactionsModalIsOpen(true)
   }
 
   React.useEffect(() => {
       lastDays.forEach((lastDay) => {
-        console.log(lastDay)
         getBudget(lastDay)
       // eslint-disable-next-line
     })}, [getBudget, year])
@@ -70,7 +69,7 @@ const Budget = () => {
   <table id="budget-table" className={styles.table}>
     <thead>
       <tr>
-        <th rowSpan="2">Categoria</th>
+        <th rowSpan="2" data-cell-type="category-title" data-sticky="left-1">Categoria</th>
         <th rowSpan="2">Resultado</th>
         <th data-type='month-title' colSpan='2'>jan</th>
         <th data-type='month-title' colSpan='2'>fev</th>
@@ -103,13 +102,13 @@ const Budget = () => {
         return (
           <React.Fragment key={i}>
             <tr key={group.id}>
-              <td data-cell-type="group-title">{group.name}</td>
+              <td data-cell-type="group-title" data-sticky="left-1">{group.name}</td>
               <td>R$ 0,00</td>
             </tr>
             {group.categories.map((cat) => {
               return (
               <tr key={cat.id}>
-                <td>{cat.name}</td>
+                <td data-cell-type="category-title" data-sticky="left-1">{cat.name}</td>
                 <td>0,00</td>
                 {lastDays.map((lastDay, i) => {
                   return (
