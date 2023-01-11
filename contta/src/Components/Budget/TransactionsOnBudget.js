@@ -8,12 +8,17 @@ import StatementList from '../Statement/StatementList'
 
 const TransactionsOnBudget = ({catId, month, includeExpected, isOpen, setIsOpen}) => {
 
-  const {year, typeOfDateBalance, categories} = React.useContext(AppContext)
+  const {year, typeOfDateBalance, categories, setTransactionFormValues} = React.useContext(AppContext)
   const {getTransactions} = React.useContext(TransactionsContext)
   const [transactionsOfSelected, setTransactionsOfSelected] = React.useState([]);
   const {getFirstDay, getLastDay} = useDate()
   const [hasNoTransactions, setHasNoTransactions] = React.useState(false)
   const [category, setCategory] = React.useState(null)
+
+  function setValuesToNewTransaction(){
+    console.log(category)
+    setTransactionFormValues({category: {label: category.name, value: category.id}})
+  }
 
   React.useEffect(() => {
     categories.forEach((group) => {
@@ -31,7 +36,6 @@ const TransactionsOnBudget = ({catId, month, includeExpected, isOpen, setIsOpen}
     const transactions = await getTransactions({from: firstDay, to: lastDay, category: catId, typeofdate: typeOfDateBalance, includeexpected: includeExpected})
     if (transactions.length === 0) setHasNoTransactions(true)
     else setTransactionsOfSelected(transactions)
-    console.log(transactions)
   }, [getTransactions, getFirstDay, getLastDay, month, year, typeOfDateBalance, setHasNoTransactions, includeExpected])
 
   React.useEffect(() => {
@@ -43,7 +47,9 @@ const TransactionsOnBudget = ({catId, month, includeExpected, isOpen, setIsOpen}
     <Modal title={`Transações de ${category && category.name} em ${month}/${year}`} isOpen={isOpen} setIsOpen={setIsOpen}>
       <div data-on-modal="true" style={{maxHeight: '350px', overflow: 'auto'}}>
         <StatementList transactions={transactionsOfSelected} categoryId={catId} />
-        <AddTransactionButton />
+        <div onClick={setValuesToNewTransaction}>
+          <AddTransactionButton />
+        </div>
       </div>
     </Modal>
   )
