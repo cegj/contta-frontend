@@ -74,6 +74,7 @@ const TransactionForm = () => {
 
   React.useEffect(() => {
     if (Object.keys(transactionFormValues).length > 0){
+      console.log(transactionFormValues.category)
       transactionFormValues.type && setType(transactionFormValues.type);
       transactionFormValues.transactionDate && transactionDate.setValue(transactionFormValues.transactionDate);
       transactionFormValues.paymentDate && paymentDate.setValue(transactionFormValues.paymentDate);

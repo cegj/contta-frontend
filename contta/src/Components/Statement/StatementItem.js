@@ -104,7 +104,7 @@ const StatementItem = (transaction) => {
       edittingValues.value = transaction.value;
       edittingValues.description = transaction.description;
       categoryOptions.forEach((group) => {
-        const cat = group.options.find((category) => category.value === 1)
+        const cat = group.options.find((category) => category.value === transaction.category_id)
         if (cat) {edittingValues.category = cat; return};
       })
       let relatedTransactions = null;
