@@ -9,6 +9,7 @@ import convertToFloat from '../../Helpers/convertToFloat'
 import TransactionsOnBudget from './TransactionsOnBudget'
 import ReactTooltip from 'react-tooltip'
 import TransactionsContext from '../../Contexts/TransactionsContext'
+import convertToInteger from '../../Helpers/convertToInteger'
 
 const Budget = () => {
 
@@ -61,6 +62,16 @@ const Budget = () => {
       if (cell.dataset.catId){ cell.innerText = convertToFloat(json.balances.categories[cell.dataset.catId].made) }
       else { cell.innerText = convertToFloat(json.balances.all_month.made) }
     })
+
+    for (let catId in json.balances.categories){
+      const prevCell = document.querySelector(`td[data-is-selected='true'][data-cat-id='${catId}'][data-cell-type='cat-prev']`)
+      const execCell = document.querySelector(`td[data-is-selected='true'][data-cat-id='${catId}'][data-cell-type='cat-exec']`)
+      const prevValue = convertToInteger(prevCell.innerText)
+      const execValue = convertToInteger(execCell.innerText)
+      const resultCell = document.querySelector(`td[data-cat-id='${catId}'][data-cell-type='cat-result']`)
+      resultCell.innerText = convertToFloat(prevValue - execValue);
+
+    }
       // eslint-disable-next-line
   }, [request])
 
@@ -124,7 +135,7 @@ const Budget = () => {
               return (
               <tr key={cat.id}>
                 <td data-cell-type="category-title" data-sticky="left-1">{cat.name}</td>
-                <td>0,00</td>
+                <td data-cat-id={cat.id} data-cell-type='cat-result'>0,00</td>
                 {lastDays.map((lastDay, i) => {
                   return (
                     <React.Fragment key={i}>
