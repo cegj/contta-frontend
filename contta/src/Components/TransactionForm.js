@@ -18,11 +18,13 @@ const TransactionForm = () => {
 
   const {setMessage} = React.useContext(MessagesContext);
   const {fetchLoading} = useFetch();
-  const {categories, accounts, transactionToEdit, setTransactionToEdit, transactionModalIsOpen, setTransactionModalIsOpen, setLoading} = React.useContext(AppContext);
+  const {categories, accounts, transactionModalIsOpen, setTransactionModalIsOpen, setLoading, transactionFormValues, setTransactionFormValues} = React.useContext(AppContext);
   const [modalIsFixed, setModalIsFixed] = React.useState(false);
   const [keepAllValues, setKeepAllValues] = React.useState(false);
   const [reload, setReload] = React.useState(false);
-  const {getTransactionById, storeTransaction, editTransaction, typeOptions, categoryOptions, accountOptions} = React.useContext(TransactionsContext);
+  const {storeTransaction, editTransaction, typeOptions, categoryOptions, accountOptions} = React.useContext(TransactionsContext);
+
+  React.useEffect(() => {console.log(transactionFormValues)}, [transactionFormValues])
   
   const [type, setType] = React.useState([]);
   const transactionDate = useForm();
@@ -36,24 +38,6 @@ const TransactionForm = () => {
   const preview = useForm('checkbox');
   const usual = useForm('checkbox');
   const cascade = useForm('checkbox');
-
-  // React.useEffect(() => {
-  //   const regex = /^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$/
-  //   if (regex.test(transactionDate.value)){
-  //     if (paymentDate.value === ""){
-  //       paymentDate.setValue(transactionDate.value)
-  //     }  
-  //   }
-  // }, [transactionDate, paymentDate])
-
-  // React.useEffect(() => {
-  //   if (!transactionToEdit){
-  //     const date = new Date()
-  //     const today = date.toISOString().split('T')[0]
-  //     transactionDate.setValue(today)
-  //     paymentDate.setValue(today)
-  //   }
-  // }, [paymentDate, transactionDate, transactionToEdit])
 
   const clearForm = React.useCallback(() => {
     setType([]);
@@ -78,7 +62,7 @@ const TransactionForm = () => {
     setLoading(fetchLoading)
   }, [fetchLoading, setLoading])
 
-  //Update form is reload is setted true by some child
+  //Update form is reload if it's is setted true by some child
   React.useEffect(() => {
     if(reload){
       setReload(false)
@@ -88,60 +72,29 @@ const TransactionForm = () => {
   //Update transaction form component if some of this dependencies changes
   React.useEffect(() => {}, [transactionModalIsOpen, accounts, categories, accountOptions, categoryOptions]);
 
-  const setEditingTransactionValues = React.useCallback(async(transactionToEdit) => {
-    async function getRelatedTransactions(id){
-      const transactions = await getTransactionById(id);
-      return transactions.allRelated
-    }
-    async function setValues(transactionToEdit){
-      const typeOfEditting = typeOptions.find(type => type.value === transactionToEdit.type)
-      let categoryOfEditting;
-      categoryOptions.forEach((group) => {
-        const cat = group.options.find((category) => category.value === 1)
-        if (cat) {categoryOfEditting = cat; return};
-      })
-      let relatedTransactions = null;
-      if (transactionToEdit.type === "T") {relatedTransactions = await getRelatedTransactions(transactionToEdit.id)}
-      let accountOfEditting;
-      let destinationAccountOfEditting;
-      if (transactionToEdit.type === "T"){
-        accountOfEditting = accountOptions.find(account => account.value === relatedTransactions[0].account_id)
-        destinationAccountOfEditting = accountOptions.find(account => account.value === relatedTransactions[1].account_id)
-      } else {
-        accountOfEditting = accountOptions.find(account => account.value === transactionToEdit.account_id)
-      }
-
-      setType(typeOfEditting);
-      transactionDate.setValue(transactionToEdit.transaction_date);
-      paymentDate.setValue(transactionToEdit.payment_date);
-      value.setValue(convertToFloat(transactionToEdit.value));
-      description.setValue(transactionToEdit.description);
-      setCategory(categoryOfEditting);
-      setAccount(accountOfEditting);
-      setDestinationAccount(destinationAccountOfEditting);
-      totalInstallments.setValue(transactionToEdit.total_installments);
-      preview.setValue(transactionToEdit.preview);
-      usual.setValue(transactionToEdit.usual);  
-      setTransactionModalIsOpen(true)  
-    }
-    setValues(transactionToEdit);
-  }, [transactionToEdit]) // eslint-disable-line react-hooks/exhaustive-deps
-
-
-  // Open transaction with transaction data setted if user clicks to edit transaction
   React.useEffect(() => {
-    if (transactionToEdit){
-      setEditingTransactionValues(transactionToEdit)
+    if (Object.keys(transactionFormValues).length > 0){
+      transactionFormValues.type && setType(transactionFormValues.type);
+      transactionFormValues.transactionDate && transactionDate.setValue(transactionFormValues.transactionDate);
+      transactionFormValues.paymentDate && paymentDate.setValue(transactionFormValues.paymentDate);
+      transactionFormValues.value && value.setValue(convertToFloat(transactionFormValues.value));
+      transactionFormValues.description && description.setValue(transactionFormValues.description);
+      transactionFormValues.category && setCategory(transactionFormValues.category);
+      transactionFormValues.account && setAccount(transactionFormValues.account);
+      transactionFormValues.destinationAccount && setDestinationAccount(transactionFormValues.destinationAccount);
+      transactionFormValues.preview && preview.setValue(transactionFormValues.preview);
+      transactionFormValues.usual && usual.setValue(transactionFormValues.usual);  
     }
-  }, [transactionToEdit, setEditingTransactionValues])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactionModalIsOpen])
 
   //Set options and values to default when form is closed
   React.useEffect(() => {
     if (!transactionModalIsOpen){
       clearForm();
-      setTransactionToEdit(null)
+      setTransactionFormValues({})
     }
-  }, [transactionModalIsOpen, setTransactionToEdit, clearForm])
+  }, [transactionModalIsOpen, setTransactionFormValues, clearForm])
 
   function validateSubmit(fields){
     function validate(field){
@@ -220,9 +173,10 @@ const TransactionForm = () => {
           return
       }
 
-      if (transactionToEdit){
-        const stored = editTransaction(body, transactionToEdit.type, transactionToEdit.id, cascade.value)
-        if (stored){
+      if (transactionFormValues && transactionFormValues.isEdit){
+        console.log(transactionFormValues)
+        const editted = editTransaction(body, transactionFormValues.type.value, transactionFormValues.id, cascade.value)
+        if (editted){
           clearForm();
           setReload(true);
           if(!modalIsFixed){
@@ -230,8 +184,8 @@ const TransactionForm = () => {
           }  
         }
       } else {
-        const editted = storeTransaction(body, type.value)
-        if (editted){
+        const stored = storeTransaction(body, type.value)
+        if (stored){
           clearForm();
           setReload(true);
           if(!modalIsFixed){
@@ -247,7 +201,7 @@ const TransactionForm = () => {
   return (
       transactionModalIsOpen &&
         <Modal
-        title={transactionToEdit ? 'Editar transação' : 'Registrar transação'}
+        title={transactionFormValues && transactionFormValues.isEdit ? 'Editar transação' : 'Registrar transação'}
         isOpen={transactionModalIsOpen}
         setIsOpen={setTransactionModalIsOpen}
         additionalBtns={additionalBtns}
@@ -264,7 +218,7 @@ const TransactionForm = () => {
                 style={{gridColumn: 'span 2'}}
                 reload={reload}
                 keepAllValues={keepAllValues}
-                disabled={transactionToEdit ? true : false}
+                disabled={transactionFormValues && transactionFormValues.isEdit ? true : false}
               />}
               <TransactionFormInput 
                 label='Data da transação'
@@ -352,7 +306,7 @@ const TransactionForm = () => {
                 keepAllValues={keepAllValues}
               />
               }
-              {(!transactionToEdit && (!type || type.value !== 'T')) && 
+              {(transactionFormValues && !transactionFormValues.isEdit && (!type || type.value !== 'T')) && 
               <TransactionFormInput 
                 label="Parcelas"
                 name="total_installments"
@@ -388,7 +342,7 @@ const TransactionForm = () => {
                 keepAllValues={keepAllValues}
               />
             </span>
-            {(transactionToEdit && type.value !== 'T') && <TransactionFormInput
+            {(transactionFormValues && transactionFormValues.isEdit && type.value !== 'T') && <TransactionFormInput
                 label="Aplicar mudanças às parcelas seguintes"
                 name="cascade"
                 type="checkbox"
@@ -403,7 +357,7 @@ const TransactionForm = () => {
             ?
             <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}} disabled>Registrando...</Button>
             :
-            <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}}>{transactionToEdit ? 'Editar' : 'Registrar'}</Button>
+            <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}}>{transactionFormValues && transactionFormValues.isEdit ? 'Editar' : 'Registrar'}</Button>
             }
             </form>
         </Modal>

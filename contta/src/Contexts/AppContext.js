@@ -21,10 +21,10 @@ export const AppContextData = ({children}) => {
   const {logged} = React.useContext(UserContext);
   const {request} = useFetch();
   const [transactionModalIsOpen, setTransactionModalIsOpen] = React.useState(false);
+  const [transactionFormValues, setTransactionFormValues] = React.useState({});
   const [monthYearModalIsOpen, setMonthYearModalIsOpen] = React.useState(false);
   const [settingModalIsOpen, setSettingModalIsOpen] = React.useState(false);
   const [reload, setReload] = React.useState(false);
-  const [transactionToEdit, setTransactionToEdit] = React.useState(null);
   const [loading, setLoading] = React.useState(false)
   const [groupedCategories, setGroupedCategories] = React.useState([])
   const [typeOfDateBalance, setTypeOfDateBalance] = React.useState(window.localStorage.typeOfDateBalance || 'transaction_date');
@@ -121,13 +121,13 @@ React.useEffect(() => {
         categories, setCategories, groupedCategories,
         accounts, setAccounts,
         transactionModalIsOpen, setTransactionModalIsOpen,
+        transactionFormValues, setTransactionFormValues,
         pageName, setPageName,
         pageSubName, setPageSubName,
         month, setMonth,
         year, setYear,
         monthYearModalIsOpen, setMonthYearModalIsOpen,
         reload, setReload,
-        transactionToEdit, setTransactionToEdit,
         loading, setLoading,
         settingModalIsOpen, setSettingModalIsOpen,
         typeOfDateBalance, setTypeOfDateBalance,

@@ -24,8 +24,8 @@ const StatementItem = (transaction) => {
   const [optionsIsOpen, setOptionsIsOpen] = React.useState(false);
   const {request} = useFetch();
   const {setMessage} = React.useContext(MessagesContext);
-  const {setTransactionToEdit, setUpdateAccountBalances, setUpdateCategoryBalances} = React.useContext(AppContext);
-  const {setUpdateTransactions, deleteTransaction} = React.useContext(TransactionsContext)
+  const {setUpdateAccountBalances, setUpdateCategoryBalances, setTransactionFormValues, setTransactionModalIsOpen} = React.useContext(AppContext);
+  const {setUpdateTransactions, deleteTransaction, getTransactionById, typeOptions, categoryOptions, accountOptions} = React.useContext(TransactionsContext)
   const [transactionToGetRelated, setTransactionToGetRelated] = React.useState(null);
   const [relatedModalIsOpen, setRelatedModalIsOpen] = React.useState(true);
   const [isOnModal, setIsOnModal] = React.useState(false);
@@ -88,8 +88,42 @@ const StatementItem = (transaction) => {
   }
 
   async function handleEdit(){
+
+    async function getRelatedTransactions(id){
+      const transactions = await getTransactionById(id);
+      return transactions.allRelated
+    }
+
+    async function setEdittingValuesAndOpenForm(transaction) {
+      const edittingValues = {}
+      console.log(transaction)
+      edittingValues.id = transaction.id
+      edittingValues.type = typeOptions.find(type => type.value === transaction.type)
+      edittingValues.transactionDate = transaction.transaction_date;
+      edittingValues.paymentDate = transaction.payment_date;
+      edittingValues.value = transaction.value;
+      edittingValues.description = transaction.description;
+      categoryOptions.forEach((group) => {
+        const cat = group.options.find((category) => category.value === 1)
+        if (cat) {edittingValues.category = cat; return};
+      })
+      let relatedTransactions = null;
+      if (transaction.type === "T") {relatedTransactions = await getRelatedTransactions(transaction.id)}
+      if (transaction.type === "T"){
+        edittingValues.account = accountOptions.find(account => account.value === relatedTransactions[0].account_id)
+        edittingValues.destinationAccount = accountOptions.find(account => account.value === relatedTransactions[1].account_id)
+      } else {
+        edittingValues.account = accountOptions.find(account => account.value === transaction.account_id)
+      }
+      edittingValues.preview = transaction.preview;
+      edittingValues.usual = transaction.usual;
+      edittingValues.isEdit = true;
+      setTransactionFormValues(edittingValues)
+      setTransactionModalIsOpen(true)
+      }
+  
+    setEdittingValuesAndOpenForm(transaction)
     setOptionsIsOpen(false)
-    setTransactionToEdit(transaction)
   }
 
   async function togglePreview(){
