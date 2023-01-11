@@ -9,14 +9,13 @@ import StatementList from '../Statement/StatementList'
 const TransactionsOnBudget = ({catId, month, includeExpected, isOpen, setIsOpen}) => {
 
   const {year, typeOfDateBalance, categories, setTransactionFormValues} = React.useContext(AppContext)
-  const {getTransactions} = React.useContext(TransactionsContext)
+  const {getTransactions, updateTransactions, setUpdateTransactions} = React.useContext(TransactionsContext)
   const [transactionsOfSelected, setTransactionsOfSelected] = React.useState([]);
   const {getFirstDay, getLastDay} = useDate()
   const [hasNoTransactions, setHasNoTransactions] = React.useState(false)
   const [category, setCategory] = React.useState(null)
 
   function setValuesToNewTransaction(){
-    console.log(category)
     setTransactionFormValues({category: {label: category.name, value: category.id}})
   }
 
@@ -39,9 +38,10 @@ const TransactionsOnBudget = ({catId, month, includeExpected, isOpen, setIsOpen}
   }, [getTransactions, getFirstDay, getLastDay, month, year, typeOfDateBalance, setHasNoTransactions, includeExpected])
 
   React.useEffect(() => {
-    if(isOpen && transactionsOfSelected.length === 0){
+    if(isOpen && (transactionsOfSelected.length === 0 || updateTransactions)){
       if (!hasNoTransactions) getTransactionsOfSelected(catId)
-    }}, [isOpen, getTransactionsOfSelected, transactionsOfSelected.length, catId, hasNoTransactions])
+      setUpdateTransactions(false)
+    }}, [isOpen, getTransactionsOfSelected, transactionsOfSelected.length, catId, hasNoTransactions, updateTransactions, setUpdateTransactions])
 
   if (isOpen) return (
     <Modal title={`Transações de ${category && category.name} em ${month}/${year}`} isOpen={isOpen} setIsOpen={setIsOpen}>
