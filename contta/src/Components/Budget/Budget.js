@@ -10,6 +10,7 @@ import TransactionsOnBudget from './TransactionsOnBudget'
 import ReactTooltip from 'react-tooltip'
 import TransactionsContext from '../../Contexts/TransactionsContext'
 import convertToInteger from '../../Helpers/convertToInteger'
+import ScrollContainer from 'react-indiana-drag-scroll'
 
 const Budget = () => {
 
@@ -273,9 +274,9 @@ const Budget = () => {
   return (
     <>
       <Header />
-      <div className={styles.tableContainer}>
+      <ScrollContainer className={styles.tableContainer}>
         {elementsToRender}
-      </div>
+      </ScrollContainer>
       {transactionsModalIsOpen && <TransactionsOnBudget catId={selectedCatId} month={selectedMonth} includeExpected={includeExpectedOnTransactionsModal} isOpen={transactionsModalIsOpen} setIsOpen={setTransactionsModalIsOpen}/>}
     </>
   )
