@@ -16,7 +16,7 @@ const TransactionsOnBudget = ({catId, month, includeExpected, isOpen, setIsOpen}
   const [category, setCategory] = React.useState(null)
 
   function setValuesToNewTransaction(){
-    setTransactionFormValues({category: {label: category.name, value: category.id}})
+    setTransactionFormValues({category: {label: category.name, value: category.id}, transactionDate: `${year}-${month}-01`, paymentDate: `${year}-${month}-01`})
   }
 
   React.useEffect(() => {

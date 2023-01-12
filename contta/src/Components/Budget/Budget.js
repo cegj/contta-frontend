@@ -96,6 +96,12 @@ const Budget = () => {
 
   const setResultCells = React.useCallback(() => {
     categories.forEach((group) => {
+      const prevValue = +convertToInteger(document.querySelector(`td[data-is-selected='true'][data-group-id='${group.id}'][data-cell-type='group-prev']`).innerText)
+      const execValue = +convertToInteger(document.querySelector(`td[data-is-selected='true'][data-group-id='${group.id}'][data-cell-type='group-exec']`).innerText)
+      const resultCell = document.querySelector(`td[data-group-id='${group.id}'][data-cell-type='group-result']`)
+      const result = prevValue - execValue;
+      resultCell.innerText = convertToFloat(result)
+    
       group.categories.forEach((cat) => {
         const prevValue = +convertToInteger(document.querySelector(`td[data-is-selected='true'][data-cat-id='${cat.id}'][data-cell-type='cat-prev']`).innerText)
         const execValue = +convertToInteger(document.querySelector(`td[data-is-selected='true'][data-cat-id='${cat.id}'][data-cell-type='cat-exec']`).innerText)
@@ -115,12 +121,6 @@ const Budget = () => {
     setSelectedMonth(month)
     setTransactionsModalIsOpen(true)
   }
-
-  // React.useEffect(() => {
-  //     lastDays.forEach((lastDay) => {
-  //       if (setUpdateTransactions) getBudget(lastDay)
-  //     // eslint-disable-next-line
-  //   })}, [getBudget, year, updateTransactions])
 
   React.useEffect(() => {
     async function getAndSet(){
@@ -192,7 +192,7 @@ const Budget = () => {
           <React.Fragment key={i}>
             <tr key={group.id}>
               <td data-cell-type="group-title" data-cell-line="group-line" data-sticky="left-1">{group.name}</td>
-              <td data-cell-line="group-line">R$ 0,00</td>
+              <td data-cell-line="group-line" data-group-id={group.id} data-cell-type='group-result'>...</td>
               {lastDays.map((lastDay, i) => {
                 return (
                   <React.Fragment key={i}>
