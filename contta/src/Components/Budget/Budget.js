@@ -187,7 +187,7 @@ const Budget = () => {
     <thead>
       <tr>
         <th rowSpan="2" data-cell-type="category-title" data-sticky="left-1">Categoria</th>
-        <th rowSpan="2">Resultado</th>
+        <th rowSpan="2" data-sticky="left-2">Resultado</th>
         <th data-type='month-title' colSpan='2'>jan</th>
         <th data-type='month-title' colSpan='2'>fev</th>
         <th data-type='month-title' colSpan='2'>mar</th>
@@ -220,7 +220,7 @@ const Budget = () => {
           <React.Fragment key={i}>
             <tr key={group.id}>
               <td data-cell-type="group-title" data-cell-line="group-line" data-sticky="left-1">{group.name}</td>
-              <td data-cell-line="group-line" data-group-id={group.id} data-cell-type='group-result'>...</td>
+              <td data-cell-line="group-line" data-group-id={group.id} data-cell-type='group-result' data-sticky="left-2">...</td>
               {lastDays.map((lastDay, i) => {
                 return (
                   <React.Fragment key={i}>
@@ -233,7 +233,7 @@ const Budget = () => {
               return (
               <tr key={cat.id}>
                 <td data-cell-type="category-title" data-sticky="left-1">{cat.name}</td>
-                <td data-cat-id={cat.id} data-cell-type='cat-result'>0,00</td>
+                <td data-cat-id={cat.id} data-cell-type='cat-result' data-sticky="left-2">0,00</td>
                 {lastDays.map((lastDay, i) => {
                   return (
                     <React.Fragment key={i}>
@@ -248,7 +248,7 @@ const Budget = () => {
         )})}
       <tr>
         <th data-cell-type="result-title" data-sticky="left-1">Result. mês</th>
-        <td data-cell-type="month-result">R$ 0,00</td>
+        <td data-cell-type="month-result" data-sticky="left-2">R$ 0,00</td>
         {lastDays.map((lastDay, i) => {
           return (
             <React.Fragment key={i}>
@@ -259,7 +259,7 @@ const Budget = () => {
       </tr>
       <tr>
         <th data-cell-type="result-title" data-sticky="left-1">Result. acum.</th>
-        <td data-cell-type="accumulated-result">R$ 0,00</td>
+        <td data-cell-type="accumulated-result" data-sticky="left-2">R$ 0,00</td>
         {lastDays.map((lastDay, i) => {
           return (
             <React.Fragment key={i}>

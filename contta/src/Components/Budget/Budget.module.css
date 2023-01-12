@@ -25,6 +25,12 @@
   left: 0;
 }
 
+[data-sticky="left-2"] {
+  position: sticky;
+  left: 133.25px;
+  background-color: #ffffff;
+}
+
 .table [data-cell-type="group-prev"],
 .table [data-cell-type="month-prev"],
 .table [data-cell-type="accumulated-prev"] {
