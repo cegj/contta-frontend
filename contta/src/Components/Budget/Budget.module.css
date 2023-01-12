@@ -25,28 +25,32 @@
   left: 0;
 }
 
-td[data-cell-type="group-prev"] {
+.table [data-cell-type="group-prev"],
+.table [data-cell-type="month-prev"],
+.table [data-cell-type="accumulated-prev"] {
   background-color: #eeeeee;
   color: #8f8f8f;
   height: 40px;
   cursor: default;
 }
 
-td[data-cell-type="group-exec"] {
+.table [data-cell-type="group-exec"],
+.table [data-cell-type="month-exec"],
+.table [data-cell-type="accumulated-exec"] {
   background-color: #e7e7e7;
   color: #6d6d6d;
   height: 40px;
   cursor: default;
 }
 
-td[data-cell-type="cat-prev"] {
+.table [data-cell-type="cat-prev"] {
   background-color: #fafafa;
   color: #8f8f8f;
   height: 40px;
   cursor: pointer;
 }
 
-td[data-cell-type="cat-exec"] {
+.table [data-cell-type="cat-exec"] {
   background-color: #f5f5f5;
   color: #6d6d6d;
   height: 40px;
@@ -64,11 +68,15 @@ td[data-cell-type="cat-exec"] {
   width: 300px;
 }
 
-.table [data-cell-type="group-prev"][data-is-selected="true"] {
+.table [data-cell-type="group-prev"][data-is-selected="true"],
+.table [data-cell-type="month-prev"][data-is-selected="true"],
+.table [data-cell-type="accumulated-prev"][data-is-selected="true"] {
   background-color: #ffffe3 !important;
 }
 
-.table [data-cell-type="group-exec"][data-is-selected="true"] {
+.table [data-cell-type="group-exec"][data-is-selected="true"],
+.table [data-cell-type="month-exec"][data-is-selected="true"],
+.table [data-cell-type="accumulated-exec"][data-is-selected="true"] {
   background-color: #fdfdd6 !important;
 }
 

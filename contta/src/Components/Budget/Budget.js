@@ -57,7 +57,7 @@ const Budget = () => {
     } finally {
       setUpdateTransactions(false)
     }
-  }, [])
+  }, [getFirstDay, request, setMessage, setUpdateTransactions])
 
   const setPrevExecCatCells = React.useCallback((values, lastDay) => {
     const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
@@ -65,12 +65,23 @@ const Budget = () => {
     const execCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-exec']"))
     prevCells.forEach((cell) => {
       if (cell.dataset.catId) { cell.innerText = convertToFloat(values.categories[cell.dataset.catId].expected) }
-      else { cell.innerText = convertToFloat(values.all_month.expected) }
     })
     execCells.forEach((cell) => {
       if (cell.dataset.catId){ cell.innerText = convertToFloat(values.categories[cell.dataset.catId].made) }
-      else { cell.innerText = convertToFloat(values.all_month.made) }
     })
+  }, [])
+
+  const setPrevExecFinalCells = React.useCallback((values, lastDay) => {
+    const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
+    const monthPrevCells = cells.filter(cell => cell.matches("td[data-cell-type='month-prev']"))
+    const monthExecCells = cells.filter(cell => cell.matches("td[data-cell-type='month-exec']"))
+    const generalPrevCells = cells.filter(cell => cell.matches("td[data-cell-type='accumulated-prev']"))
+    const generalExecCells = cells.filter(cell => cell.matches("td[data-cell-type='accumulated-exec']"))
+    console.log(values)
+    monthPrevCells.forEach(cell => cell.innerText = convertToFloat(values.all_month.expected))
+    monthExecCells.forEach(cell => cell.innerText = convertToFloat(values.all_month.made))
+    generalPrevCells.forEach(cell => cell.innerText = convertToFloat(values.all_accumulated.expected))
+    generalExecCells.forEach(cell => cell.innerText = convertToFloat(values.all_accumulated.made))
   }, [])
 
   const setPrevExecGroupCells = React.useCallback((values, lastDay) => {
@@ -92,7 +103,7 @@ const Budget = () => {
       const execCellGroupResult = execCells.find((cell) => +cell.dataset.groupId === group.id)
       execCellGroupResult.innerText = convertToFloat(execResult)
     }) 
-  }, [])
+  }, [categories])
 
   const setResultCells = React.useCallback(() => {
     categories.forEach((group) => {
@@ -110,7 +121,19 @@ const Budget = () => {
         resultCell.innerText = convertToFloat(result)
       })
     })
-  }, [])
+
+    const monthPrevValue = +convertToInteger(document.querySelector(`td[data-is-selected='true'][data-cell-type='month-prev']`).innerText)
+    const monthExecValue = +convertToInteger(document.querySelector(`td[data-is-selected='true'][data-cell-type='month-exec']`).innerText)
+    const monthResultCell = document.querySelector(`td[data-cell-type='month-result']`)
+    const monthResult = monthPrevValue - monthExecValue;
+    monthResultCell.innerText = convertToFloat(monthResult)
+    const accumulatedPrevValue = +convertToInteger(document.querySelector(`td[data-is-selected='true'][data-cell-type='accumulated-prev']`).innerText)
+    const accumulatedExecValue = +convertToInteger(document.querySelector(`td[data-is-selected='true'][data-cell-type='accumulated-exec']`).innerText)
+    const accumulatedResultCell = document.querySelector(`td[data-cell-type='accumulated-result']`)
+    const accumulatedResult = accumulatedPrevValue - accumulatedExecValue;
+    accumulatedResultCell.innerText = convertToFloat(accumulatedResult)
+
+  }, [categories])
 
   function handleClickOnCell({target}){
     const month = target.dataset.lastDay.split('-')[1]
@@ -128,12 +151,14 @@ const Budget = () => {
         const balanceValues = await getBalances(lastDay)
         setPrevExecCatCells(balanceValues, lastDay)
         setPrevExecGroupCells(balanceValues, lastDay)
+        setPrevExecFinalCells(balanceValues, lastDay)
       })
 
       await Promise.all(promises)
       setResultCells()
     }
     getAndSet();
+    //eslint-disable-next-line
   }, [year])
 
   React.useEffect(() => {
@@ -142,17 +167,19 @@ const Budget = () => {
         const balanceValues = await getBalances(lastDay)
         setPrevExecCatCells(balanceValues, lastDay)
         setPrevExecGroupCells(balanceValues, lastDay)
+        setPrevExecFinalCells(balanceValues, lastDay)
       })
 
       await Promise.all(promises)
       setResultCells()
     }
     if (updateTransactions) getAndSet();
+    //eslint-disable-next-line
   }, [updateTransactions])
 
   React.useEffect(() => {
     setResultCells();
-  }, [month])
+  }, [month, setResultCells])
 
   const elementsToRender = 
   <table id="budget-table" className={styles.table}>
@@ -220,23 +247,23 @@ const Budget = () => {
         )})}
       <tr>
         <th data-cell-type="result-title" data-sticky="left-1">Result. mês</th>
-        <td>R$ 0,00</td>
+        <td data-cell-type="month-result">R$ 0,00</td>
         {lastDays.map((lastDay, i) => {
           return (
             <React.Fragment key={i}>
-              <td data-cell-type='cat-prev' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td> 
-              <td data-cell-type='cat-exec' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td>
+              <td data-cell-type='month-prev' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td> 
+              <td data-cell-type='month-exec' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td>
             </React.Fragment>
         )})}
       </tr>
       <tr>
         <th data-cell-type="result-title" data-sticky="left-1">Result. acum.</th>
-        <td>R$ 0,00</td>
+        <td data-cell-type="accumulated-result">R$ 0,00</td>
         {lastDays.map((lastDay, i) => {
           return (
             <React.Fragment key={i}>
-              <td data-cell-type='cat-prev' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td> 
-              <td data-cell-type='cat-exec' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td>
+              <td data-cell-type='accumulated-prev' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td> 
+              <td data-cell-type='accumulated-exec' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>...</td>
             </React.Fragment>
         )})}
       </tr>
