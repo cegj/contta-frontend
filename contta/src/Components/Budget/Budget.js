@@ -9,6 +9,7 @@ import convertToFloat from '../../Helpers/convertToFloat'
 import TransactionsOnBudget from './TransactionsOnBudget'
 import ReactTooltip from 'react-tooltip'
 import TransactionsContext from '../../Contexts/TransactionsContext'
+import convertToInteger from '../../Helpers/convertToInteger'
 
 const Budget = () => {
 
@@ -41,77 +42,69 @@ const Budget = () => {
     return arr
   }, [year, getLastDay])
 
-  const getBudget = React.useCallback(async(lastDay) => {
-
-    async function getBalancesForBudget(){
-      try {
-        const token = window.localStorage.getItem('token')
-        const firstDay = getFirstDay(lastDay.split('-')[0], lastDay.split('-')[1])
-        const {url, options} = GET_BALANCE_FOR_BUDGET(token, {from: firstDay, to: lastDay, typeofdate: 'transaction_date'})
-        const {response, json, error} = await request(url, options)
-        if (response.ok) return json.balances
-        else throw new Error(error)
-      } catch (error) {
-        console.log(error)
-        setMessage({content: `Erro ao obter orçamento: ${error.message}`, type: "e"})
-        return false;
-      } finally {
-        setUpdateTransactions(false)
-      }
+  const getBalances = React.useCallback(async(lastDay) => {
+    try {
+      const token = window.localStorage.getItem('token')
+      const firstDay = getFirstDay(lastDay.split('-')[0], lastDay.split('-')[1])
+      const {url, options} = GET_BALANCE_FOR_BUDGET(token, {from: firstDay, to: lastDay, typeofdate: 'transaction_date'})
+      const {response, json, error} = await request(url, options)
+      if (response.ok) return json.balances
+      else throw new Error(error)
+    } catch (error) {
+      console.log(error)
+      setMessage({content: `Erro ao obter orçamento: ${error.message}`, type: "e"})
+      return false;
+    } finally {
+      setUpdateTransactions(false)
     }
+  }, [])
 
-    function setPrevExecCells(values, lastDay){
-      const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
-      const prevCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-prev']"))
-      const execCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-exec']"))
-      prevCells.forEach((cell) => {
-        if (cell.dataset.catId) { cell.innerText = convertToFloat(values.categories[cell.dataset.catId].expected) }
-        else { cell.innerText = convertToFloat(values.all_month.expected) }
+  const setPrevExecCatCells = React.useCallback((values, lastDay) => {
+    const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
+    const prevCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-prev']"))
+    const execCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-exec']"))
+    prevCells.forEach((cell) => {
+      if (cell.dataset.catId) { cell.innerText = convertToFloat(values.categories[cell.dataset.catId].expected) }
+      else { cell.innerText = convertToFloat(values.all_month.expected) }
+    })
+    execCells.forEach((cell) => {
+      if (cell.dataset.catId){ cell.innerText = convertToFloat(values.categories[cell.dataset.catId].made) }
+      else { cell.innerText = convertToFloat(values.all_month.made) }
+    })
+  }, [])
+
+  const setPrevExecGroupCells = React.useCallback((values, lastDay) => {
+    const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
+    const prevCells = cells.filter(cell => cell.matches("td[data-cell-type='group-prev']"))
+    const execCells = cells.filter(cell => cell.matches("td[data-cell-type='group-exec']"))
+
+    categories.forEach((group) => {
+      const catPrevCellsOfGroup = cells.filter(cell => cell.matches(`td[data-cell-type='cat-prev'][data-group-id='${group.id}']`))
+      let prevResult = 0;
+      let execResult = 0;
+      catPrevCellsOfGroup.forEach((catPrevCell) => {
+        const value = values.categories[+catPrevCell.dataset.catId]
+        prevResult += value.expected
+        execResult += value.made
       })
-      execCells.forEach((cell) => {
-        if (cell.dataset.catId){ cell.innerText = convertToFloat(values.categories[cell.dataset.catId].made) }
-        else { cell.innerText = convertToFloat(values.all_month.made) }
+      const prevCellGroupResult = prevCells.find((cell) => +cell.dataset.groupId === group.id)
+      prevCellGroupResult.innerText = convertToFloat(prevResult)
+      const execCellGroupResult = execCells.find((cell) => +cell.dataset.groupId === group.id)
+      execCellGroupResult.innerText = convertToFloat(execResult)
+    }) 
+  }, [])
+
+  const setResultCells = React.useCallback(() => {
+    categories.forEach((group) => {
+      group.categories.forEach((cat) => {
+        const prevValue = +convertToInteger(document.querySelector(`td[data-is-selected='true'][data-cat-id='${cat.id}'][data-cell-type='cat-prev']`).innerText)
+        const execValue = +convertToInteger(document.querySelector(`td[data-is-selected='true'][data-cat-id='${cat.id}'][data-cell-type='cat-exec']`).innerText)
+        const resultCell = document.querySelector(`td[data-cat-id='${cat.id}'][data-cell-type='cat-result']`)
+        const result = prevValue - execValue;
+        resultCell.innerText = convertToFloat(result)
       })
-    }
-
-    function setResultCells(values){
-      for (let catId in values.categories){
-        const prevValue = values.categories[catId].expected
-        const execValue = values.categories[catId].made
-        const resultCell = document.querySelector(`td[data-cat-id='${catId}'][data-cell-type='cat-result']`)
-        resultCell.innerText = convertToFloat(prevValue - execValue);
-      }
-    }
-
-    function setGroupResult(values, lastDay){
-      const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
-      const prevCells = cells.filter(cell => cell.matches("td[data-cell-type='group-prev']"))
-      const execCells = cells.filter(cell => cell.matches("td[data-cell-type='group-exec']"))
-
-      categories.forEach((group) => {
-        const catPrevCellsOfGroup = cells.filter(cell => cell.matches(`td[data-cell-type='cat-prev'][data-group-id='${group.id}']`))
-        let prevResult = 0;
-        let execResult = 0;
-        catPrevCellsOfGroup.forEach((catPrevCell) => {
-          const value = values.categories[+catPrevCell.dataset.catId]
-          prevResult += value.expected
-          execResult += value.made
-        })
-        const prevCellGroupResult = prevCells.find((cell) => +cell.dataset.groupId === group.id)
-        prevCellGroupResult.innerText = convertToFloat(prevResult)
-        const execCellGroupResult = execCells.find((cell) => +cell.dataset.groupId === group.id)
-        execCellGroupResult.innerText = convertToFloat(execResult)
-      }) 
-    }
-
-    const budgetValues = await getBalancesForBudget()
-    if (budgetValues){
-      setPrevExecCells(budgetValues, lastDay)
-      setResultCells(budgetValues)
-      setGroupResult(budgetValues, lastDay)  
-    }
-      // eslint-disable-next-line
-  }, [request])
+    })
+  }, [])
 
   function handleClickOnCell({target}){
     const month = target.dataset.lastDay.split('-')[1]
@@ -123,11 +116,43 @@ const Budget = () => {
     setTransactionsModalIsOpen(true)
   }
 
+  // React.useEffect(() => {
+  //     lastDays.forEach((lastDay) => {
+  //       if (setUpdateTransactions) getBudget(lastDay)
+  //     // eslint-disable-next-line
+  //   })}, [getBudget, year, updateTransactions])
+
   React.useEffect(() => {
-      lastDays.forEach((lastDay) => {
-        if (setUpdateTransactions) getBudget(lastDay)
-      // eslint-disable-next-line
-    })}, [getBudget, year, updateTransactions])
+    async function getAndSet(){
+      const promises = lastDays.map(async(lastDay) => {
+        const balanceValues = await getBalances(lastDay)
+        setPrevExecCatCells(balanceValues, lastDay)
+        setPrevExecGroupCells(balanceValues, lastDay)
+      })
+
+      await Promise.all(promises)
+      setResultCells()
+    }
+    getAndSet();
+  }, [year])
+
+  React.useEffect(() => {
+    async function getAndSet(){
+      const promises = lastDays.map(async(lastDay) => {
+        const balanceValues = await getBalances(lastDay)
+        setPrevExecCatCells(balanceValues, lastDay)
+        setPrevExecGroupCells(balanceValues, lastDay)
+      })
+
+      await Promise.all(promises)
+      setResultCells()
+    }
+    if (updateTransactions) getAndSet();
+  }, [updateTransactions])
+
+  React.useEffect(() => {
+    setResultCells();
+  }, [month])
 
   const elementsToRender = 
   <table id="budget-table" className={styles.table}>
