@@ -16,7 +16,7 @@
 
 .table th,
 .table td {
-  padding: .2rem .8rem;
+  padding: .6rem 1rem;
   margin: 0;
 }
 
@@ -25,21 +25,37 @@
   left: 0;
 }
 
-td[data-cell-type="cat-prev"] {
-  background-color: #f0f0f0;
+td[data-cell-type="group-prev"] {
+  background-color: #eeeeee;
+  color: #8f8f8f;
   height: 40px;
   cursor: default;
+}
+
+td[data-cell-type="group-exec"] {
+  background-color: #e7e7e7;
+  color: #6d6d6d;
+  height: 40px;
+  cursor: default;
+}
+
+td[data-cell-type="cat-prev"] {
+  background-color: #fafafa;
+  color: #8f8f8f;
+  height: 40px;
+  cursor: pointer;
 }
 
 td[data-cell-type="cat-exec"] {
-  background-color: #e4e4e4;
+  background-color: #f5f5f5;
+  color: #6d6d6d;
   height: 40px;
-  cursor: default;
+  cursor: pointer;
 }
 
 .table [data-cell-type="group-title"] {
-  background-color: antiquewhite;
   width: 300px;
+  background-color: #ffffff;
 }
 
 .table [data-cell-type="category-title"],
@@ -48,10 +64,18 @@ td[data-cell-type="cat-exec"] {
   width: 300px;
 }
 
+.table [data-cell-type="group-prev"][data-is-selected="true"] {
+  background-color: #ffffe3 !important;
+}
+
+.table [data-cell-type="group-exec"][data-is-selected="true"] {
+  background-color: #fdfdd6 !important;
+}
+
 .table [data-cell-type="cat-prev"][data-is-selected="true"] {
-  background-color: #fffabb;
+  background-color: #fffff2 !important;
 }
 
 .table [data-cell-type="cat-exec"][data-is-selected="true"] {
-  background-color: #e6e1a8;
+  background-color: #ffffe8 !important;
 }

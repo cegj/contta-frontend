@@ -9,7 +9,6 @@ import convertToFloat from '../../Helpers/convertToFloat'
 import TransactionsOnBudget from './TransactionsOnBudget'
 import ReactTooltip from 'react-tooltip'
 import TransactionsContext from '../../Contexts/TransactionsContext'
-import convertToInteger from '../../Helpers/convertToInteger'
 
 const Budget = () => {
 
@@ -18,7 +17,7 @@ const Budget = () => {
 
   const {getFirstDay, getLastDay} = useDate();
   const {request, fetchLoading} = useFetch()
-  const {year, month, categories, setLoading} = React.useContext(AppContext)
+  const {year, month, categories, setLoading, setMessage} = React.useContext(AppContext)
   const [transactionsModalIsOpen, setTransactionsModalIsOpen] = React.useState(false)
   const [selectedCatId, setSelectedCatId] = React.useState(null)
   const [selectedMonth, setSelectedMonth] = React.useState(null)
@@ -43,34 +42,73 @@ const Budget = () => {
   }, [year, getLastDay])
 
   const getBudget = React.useCallback(async(lastDay) => {
-    const token = window.localStorage.getItem('token')
-    const firstDay = getFirstDay(lastDay.split('-')[0], lastDay.split('-')[1])
-    const {url, options} = GET_BALANCE_FOR_BUDGET(token, {from: firstDay, to: lastDay, typeofdate: 'transaction_date'})
-    const {json} = await request(url, options)
-    setUpdateTransactions(false)
-    
-    const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
-    const prevCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-prev']"))
-    const execCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-exec']"))
 
-    prevCells.forEach((cell) => {
-      if (cell.dataset.catId) { cell.innerText = convertToFloat(json.balances.categories[cell.dataset.catId].expected) }
-      else { cell.innerText = convertToFloat(json.balances.all_month.expected) }
-    })
+    async function getBalancesForBudget(){
+      try {
+        const token = window.localStorage.getItem('token')
+        const firstDay = getFirstDay(lastDay.split('-')[0], lastDay.split('-')[1])
+        const {url, options} = GET_BALANCE_FOR_BUDGET(token, {from: firstDay, to: lastDay, typeofdate: 'transaction_date'})
+        const {response, json, error} = await request(url, options)
+        if (response.ok) return json.balances
+        else throw new Error(error)
+      } catch (error) {
+        console.log(error)
+        setMessage({content: `Erro ao obter orçamento: ${error.message}`, type: "e"})
+        return false;
+      } finally {
+        setUpdateTransactions(false)
+      }
+    }
 
-    execCells.forEach((cell) => {
-      if (cell.dataset.catId){ cell.innerText = convertToFloat(json.balances.categories[cell.dataset.catId].made) }
-      else { cell.innerText = convertToFloat(json.balances.all_month.made) }
-    })
+    function setPrevExecCells(values, lastDay){
+      const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
+      const prevCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-prev']"))
+      const execCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-exec']"))
+      prevCells.forEach((cell) => {
+        if (cell.dataset.catId) { cell.innerText = convertToFloat(values.categories[cell.dataset.catId].expected) }
+        else { cell.innerText = convertToFloat(values.all_month.expected) }
+      })
+      execCells.forEach((cell) => {
+        if (cell.dataset.catId){ cell.innerText = convertToFloat(values.categories[cell.dataset.catId].made) }
+        else { cell.innerText = convertToFloat(values.all_month.made) }
+      })
+    }
 
-    for (let catId in json.balances.categories){
-      const prevCell = document.querySelector(`td[data-is-selected='true'][data-cat-id='${catId}'][data-cell-type='cat-prev']`)
-      const execCell = document.querySelector(`td[data-is-selected='true'][data-cat-id='${catId}'][data-cell-type='cat-exec']`)
-      const prevValue = convertToInteger(prevCell.innerText)
-      const execValue = convertToInteger(execCell.innerText)
-      const resultCell = document.querySelector(`td[data-cat-id='${catId}'][data-cell-type='cat-result']`)
-      resultCell.innerText = convertToFloat(prevValue - execValue);
+    function setResultCells(values){
+      for (let catId in values.categories){
+        const prevValue = values.categories[catId].expected
+        const execValue = values.categories[catId].made
+        const resultCell = document.querySelector(`td[data-cat-id='${catId}'][data-cell-type='cat-result']`)
+        resultCell.innerText = convertToFloat(prevValue - execValue);
+      }
+    }
 
+    function setGroupResult(values, lastDay){
+      const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
+      const prevCells = cells.filter(cell => cell.matches("td[data-cell-type='group-prev']"))
+      const execCells = cells.filter(cell => cell.matches("td[data-cell-type='group-exec']"))
+
+      categories.forEach((group) => {
+        const catPrevCellsOfGroup = cells.filter(cell => cell.matches(`td[data-cell-type='cat-prev'][data-group-id='${group.id}']`))
+        let prevResult = 0;
+        let execResult = 0;
+        catPrevCellsOfGroup.forEach((catPrevCell) => {
+          const value = values.categories[+catPrevCell.dataset.catId]
+          prevResult += value.expected
+          execResult += value.made
+        })
+        const prevCellGroupResult = prevCells.find((cell) => +cell.dataset.groupId === group.id)
+        prevCellGroupResult.innerText = convertToFloat(prevResult)
+        const execCellGroupResult = execCells.find((cell) => +cell.dataset.groupId === group.id)
+        execCellGroupResult.innerText = convertToFloat(execResult)
+      }) 
+    }
+
+    const budgetValues = await getBalancesForBudget()
+    if (budgetValues){
+      setPrevExecCells(budgetValues, lastDay)
+      setResultCells(budgetValues)
+      setGroupResult(budgetValues, lastDay)  
     }
       // eslint-disable-next-line
   }, [request])
@@ -128,8 +166,15 @@ const Budget = () => {
         return (
           <React.Fragment key={i}>
             <tr key={group.id}>
-              <td data-cell-type="group-title" data-sticky="left-1">{group.name}</td>
-              <td>R$ 0,00</td>
+              <td data-cell-type="group-title" data-cell-line="group-line" data-sticky="left-1">{group.name}</td>
+              <td data-cell-line="group-line">R$ 0,00</td>
+              {lastDays.map((lastDay, i) => {
+                return (
+                  <React.Fragment key={i}>
+                    <td data-cell-type='group-prev' data-cell-line="group-line" data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"} data-group-id={group.id} >...</td> 
+                    <td data-cell-type='group-exec' data-cell-line="group-line" data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"} data-group-id={group.id} >...</td>
+                  </React.Fragment>
+                )})}
             </tr>
             {group.categories.map((cat) => {
               return (
@@ -139,8 +184,8 @@ const Budget = () => {
                 {lastDays.map((lastDay, i) => {
                   return (
                     <React.Fragment key={i}>
-                      <td data-cell-type='cat-prev' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"} data-cat-id={cat.id} onDoubleClick={handleClickOnCell}>...</td> 
-                      <td data-cell-type='cat-exec' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"} data-cat-id={cat.id} onDoubleClick={handleClickOnCell}>...</td>
+                      <td data-cell-type='cat-prev' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"} data-cat-id={cat.id} data-group-id={group.id} onDoubleClick={handleClickOnCell}>...</td> 
+                      <td data-cell-type='cat-exec' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"} data-cat-id={cat.id} data-group-id={group.id} onDoubleClick={handleClickOnCell}>...</td>
                     </React.Fragment>
                   )})}
               </tr>
