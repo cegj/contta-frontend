@@ -1,7 +1,9 @@
 import React from 'react'
 import AppContext from '../../Contexts/AppContext'
+import BudgetSettings from './BudgetSettings'
 import Modal from '../Elements/Modal'
 import StatementBalanceSettings from './StatementBalanceSettings'
+import styles from './Settings.module.css'
 
 const Settings = () => {
 
@@ -12,7 +14,10 @@ const Settings = () => {
   return (
     settingModalIsOpen &&
     <Modal title="Configurações" isOpen={settingModalIsOpen} setIsOpen={setSettingModalIsOpen}>
-      <StatementBalanceSettings />
+      <div className={styles.settingsContainer}>
+        <StatementBalanceSettings />
+        <BudgetSettings />
+      </div>
     </Modal>
 )
 }

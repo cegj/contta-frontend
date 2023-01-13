@@ -1,8 +1,19 @@
+.settingsContainer {
+  height: 400px;
+  width: 500px;
+  overflow: auto;
+}
+
 .settingsGroup {
   border: 1px solid #e1e1e1;
   padding: 1rem;
   border-radius: 5px;
-  width: 500px;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.settingsGroup:last-of-type {
+  margin-bottom: 0;
 }
 
 .settingsGroup>h3 {

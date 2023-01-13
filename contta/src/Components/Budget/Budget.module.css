@@ -1,5 +1,6 @@
 .tableContainer {
-  width: 1200px;
+  width: fit-content;
+  max-width: 1200px;
   overflow: auto;
   margin: 1rem auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, .2);
@@ -35,61 +36,70 @@
 .table [data-cell-type="month-prev"],
 .table [data-cell-type="accumulated-prev"] {
   background-color: #eeeeee;
-  color: #8f8f8f;
+  color: #a5a5a5;
   height: 40px;
   cursor: default;
+  border-left: 1px solid #e0e0e0;
 }
 
 .table [data-cell-type="group-exec"],
 .table [data-cell-type="month-exec"],
 .table [data-cell-type="accumulated-exec"] {
   background-color: #e7e7e7;
-  color: #6d6d6d;
+  color: #8b8b8b;
   height: 40px;
   cursor: default;
+  border-right: 1px solid #e0e0e0;
 }
 
 .table [data-cell-type="cat-prev"] {
-  background-color: #fafafa;
-  color: #8f8f8f;
+  background-color: #fcfcfc;
+  color: #a5a5a5;
   height: 40px;
   cursor: pointer;
+  border-left: 1px solid #e0e0e0;
 }
 
 .table [data-cell-type="cat-exec"] {
   background-color: #f5f5f5;
-  color: #6d6d6d;
+  color: #8b8b8b;
   height: 40px;
   cursor: pointer;
+  border-right: 1px solid #e0e0e0;
 }
 
-.table [data-cell-type="group-title"] {
-  width: 300px;
-  background-color: #ffffff;
+.table [data-cell-type="group-title"],
+.table [data-cell-type="group-result"],
+.table [data-cell-type="result-title"],
+.table [data-cell-type="month-result"],
+.table [data-cell-type="accumulated-result"] {
+  background-color: #f3f2ea;
 }
 
-.table [data-cell-type="category-title"],
-.table [data-cell-type="result-title"] {
+.table [data-cell-type="category-title"] {
   background-color: #ffffff;
-  width: 300px;
 }
 
 .table [data-cell-type="group-prev"][data-is-selected="true"],
 .table [data-cell-type="month-prev"][data-is-selected="true"],
 .table [data-cell-type="accumulated-prev"][data-is-selected="true"] {
-  background-color: #ffffe3 !important;
+  background-color: #ECEBE4 !important;
+  color: #a09f9a;
 }
 
 .table [data-cell-type="group-exec"][data-is-selected="true"],
 .table [data-cell-type="month-exec"][data-is-selected="true"],
 .table [data-cell-type="accumulated-exec"][data-is-selected="true"] {
-  background-color: #fdfdd6 !important;
+  background-color: #e4e4dd !important;
+  color: #94948e;
 }
 
 .table [data-cell-type="cat-prev"][data-is-selected="true"] {
   background-color: #fffff2 !important;
+  color: #a09f9a;
 }
 
 .table [data-cell-type="cat-exec"][data-is-selected="true"] {
   background-color: #ffffe8 !important;
+  color: #94948e;
 }

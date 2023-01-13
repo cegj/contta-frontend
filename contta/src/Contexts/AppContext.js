@@ -30,6 +30,7 @@ export const AppContextData = ({children}) => {
   const [typeOfDateBalance, setTypeOfDateBalance] = React.useState(window.localStorage.typeOfDateBalance || 'transaction_date');
   const [typeOfDateGroup, setTypeOfDateGroup] = React.useState(window.localStorage.typeOfDateGroup || 'transaction_date');
   const [includeExpectedOnBalance, setIncludeExpectedOnBalance] = React.useState(window.localStorage.includeExpectedOnBalance ? JSON.parse(window.localStorage.includeExpectedOnBalance) : false);
+  const [hideUnsellectedMonthsOnBudget, setHideUnsellectedMonthsOnBudget] = React.useState(window.localStorage.hideUnsellectedMonthsOnBudget ? JSON.parse(window.localStorage.hideUnsellectedMonthsOnBudget) : false);
   const [updateAccountBalances, setUpdateAccountBalances] = React.useState(true);
   const [updateCategoryBalances, setUpdateCategoryBalances] = React.useState(true);
 
@@ -135,6 +136,7 @@ React.useEffect(() => {
         includeExpectedOnBalance, setIncludeExpectedOnBalance,
         updateAccountBalances, setUpdateAccountBalances,
         updateCategoryBalances, setUpdateCategoryBalances,
+        hideUnsellectedMonthsOnBudget, setHideUnsellectedMonthsOnBudget,
         getBalance
       }}
     >

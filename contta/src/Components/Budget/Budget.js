@@ -19,7 +19,7 @@ const Budget = () => {
 
   const {getFirstDay, getLastDay} = useDate();
   const {request, fetchLoading} = useFetch()
-  const {year, month, categories, setLoading, setMessage} = React.useContext(AppContext)
+  const {year, month, categories, setLoading, setMessage, hideUnsellectedMonthsOnBudget} = React.useContext(AppContext)
   const [transactionsModalIsOpen, setTransactionsModalIsOpen] = React.useState(false)
   const [selectedCatId, setSelectedCatId] = React.useState(null)
   const [selectedMonth, setSelectedMonth] = React.useState(null)
@@ -65,10 +65,18 @@ const Budget = () => {
     const prevCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-prev']"))
     const execCells = cells.filter(cell => cell.matches("td[data-cell-type='cat-exec']"))
     prevCells.forEach((cell) => {
-      if (cell.dataset.catId) { cell.innerText = convertToFloat(values.categories[cell.dataset.catId].expected) }
+      if (cell.dataset.catId) {
+        const expectedValue = values.categories[cell.dataset.catId].expected
+        cell.innerText = convertToFloat(expectedValue)
+        if (expectedValue === 0) {cell.style.color = "transparent"}
+      }
     })
     execCells.forEach((cell) => {
-      if (cell.dataset.catId){ cell.innerText = convertToFloat(values.categories[cell.dataset.catId].made) }
+      if (cell.dataset.catId){
+        const madeValue = values.categories[cell.dataset.catId].made
+        cell.innerText = convertToFloat(madeValue)
+        if (madeValue === 0) {cell.style.color = "transparent"}
+      }
     })
   }, [])
 
@@ -76,13 +84,12 @@ const Budget = () => {
     const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
     const monthPrevCells = cells.filter(cell => cell.matches("td[data-cell-type='month-prev']"))
     const monthExecCells = cells.filter(cell => cell.matches("td[data-cell-type='month-exec']"))
-    const generalPrevCells = cells.filter(cell => cell.matches("td[data-cell-type='accumulated-prev']"))
-    const generalExecCells = cells.filter(cell => cell.matches("td[data-cell-type='accumulated-exec']"))
-    console.log(values)
+    const accumulatedPrevCells = cells.filter(cell => cell.matches("td[data-cell-type='accumulated-prev']"))
+    const accumulatedExecCells = cells.filter(cell => cell.matches("td[data-cell-type='accumulated-exec']"))
     monthPrevCells.forEach(cell => cell.innerText = convertToFloat(values.all_month.expected))
     monthExecCells.forEach(cell => cell.innerText = convertToFloat(values.all_month.made))
-    generalPrevCells.forEach(cell => cell.innerText = convertToFloat(values.all_accumulated.expected))
-    generalExecCells.forEach(cell => cell.innerText = convertToFloat(values.all_accumulated.made))
+    accumulatedPrevCells.forEach(cell => cell.innerText = convertToFloat(values.all_accumulated.expected))
+    accumulatedExecCells.forEach(cell => cell.innerText = convertToFloat(values.all_accumulated.made))
   }, [])
 
   const setPrevExecGroupCells = React.useCallback((values, lastDay) => {
@@ -146,6 +153,46 @@ const Budget = () => {
     setTransactionsModalIsOpen(true)
   }
 
+  function hideUnsellected(){
+    const cellTypesToHide = ['month-title', 'cat-prev', 'cat-exec', 'group-prev', 'group-exec', 'month-prev', 'month-exec', 'accumulated-prev', 'accumulated-exec']
+    cellTypesToHide.forEach((cellType) => {
+      const cells = Array.from(document.querySelectorAll(`td[data-cell-type='${cellType}'], th[data-cell-type='${cellType}']`))
+      cells.forEach((cell) => {
+        if (cell.dataset.isSelected === "false"){
+          cell.style.display = "none"; 
+        }
+      })  
+    })
+
+    // eslint-disable-next-line
+    const prevExecTitles = ['prev-title', 'exec-title'].forEach((title) => {
+      const cells = document.querySelectorAll(`th[data-cell-type='${title}']`)
+      cells.forEach((cell, i) => {
+      if (i > 0) {cell.style.display = "none"}
+      })
+    })
+  }
+
+  function showUnsellected(){
+    const cellTypesToHide = ['month-title', 'cat-prev', 'cat-exec', 'group-prev', 'group-exec', 'month-prev', 'month-exec', 'accumulated-prev', 'accumulated-exec']
+    cellTypesToHide.forEach((cellType) => {
+      const cells = Array.from(document.querySelectorAll(`td[data-cell-type='${cellType}'], th[data-cell-type='${cellType}']`))
+      cells.forEach((cell) => {
+        if (cell.dataset.isSelected === "false"){
+          cell.style.display = "table-cell"; 
+        }
+      })  
+    })
+
+    // eslint-disable-next-line 
+    const prevExecTitles = ['prev-title', 'exec-title'].forEach((title) => {
+      const cells = document.querySelectorAll(`th[data-cell-type='${title}']`)
+      cells.forEach((cell, i) => {
+      if (i > 0) {cell.style.display = "table-cell"}
+      })
+    })
+  }
+
   React.useEffect(() => {
     async function getAndSet(){
       const promises = lastDays.map(async(lastDay) => {
@@ -182,38 +229,39 @@ const Budget = () => {
     setResultCells();
   }, [month, setResultCells])
 
+  React.useEffect(() => {
+    if (hideUnsellectedMonthsOnBudget) hideUnsellected()
+    else showUnsellected()
+  }, [hideUnsellectedMonthsOnBudget])
+
   const elementsToRender = 
   <table id="budget-table" className={styles.table}>
     <thead>
       <tr>
         <th rowSpan="2" data-cell-type="category-title" data-sticky="left-1">Categoria</th>
         <th rowSpan="2" data-sticky="left-2">Resultado</th>
-        <th data-type='month-title' colSpan='2'>jan</th>
-        <th data-type='month-title' colSpan='2'>fev</th>
-        <th data-type='month-title' colSpan='2'>mar</th>
-        <th data-type='month-title' colSpan='2'>abr</th>
-        <th data-type='month-title' colSpan='2'>mai</th>
-        <th data-type='month-title' colSpan='2'>jun</th>
-        <th data-type='month-title' colSpan='2'>jul</th>
-        <th data-type='month-title' colSpan='2'>ago</th>
-        <th data-type='month-title' colSpan='2'>set</th>
-        <th data-type='month-title' colSpan='2'>out</th>
-        <th data-type='month-title' colSpan='2'>nov</th>
-        <th data-type='month-title' colSpan='2'>dez</th>
+        {lastDays.map((lastDay, i) => {
+          const monthNames = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov',' dez']
+          const currentMonthName = monthNames[i]
+        return (
+          <React.Fragment key={i}>
+            <th data-cell-type='month-title' colSpan='2' data-last-day={lastDay} data-is-selected={lastDay === getLastDay(year, month) ? "true" : "false"}>{currentMonthName}</th>
+          </React.Fragment>
+        )})}
       </tr>
       <tr>
-        <th>Prev.</th><th>Exec.</th>
-        <th>Prev.</th><th>Exec.</th>
-        <th>Prev.</th><th>Exec.</th>
-        <th>Prev.</th><th>Exec.</th>
-        <th>Prev.</th><th>Exec.</th>
-        <th>Prev.</th><th>Exec.</th>
-        <th>Prev.</th><th>Exec.</th>
-        <th>Prev.</th><th>Exec.</th>
-        <th>Prev.</th><th>Exec.</th>
-        <th>Prev.</th><th>Exec.</th>
-        <th>Prev.</th><th>Exec.</th>
-        <th>Prev.</th><th>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
+        <th data-cell-type='prev-title'>Prev.</th><th data-cell-type='exec-title'>Exec.</th>
       </tr>
       {categories.map((group, i) => {
         return (
