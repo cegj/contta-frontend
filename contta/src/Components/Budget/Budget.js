@@ -25,6 +25,7 @@ const Budget = () => {
   const [selectedMonth, setSelectedMonth] = React.useState(null)
   const [includeExpectedOnTransactionsModal, setIncludeExpectedOnTransactionsModal] = React.useState(null)
   const {updateTransactions, setUpdateTransactions} = React.useContext(TransactionsContext)
+  const tableContainer = React.useRef(null)
 
   React.useEffect(() => {
     setLoading(fetchLoading)
@@ -195,6 +196,14 @@ const Budget = () => {
     })
   }
 
+  function setSelectedMonthAsFirst(){
+      const referenceTd = document.querySelector('[data-is-selected="true"]');
+      const referenceStickyLeft1 = document.querySelector('[data-sticky="left-1"]')
+      const referenceStickyLeft2 = document.querySelector('[data-sticky="left-2"]')
+      const stickyColumnsWidth = referenceStickyLeft1.offsetWidth + referenceStickyLeft2.offsetWidth + 1
+      tableContainer.current.scrollTo({left: referenceTd.offsetLeft - stickyColumnsWidth})
+  }
+
   React.useEffect(() => {
     async function getAndSet(){
       const promises = lastDays.map(async(lastDay) => {
@@ -206,6 +215,7 @@ const Budget = () => {
 
       await Promise.all(promises)
       setResultCells()
+      setSelectedMonthAsFirst()
     }
     getAndSet();
     //eslint-disable-next-line
@@ -222,6 +232,7 @@ const Budget = () => {
 
       await Promise.all(promises)
       setResultCells()
+      setSelectedMonthAsFirst()
     }
     if (updateTransactions) getAndSet();
     //eslint-disable-next-line
@@ -229,6 +240,7 @@ const Budget = () => {
 
   React.useEffect(() => {
     setResultCells();
+    setSelectedMonthAsFirst()
   }, [month, setResultCells])
 
   React.useEffect(() => {
@@ -324,7 +336,7 @@ const Budget = () => {
   return (
     <>
       <Header />
-      <ScrollContainer className={styles.tableContainer}>
+      <ScrollContainer innerRef={tableContainer} className={styles.tableContainer}>
         {elementsToRender}
       </ScrollContainer>
       {transactionsModalIsOpen && <TransactionsOnBudget catId={selectedCatId} month={selectedMonth} includeExpected={includeExpectedOnTransactionsModal} isOpen={transactionsModalIsOpen} setIsOpen={setTransactionsModalIsOpen}/>}
