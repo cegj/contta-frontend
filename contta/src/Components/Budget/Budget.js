@@ -68,14 +68,16 @@ const Budget = () => {
       if (cell.dataset.catId) {
         const expectedValue = values.categories[cell.dataset.catId].expected
         cell.innerText = convertToFloat(expectedValue)
-        if (expectedValue === 0) {cell.style.color = "transparent"}
+        if (expectedValue === 0) {cell.classList.add("zero")}
+        else cell.classList.remove("zero")
       }
     })
     execCells.forEach((cell) => {
       if (cell.dataset.catId){
         const madeValue = values.categories[cell.dataset.catId].made
         cell.innerText = convertToFloat(madeValue)
-        if (madeValue === 0) {cell.style.color = "transparent"}
+        if (madeValue === 0) {cell.classList.add("zero")}
+        else cell.classList.remove("zero")
       }
     })
   }, [])
