@@ -181,8 +181,14 @@ const StatementItem = (transaction) => {
           <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
         </div>
         <div className={styles.container}>
-          <span className={styles.account}>{transaction.account ? <Link to={`/accounts/${transaction.account_id}`}>{transaction.account.name}</Link> : "Sem conta"}</span>
-          <span className={styles.category}>{transaction.category ? <Link to={`/categories/${transaction.category_id}`}>{transaction.category.name}</Link> : "Sem categoria"}</span>
+          <span className={styles.account}>
+            {transaction.account
+            ? <Link to={`/accounts/${transaction.account_id}`}>{transaction.account.name}</Link>
+            : <Link to={`/accounts/0`}>Sem conta</Link>}</span>
+          <span className={styles.category}>
+            {transaction.category
+            ? <Link to={`/categories/${transaction.category_id}`}>{transaction.category.name}</Link>
+            : <Link to={`/categories/0`}>Sem categoria</Link>}</span>
         </div>
         <div className={styles.container}>
           <span className={styles.date}><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>

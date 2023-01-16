@@ -123,8 +123,8 @@ const Accounts = () => {
           <div className={styles.titleBar}>
             <h3>{accountName}</h3>
             <div className={styles.btnsContainer}>
-              <span data-tip="Excluir conta" className={styles.closeButton} onClick={handleDelete} ><DeleteIcon /></span>
-              <span data-tip="Editar conta" className={styles.closeButton} onClick={handleEdit} ><EditIcon /></span>
+              {selectedAccount.id !== 0 && <span data-tip="Excluir conta" className={styles.closeButton} onClick={handleDelete} ><DeleteIcon /></span>}
+              {selectedAccount.id !== 0 && <span data-tip="Editar conta" className={styles.closeButton} onClick={handleEdit} ><EditIcon /></span>}
               <span data-tip="Fechar extrato" className={styles.closeButton} onClick={() => {navigate('/accounts')}} ><CloseIcon /></span>
             </div>
           </div>}

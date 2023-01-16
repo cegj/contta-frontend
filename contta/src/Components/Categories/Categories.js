@@ -142,8 +142,8 @@ const Categories = () => {
           <div className={styles.titleBar}>
             <h3>{categoryName}</h3>
             <div className={styles.btnsContainer}>
-              <span data-tip="Excluir categoria" className={styles.closeButton} onClick={handleDelete} ><DeleteIcon /></span>
-              <span data-tip="Editar categoria" className={styles.closeButton} onClick={handleEdit} ><EditIcon /></span>
+              {selectedCategory.id !== 0 && <span data-tip="Excluir categoria" className={styles.closeButton} onClick={handleDelete} ><DeleteIcon /></span>}
+              {selectedCategory.id !== 0 && <span data-tip="Editar categoria" className={styles.closeButton} onClick={handleEdit} ><EditIcon /></span>}
               <span data-tip="Fechar extrato" className={styles.closeButton} onClick={() => {navigate('/categories')}} ><CloseIcon /></span>
             </div>
           </div>}
