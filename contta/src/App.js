@@ -18,6 +18,7 @@ import MonthYearForm from './Components/monthYearForm/MonthYearForm';
 import Settings from './Components/Settings/Settings';
 import Categories from './Components/Categories/Categories';
 import Budget from './Components/Budget/Budget';
+import Board from './Components/Board/Board';
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
                 <Messages />
                 <Routes>
                   <Route path="/" element={<Login />}/>
+                  <Route path="/board/*" element={<ProtectedRoute><Board /></ProtectedRoute>}/>
                   <Route path="/statement/*" element={<ProtectedRoute><Statement /></ProtectedRoute>}/>
                   <Route path="/budget/*" element={<ProtectedRoute><Budget /></ProtectedRoute>}/>
                   <Route path="/categories/*" element={<ProtectedRoute><Categories /></ProtectedRoute>}/>
