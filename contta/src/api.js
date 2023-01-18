@@ -1,10 +1,55 @@
 import objectToQueryString from "./Helpers/objectToQueryString";
 
-export const API_URL = 'http://3.220.229.85:8000/api';
+// export const API_URL = 'http://3.220.229.85:8000/api';
+export const API_URL = 'http://localhost:8000/api';
+
+export function GET_CHECK_TABLES(){
+  return {
+    url: API_URL + '/setup/checktables',
+    options: {
+      method: 'GET'
+    }
+  }
+}
+
+export function POST_SETUP_DATABASE(){
+  return {
+    url: API_URL + '/setup/database',
+    options: {
+      method: 'POST'
+    }
+  }
+}
+
+export function POST_SETUP_CATEGORIES(token){
+  return {
+    url: API_URL + '/setup/categories',
+    options: {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
+    }
+  }
+}
 
 export function POST_LOGIN(body){
   return {
     url: API_URL + '/users/login',
+    options: {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify(body)
+    }
+  }
+}
+
+export function POST_CREATE_USER(body){
+  return {
+    url: API_URL + '/users/create',
     options: {
       method: 'POST',
       headers: {

@@ -4,8 +4,8 @@ import Header from '../Header'
 
 const Board = () => {
 
-  const {setPageName} = React.useContext(AppContext)
-  React.useEffect(() => {setPageName("Painel")}, [setPageName])
+  const {setPageName, setPageSubName} = React.useContext(AppContext)
+  React.useEffect(() => {setPageName("Painel"); setPageSubName(null)}, [setPageName, setPageSubName])
 
   return (
     <>

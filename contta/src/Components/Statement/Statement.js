@@ -7,8 +7,8 @@ import useDate from '../../Hooks/useDate'
 
 const Statement = () => {
 
-  const {setPageName} = React.useContext(AppContext)
-  React.useEffect(() => {setPageName("Extrato")}, [setPageName])
+  const {setPageName, setPageSubName} = React.useContext(AppContext)
+  React.useEffect(() => {setPageName("Extrato"); setPageSubName(null)}, [setPageName, setPageSubName])
 
   const {month, year, typeOfDateBalance} = React.useContext(AppContext)
   const {getTransactions, updateTransactions, setUpdateTransactions} = React.useContext(TransactionsContext);

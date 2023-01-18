@@ -1,5 +1,5 @@
 import React from 'react'
-import { GET_USER, POST_LOGIN } from '../api';
+import { GET_USER, POST_CREATE_USER, POST_LOGIN } from '../api';
 import MessagesContext from './MessagesContext';
 import useFetch from '../Hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
@@ -67,8 +67,23 @@ export const UserContextData = ({children}) => {
       setMessage({content: `Não foi possível entrar: ${error.message}`, type: 'e'});  
     }}
 
+    async function createUser(body) {
+      try {
+        const {url, options} = POST_CREATE_USER(body);
+        const {response, json, error} = await request(url, options);
+        if (response.ok){
+          setMessage({content: `Usuário ${body.name} criado com sucesso`, type: 's'})
+          return json.createdUser;
+        } else {
+          throw new Error(error);
+        }
+      } catch (error) {
+        setMessage({content: `Não foi possível criar usuário: ${error.message}`, type: 'e'});
+        return false;  
+      }}  
+
   return (
-    <UserContext.Provider value={{ userLogin, userLogout, user, logged, fetchLoading }}>
+    <UserContext.Provider value={{ userLogin, userLogout, createUser, user, logged, fetchLoading }}>
       {children}
     </UserContext.Provider>
   )

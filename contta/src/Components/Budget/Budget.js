@@ -14,8 +14,8 @@ import ScrollContainer from 'react-indiana-drag-scroll'
 
 const Budget = () => {
 
-  const {setPageName} = React.useContext(AppContext)
-  React.useEffect(() => {setPageName("Orçamento")}, [setPageName])
+  const {setPageName, setPageSubName} = React.useContext(AppContext)
+  React.useEffect(() => {setPageName("Orçamento"); setPageSubName(null)}, [setPageName, setPageSubName])
 
   const {getFirstDay, getLastDay} = useDate();
   const {request, fetchLoading} = useFetch()

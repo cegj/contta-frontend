@@ -24,7 +24,7 @@ const TransactionForm = () => {
   const [reload, setReload] = React.useState(false);
   const {storeTransaction, editTransaction, typeOptions, categoryOptions, accountOptions} = React.useContext(TransactionsContext);
 
-  React.useEffect(() => {console.log(transactionFormValues)}, [transactionFormValues])
+  React.useEffect(() => {}, [transactionFormValues])
   
   const [type, setType] = React.useState([]);
   const transactionDate = useForm();

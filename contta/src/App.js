@@ -19,6 +19,7 @@ import Settings from './Components/Settings/Settings';
 import Categories from './Components/Categories/Categories';
 import Budget from './Components/Budget/Budget';
 import Board from './Components/Board/Board';
+import Setup from './Components/Setup/Setup';
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
                 <Messages />
                 <Routes>
                   <Route path="/" element={<Login />}/>
+                  <Route path="/setup" element={<Setup />}/>
                   <Route path="/board/*" element={<ProtectedRoute><Board /></ProtectedRoute>}/>
                   <Route path="/statement/*" element={<ProtectedRoute><Statement /></ProtectedRoute>}/>
                   <Route path="/budget/*" element={<ProtectedRoute><Budget /></ProtectedRoute>}/>
