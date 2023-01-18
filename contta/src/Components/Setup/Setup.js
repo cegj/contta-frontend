@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 
 const Setup = () => {
   const [user, setUser] = React.useState(null)
-  const [step, setStep] = React.useState(5)
+  const [step, setStep] = React.useState(1)
   const navigate = useNavigate()
 
   return (
