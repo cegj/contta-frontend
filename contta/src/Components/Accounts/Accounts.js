@@ -77,7 +77,7 @@ const Accounts = () => {
   }, [selectedAccount])
 
   const getAndSet = React.useCallback(async(accountId) => {
-    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance, account: accountId})
+    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance, account: accountId, includehiddenaccounts: true})
     setTransactions(transactions)    
   }, [firstDay, lastDay, typeOfDateBalance, getTransactions])
 

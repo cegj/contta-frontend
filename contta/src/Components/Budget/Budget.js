@@ -19,7 +19,7 @@ const Budget = () => {
 
   const {getFirstDay, getLastDay} = useDate();
   const {request, fetchLoading} = useFetch()
-  const {year, month, categories, setLoading, setMessage, hideUnsellectedMonthsOnBudget} = React.useContext(AppContext)
+  const {year, month, categories, setLoading, setMessage, hideUnsellectedMonthsOnBudget, includeHiddenAccounts, includeHiddenAccountsOnBudget} = React.useContext(AppContext)
   const [transactionsModalIsOpen, setTransactionsModalIsOpen] = React.useState(false)
   const [selectedCatId, setSelectedCatId] = React.useState(null)
   const [selectedMonth, setSelectedMonth] = React.useState(null)
@@ -48,7 +48,7 @@ const Budget = () => {
     try {
       const token = window.localStorage.getItem('token')
       const firstDay = getFirstDay(lastDay.split('-')[0], lastDay.split('-')[1])
-      const {url, options} = GET_BALANCE_FOR_BUDGET(token, {from: firstDay, to: lastDay, typeofdate: 'transaction_date'})
+      const {url, options} = GET_BALANCE_FOR_BUDGET(token, {from: firstDay, to: lastDay, typeofdate: 'transaction_date', includehiddenaccounts: includeHiddenAccountsOnBudget})
       const {response, json, error} = await request(url, options)
       if (response.ok) return json.balances
       else throw new Error(error)
@@ -59,7 +59,7 @@ const Budget = () => {
     } finally {
       setUpdateTransactions(false)
     }
-  }, [getFirstDay, request, setMessage, setUpdateTransactions])
+  }, [getFirstDay, includeHiddenAccountsOnBudget, request, setMessage, setUpdateTransactions])
 
   const setPrevExecCatCells = React.useCallback((values, lastDay) => {
     const cells = Array.from(document.querySelectorAll(`td[data-last-day='${lastDay}']`))
@@ -219,7 +219,7 @@ const Budget = () => {
     }
     getAndSet();
     //eslint-disable-next-line
-  }, [year])
+  }, [year, includeHiddenAccountsOnBudget])
 
   React.useEffect(() => {
     async function getAndSet(){
@@ -339,7 +339,7 @@ const Budget = () => {
       <ScrollContainer innerRef={tableContainer} className={styles.tableContainer}>
         {elementsToRender}
       </ScrollContainer>
-      {transactionsModalIsOpen && <TransactionsOnBudget catId={selectedCatId} month={selectedMonth} includeExpected={includeExpectedOnTransactionsModal} isOpen={transactionsModalIsOpen} setIsOpen={setTransactionsModalIsOpen}/>}
+      {transactionsModalIsOpen && <TransactionsOnBudget catId={selectedCatId} month={selectedMonth} includeExpected={includeExpectedOnTransactionsModal} isOpen={transactionsModalIsOpen} setIsOpen={setTransactionsModalIsOpen} includeHiddenAccounts={includeHiddenAccounts}/>}
     </>
   )
 }

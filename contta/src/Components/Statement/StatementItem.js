@@ -165,7 +165,7 @@ const StatementItem = (transaction) => {
 
   return (
     <>
-      <div ref={statementItemElement} className={`${styles.statementItem} ${styles[transaction.type]}`}>
+      <div ref={statementItemElement} className={`${styles.statementItem} ${styles[transaction.type]} ${(transaction.account.show === 0) ? styles.fromHiddenAccount : ""}`}>
         <div className={styles.container}>
           <span className={styles.typeIcon}>{icon}</span>
         </div>

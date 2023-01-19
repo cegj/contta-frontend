@@ -28,7 +28,7 @@ const getGroupWithBalance = React.useCallback((accounts) => {
     async function getBalance(){
       grouped.forEach((typeGroup) => {
         typeGroup[1].forEach(async (account) => {
-          const query = {date: lastDay, typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, account: account.id}
+          const query = {date: lastDay, typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, account: account.id, includehiddenaccounts: true}
           const {url, options} = GET_BALANCE(token, query)
           const {response, json, error} = await request(url, options)
           if (response.ok){
@@ -76,7 +76,7 @@ React.useEffect(() => {
             <ul>
               {group[1].map((account) => {
               return(
-                <li key={account.id} className={styles.item}>
+                <li key={account.id} className={`${styles.item} ${(account.show === 0) ? styles.hidden : ""}`}>
                   <Link to={`${account.id}`}>
                     <span>{account.name}</span>
                     <span>{account.balance ? `R$ ${convertToFloat(account.balance.all_to_date.balance)}` : ""}</span>

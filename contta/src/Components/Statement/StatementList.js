@@ -16,7 +16,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
   const [accountFilter, setAccountFilter] = React.useState(null)
   const [statusFilter, setStatusFilter] = React.useState(null)
   const [hasFilter, setHasFilter] = React.useState(false)
-  const {setMessage, typeOfDateGroup, typeOfDateBalance, includeExpectedOnBalance, setLoading} = React.useContext(AppContext)
+  const {setMessage, typeOfDateGroup, typeOfDateBalance, includeExpectedOnBalance, includeHiddenAccounts, setLoading} = React.useContext(AppContext)
   const {request, fetchLoading} = useFetch();
 
   React.useEffect(() => {
@@ -32,7 +32,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
       const token = window.localStorage.getItem('token')
       async function getBalance(){
         grouped.forEach(async (day) => {
-          const query = {date: day[0], typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, account: accountId, category: categoryId}
+          const query = {date: day[0], typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, includehiddenaccounts: includeHiddenAccounts, account: accountId, category: categoryId}
           const {url, options} = GET_BALANCE(token, query)
           const {response, json, error} = await request(url, options)
           if (response.ok){
@@ -49,7 +49,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
         return false;
     } finally {
       setGroupWithBalance([...grouped])
-    }}, [includeExpectedOnBalance, request, typeOfDateBalance, typeOfDateGroup, accountId, categoryId, setMessage])
+    }}, [includeExpectedOnBalance, typeOfDateBalance, typeOfDateGroup, accountId, categoryId, includeHiddenAccounts, setMessage, request])
 
   React.useEffect(() => {
     if(typeFilter || categoryFilter || accountFilter || statusFilter) setHasFilter(true)

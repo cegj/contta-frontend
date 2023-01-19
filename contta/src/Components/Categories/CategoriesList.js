@@ -10,7 +10,7 @@ import {ReactComponent as AddIcon} from '../../assets/icons/add_icon.svg'
 
 const CategoriesList = ({categories, updateCategoriesList, setUpdateCategoriesList, setFormIsOpen}) => {
 
-const {setMessage, month, year, typeOfDateBalance, includeExpectedOnBalance, updateCategoryBalances, setUpdateCategoryBalances, setLoading} = React.useContext(AppContext)
+const {setMessage, month, year, typeOfDateBalance, includeExpectedOnBalance, updateCategoryBalances, setUpdateCategoryBalances, setLoading, includeHiddenAccounts} = React.useContext(AppContext)
 const {getLastDay} = useDate()
 const [groupWithBalance, setGroupWithBalance] = React.useState(null)
 const {request, fetchLoading} = useFetch();
@@ -28,7 +28,7 @@ const getGroupWithBalance = React.useCallback((categories) => {
     async function getBalance(){
       categories.forEach(async (group) => {
         group.categories.forEach(async (category) => {
-          const query = {date: lastDay, typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, category: category.id}
+          const query = {date: lastDay, typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, includehiddenaccounts: includeHiddenAccounts, category: category.id}
           const {url, options} = GET_BALANCE(token, query)
           const {response, json, error} = await request(url, options)
           if (response.ok){
@@ -45,7 +45,7 @@ const getGroupWithBalance = React.useCallback((categories) => {
       return false;
   } finally {
     setGroupWithBalance([...categories])
-}}, [includeExpectedOnBalance, typeOfDateBalance, lastDay, request, setMessage])
+}}, [includeExpectedOnBalance, includeHiddenAccounts, typeOfDateBalance, lastDay, request, setMessage])
 
 React.useEffect(() => {
   setLoading(fetchLoading)
@@ -53,7 +53,7 @@ React.useEffect(() => {
 
 React.useEffect(() => {
   setUpdateCategoryBalances(true)
-}, [month, year, includeExpectedOnBalance, setUpdateCategoryBalances, typeOfDateBalance])
+}, [month, year, includeExpectedOnBalance, includeHiddenAccounts, setUpdateCategoryBalances, typeOfDateBalance])
 
 React.useEffect(() => {
   if (categories.length > 0 && (updateCategoryBalances || updateCategoriesList)){

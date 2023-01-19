@@ -7,7 +7,7 @@ import useDate from '../../Hooks/useDate'
 
 const Statement = () => {
 
-  const {setPageName, setPageSubName} = React.useContext(AppContext)
+  const {setPageName, setPageSubName, includeHiddenAccounts} = React.useContext(AppContext)
   React.useEffect(() => {setPageName("Extrato"); setPageSubName(null)}, [setPageName, setPageSubName])
 
   const {month, year, typeOfDateBalance} = React.useContext(AppContext)
@@ -19,9 +19,9 @@ const Statement = () => {
   const lastDay = getLastDay(year, month);
 
   const getAndSet = React.useCallback(async() => {
-    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance})
+    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance, includehiddenaccounts: includeHiddenAccounts})
     setTransactions(transactions)    
-  }, [firstDay, lastDay, typeOfDateBalance, getTransactions])
+  }, [firstDay, lastDay, typeOfDateBalance, includeHiddenAccounts, getTransactions])
 
   React.useEffect(() => {
     getAndSet()

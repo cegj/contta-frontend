@@ -20,7 +20,7 @@ const Categories = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const {setPageName, setPageSubName, setLoading, categories, setCategories} = React.useContext(AppContext)
+  const {setPageName, setPageSubName, setLoading, categories, setCategories, includeHiddenAccounts} = React.useContext(AppContext)
   const {setMessage} = React.useContext(MessagesContext)
   const {request, fetchLoading} = useFetch();
   const [categoryName, setCategoryName] = React.useState(null)
@@ -76,9 +76,9 @@ const Categories = () => {
   }, [selectedCategory])
 
   const getAndSet = React.useCallback(async(categoryId) => {
-    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance, category: categoryId})
+    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance, category: categoryId, includehiddenaccounts: includeHiddenAccounts})
     setTransactions(transactions)    
-  }, [firstDay, lastDay, typeOfDateBalance, getTransactions])
+  }, [firstDay, lastDay, typeOfDateBalance, includeHiddenAccounts, getTransactions])
 
   React.useEffect(() => {
     ReactTooltip.rebuild()

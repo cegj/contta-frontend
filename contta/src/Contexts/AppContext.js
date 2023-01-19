@@ -30,6 +30,8 @@ export const AppContextData = ({children}) => {
   const [typeOfDateBalance, setTypeOfDateBalance] = React.useState(window.localStorage.typeOfDateBalance || 'transaction_date');
   const [typeOfDateGroup, setTypeOfDateGroup] = React.useState(window.localStorage.typeOfDateGroup || 'transaction_date');
   const [includeExpectedOnBalance, setIncludeExpectedOnBalance] = React.useState(window.localStorage.includeExpectedOnBalance ? JSON.parse(window.localStorage.includeExpectedOnBalance) : false);
+  const [includeHiddenAccounts, setIncludeHiddenAccounts] = React.useState(window.localStorage.includeHiddenAccounts ? JSON.parse(window.localStorage.includeHiddenAccounts) : false);
+  const [includeHiddenAccountsOnBudget, setIncludeHiddenAccountsOnBudget] = React.useState(window.localStorage.includeHiddenAccountsOnBudget ? JSON.parse(window.localStorage.includeHiddenAccountsOnBudget) : false);
   const [hideUnsellectedMonthsOnBudget, setHideUnsellectedMonthsOnBudget] = React.useState(window.localStorage.hideUnsellectedMonthsOnBudget ? JSON.parse(window.localStorage.hideUnsellectedMonthsOnBudget) : false);
   const [updateAccountBalances, setUpdateAccountBalances] = React.useState(true);
   const [updateCategoryBalances, setUpdateCategoryBalances] = React.useState(true);
@@ -134,9 +136,11 @@ React.useEffect(() => {
         typeOfDateBalance, setTypeOfDateBalance,
         typeOfDateGroup, setTypeOfDateGroup,
         includeExpectedOnBalance, setIncludeExpectedOnBalance,
+        includeHiddenAccounts, setIncludeHiddenAccounts,
         updateAccountBalances, setUpdateAccountBalances,
         updateCategoryBalances, setUpdateCategoryBalances,
         hideUnsellectedMonthsOnBudget, setHideUnsellectedMonthsOnBudget,
+        includeHiddenAccountsOnBudget, setIncludeHiddenAccountsOnBudget,
         getBalance
       }}
     >
