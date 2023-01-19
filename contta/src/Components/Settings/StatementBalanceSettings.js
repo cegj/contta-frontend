@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './Settings.module.css'
 import AppContext from '../../Contexts/AppContext'
 import TransactionsContext from '../../Contexts/TransactionsContext'
+import ReactTooltip from 'react-tooltip'
 
 const StatementBalanceSettings = () => {
 
@@ -17,6 +18,10 @@ const StatementBalanceSettings = () => {
   } = React.useContext(AppContext)
 
   const {setUpdateTransactions} = React.useContext(TransactionsContext)
+
+  React.useEffect(() => {
+    ReactTooltip.rebuild()
+  }, [])
 
   function selectTypeOfDateBalance({target}){
     window.localStorage.setItem('typeOfDateBalance', target.dataset.value)
@@ -50,28 +55,40 @@ const StatementBalanceSettings = () => {
     <section className={styles.settingsGroup}>
       <h3>Extrato e saldo</h3>
         <section className={styles.setting}>
-          <h4>Data para agrupamento das transações</h4>
+          <div className={styles.settingTitle}>
+            <h4>Data para agrupamento das transações</h4>
+            <div data-tip="Define por qual data as transações devem ser agrupadas e exibidas nos extratos" data-background-color="#a19f9f" className={styles.helpIcon}>?</div>
+          </div>
           <div className={styles.optionsSelector}>
             <span data-value="transaction_date" className={typeOfDateGroup === "transaction_date" ? styles.active : ""} onClick={selectTypeOfDateGroup}>Data da transação</span>
             <span data-value="payment_date" className={typeOfDateGroup === "payment_date" ? styles.active : ""} onClick={selectTypeOfDateGroup}>Data do pagamento</span>
           </div>
         </section>
         <section className={styles.setting}>
-          <h4>Data para cálculo dos saldos</h4>
+          <div className={styles.settingTitle}>
+            <h4>Data para cálculo dos saldos</h4>
+            <div data-tip="Define qual data deve ser considerada para calcular os saldos nos extratos" data-background-color="#a19f9f" className={styles.helpIcon}>?</div>
+          </div>
           <div className={styles.optionsSelector}>
             <span data-value="transaction_date" className={typeOfDateBalance === "transaction_date" ? styles.active : ""} onClick={selectTypeOfDateBalance}>Data da transação</span>
             <span data-value="payment_date" className={typeOfDateBalance === "payment_date" ? styles.active : ""} onClick={selectTypeOfDateBalance}>Data do pagamento</span>
           </div>
         </section>
         <section className={styles.setting}>
-          <h4>Considerar transações previstas nos saldos</h4>
+          <div className={styles.settingTitle}>
+            <h4>Considerar transações previstas nos saldos</h4>
+            <div data-tip='Define se as transações marcadas como "previstas" (não consolidadas) devem ser consideradas para o cálculo dos saldos nos extratos' data-background-color="#a19f9f" className={styles.helpIcon}>?</div>
+          </div>
           <div className={styles.optionsSelector}>
             <span data-value="false" className={includeExpectedOnBalance === false ? styles.active : ""} onClick={selectIncludeExpectedOnBalance}>Não</span>
             <span data-value="true" className={includeExpectedOnBalance ? styles.active : ""} onClick={selectIncludeExpectedOnBalance}>Sim</span>
           </div>
         </section>
         <section className={styles.setting}>
-          <h4>Incluir transações de contas ocultas nos extratos e saldos</h4>
+          <div className={styles.settingTitle}>
+            <h4>Incluir transações de contas ocultas nos extratos e saldos</h4>
+            <div data-tip='Define se as transações associadas a contas ocultas devem ser exibidas nos extratos e consideradas no cálculo dos seus saldos' data-background-color="#a19f9f" className={styles.helpIcon}>?</div>
+          </div>
           <div className={styles.optionsSelector}>
             <span data-value="false" className={includeHiddenAccounts === false ? styles.active : ""} onClick={selectIncludeHiddenAccountsOnBalance}>Não</span>
             <span data-value="true" className={includeHiddenAccounts ? styles.active : ""} onClick={selectIncludeHiddenAccountsOnBalance}>Sim</span>

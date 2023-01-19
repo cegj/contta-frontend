@@ -29,7 +29,28 @@
   margin-bottom: 0;
 }
 
-.setting h4 {
+.settingTitle {
+  display: flex;
+  gap: .5rem;
+  align-items: baseline;
+}
+
+.helpIcon {
+  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ebebeb;
+  color: rgb(105, 105, 105);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: .875rem;
+  cursor: help;
+}
+
+.settingTitle h4 {
+  display: inline-block;
   font-size: .875rem;
   margin-bottom: .5rem;
   color: #2c2c2c;

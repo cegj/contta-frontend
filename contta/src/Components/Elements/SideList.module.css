@@ -17,6 +17,11 @@
 
 .sideList ul {
   margin-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.item {
+  margin-bottom: .7rem;
 }
 
 .item>a {
