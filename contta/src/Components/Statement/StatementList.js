@@ -16,8 +16,12 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
   const [accountFilter, setAccountFilter] = React.useState(null)
   const [statusFilter, setStatusFilter] = React.useState(null)
   const [hasFilter, setHasFilter] = React.useState(false)
-  const {setMessage, typeOfDateGroup, typeOfDateBalance, includeExpectedOnBalance} = React.useContext(AppContext)
-  const {request} = useFetch();
+  const {setMessage, typeOfDateGroup, typeOfDateBalance, includeExpectedOnBalance, setLoading} = React.useContext(AppContext)
+  const {request, fetchLoading} = useFetch();
+
+  React.useEffect(() => {
+    setLoading(fetchLoading)
+  }, [fetchLoading, setLoading])
 
   const getGroupWithBalance = React.useCallback((transactions) => {
     const grouped = Object.entries(groupBy(transactions, typeOfDateGroup));
