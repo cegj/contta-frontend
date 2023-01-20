@@ -48,7 +48,7 @@ const Budget = () => {
     try {
       const token = window.localStorage.getItem('token')
       const firstDay = getFirstDay(lastDay.split('-')[0], lastDay.split('-')[1])
-      const {url, options} = GET_BALANCE_FOR_BUDGET(token, {from: firstDay, to: lastDay, typeofdate: 'transaction_date', includehiddenaccounts: includeHiddenAccountsOnBudget})
+      const {url, options} = GET_BALANCE_FOR_BUDGET(token, {from: firstDay, to: lastDay, typeofdate: 'payment_date', includehiddenaccounts: includeHiddenAccountsOnBudget})
       const {response, json, error} = await request(url, options)
       if (response.ok) return json.balances
       else throw new Error(error)
