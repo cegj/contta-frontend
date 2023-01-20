@@ -10,7 +10,6 @@ const CreateAdminUser = ({user, setUser, step, setStep}) => {
 
   const { createUser, fetchLoading } = React.useContext(UserContext);
   const name = useForm();
-  const username = useForm();
   const email = useForm('email');
   const password = useForm();  
   const confirmPassword = useForm();
@@ -27,7 +26,6 @@ const CreateAdminUser = ({user, setUser, step, setStep}) => {
           if (password.value === confirmPassword.value){
             const body = {
               "name": name.value,
-              "username": username.value,
               "email": email.value,
               "password": password.value,
               "confirm_password": confirmPassword.value
@@ -69,11 +67,6 @@ const CreateAdminUser = ({user, setUser, step, setStep}) => {
           type="text" name="name"
           required={true}
           {...name}/>
-        <Input
-          label="Nome de usuário (username)"
-          type="text" name="username"
-          required={true}
-          {...username}/>         
         <Input
           label="E-mail do usuário"
           type="email" name="email"
