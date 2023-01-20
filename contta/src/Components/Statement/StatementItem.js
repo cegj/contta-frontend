@@ -97,7 +97,6 @@ const StatementItem = (transaction) => {
 
     async function setEdittingValuesAndOpenForm(transaction) {
       const edittingValues = {}
-      console.log(transaction)
       edittingValues.id = transaction.id
       edittingValues.type = typeOptions.find(type => type.value === transaction.type)
       edittingValues.transactionDate = transaction.transaction_date;
@@ -118,6 +117,7 @@ const StatementItem = (transaction) => {
       }
       edittingValues.preview = transaction.preview;
       edittingValues.usual = transaction.usual;
+      edittingValues.budgetControl = transaction.budget_control;
       edittingValues.isEdit = true;
       setTransactionFormValues(edittingValues)
       setTransactionModalIsOpen(true)
@@ -128,7 +128,7 @@ const StatementItem = (transaction) => {
   }
 
   async function togglePreview(){
-    if (transaction.type !== 'T' && transaction.type !== 'I'){
+    if (transaction.type !== 'T' && transaction.type !== 'I' && !transaction.budget_control){
       const token = window.localStorage.getItem('token');
       let body;
       if (transaction.preview === 1){
@@ -157,9 +157,12 @@ const StatementItem = (transaction) => {
     } else {
       if (transaction.type === 'T'){
         setMessage({content: 'Não é possível definir uma transferência como prevista', type: 'a'})
-      }
+      } else
       if (transaction.type === 'I'){
         setMessage({content: 'Não é possível definir um saldo inicial como previsto', type: 'a'})
+      } else 
+      if (transaction.budget_control){
+        setMessage({content: 'Não é possível definir uma transação de controle de orçamento como consolidada', type: 'a'})
       }
     }
   }
@@ -197,7 +200,7 @@ const StatementItem = (transaction) => {
           <span data-background-color="#a19f9f" data-delay-show="700" data-tip="Data do pagamento" className={styles.date}><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
         </div> 
         <div className={styles.container}>
-          <span data-tip={(transaction.type !== 'T' && transaction.type !== 'I') ? !transaction.preview ? "Marcar como prevista" : "Marcar como consolidada" : ''} className={`${styles.preview} ${(transaction.type === 'T' || transaction.type === 'I') ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
+          <span data-tip={(transaction.type !== 'T' && transaction.type !== 'I' && !transaction.budget_control) ? !transaction.preview ? "Marcar como prevista" : "Marcar como consolidada" : ''} className={`${styles.preview} ${(transaction.type === 'T' || transaction.type === 'I' || transaction.budget_control) ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
         </div>
         <span data-tip="Opções" data-menu-option className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive} ${(transaction.type === 'I') ? styles.notPointer : ''}`} onClick={toggleOptions}></span>
         <div ref={optionsMenu} className={`${styles.menu} ${optionsIsOpen && styles.active}`}>

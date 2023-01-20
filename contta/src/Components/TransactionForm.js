@@ -36,6 +36,7 @@ const TransactionForm = () => {
   const [destinationAccount, setDestinationAccount] = React.useState(null);
   const totalInstallments = useForm();
   const preview = useForm('checkbox');
+  const budgetControl = useForm('checkbox');
   const usual = useForm('checkbox');
   const cascade = useForm('checkbox');
 
@@ -51,6 +52,7 @@ const TransactionForm = () => {
     totalInstallments.setValue('');
     preview.setValue(false);
     usual.setValue(false);
+    budgetControl.setValue(false);
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
@@ -74,7 +76,6 @@ const TransactionForm = () => {
 
   React.useEffect(() => {
     if (Object.keys(transactionFormValues).length > 0){
-      console.log(transactionFormValues.category)
       transactionFormValues.type && setType(transactionFormValues.type);
       transactionFormValues.transactionDate && transactionDate.setValue(transactionFormValues.transactionDate);
       transactionFormValues.paymentDate && paymentDate.setValue(transactionFormValues.paymentDate);
@@ -84,7 +85,8 @@ const TransactionForm = () => {
       transactionFormValues.account && setAccount(transactionFormValues.account);
       transactionFormValues.destinationAccount && setDestinationAccount(transactionFormValues.destinationAccount);
       transactionFormValues.preview && preview.setValue(transactionFormValues.preview);
-      transactionFormValues.usual && usual.setValue(transactionFormValues.usual);  
+      transactionFormValues.usual && usual.setValue(transactionFormValues.usual);
+      transactionFormValues.budgetControl && budgetControl.setValue(transactionFormValues.budgetControl);  
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactionModalIsOpen])
@@ -134,12 +136,17 @@ const TransactionForm = () => {
           {field: paymentDate, name: 'data do pagamento'}, 
           {field: value, name: 'valor'}, 
           {field: description, name: 'descrição'}, 
-          {field: account, name: 'conta'},
           {field: category, name: 'categoria'} 
         ]
+
+        if (!budgetControl.value) {
+          fields.push({field: account, name: 'conta'})
+        }
+
         if (!validateSubmit(fields)){
           return;
         }
+        console.log(budgetControl.value)
         body = {
           transaction_date: transactionDate.value,
           payment_date: paymentDate.value,
@@ -149,6 +156,7 @@ const TransactionForm = () => {
           account_id: account.value,
           preview: preview.value,
           usual: usual.value,
+          budget_control: budgetControl.value,
           total_installments: totalInstallments.value
         }} else {
           let fields = [
@@ -175,7 +183,6 @@ const TransactionForm = () => {
       }
 
       if (transactionFormValues && transactionFormValues.isEdit){
-        console.log(transactionFormValues)
         const editted = editTransaction(body, transactionFormValues.type.value, transactionFormValues.id, cascade.value)
         if (editted){
           clearForm();
@@ -275,9 +282,10 @@ const TransactionForm = () => {
                 onChange={setAccount}
                 options={accountOptions}
                 setValue={setAccount}
-                style={{gridColumn: 'span 2'}}
+                style={{gridColumn: 'span 3'}}
                 reload={reload}
                 keepAllValues={keepAllValues}
+                disabled={budgetControl.value}
               />       
               {type && type.value === 'T'
               ?
@@ -320,15 +328,39 @@ const TransactionForm = () => {
                 keepAllValues={keepAllValues}
               />
               }
+              {(transactionFormValues && transactionFormValues.isEdit && type.value !== 'T') && 
+            <span style={{gridRow: '3', gridColumn: '6'}} className={styles.checkboxesContainer}>
+              <TransactionFormInput
+                label="Aplicar às parcelas seguintes"
+                name="cascade"
+                type="checkbox"
+                value={cascade.value}
+                onChange={cascade.onChange}
+                setValue={cascade.setValue}
+                reload={reload}
+                keepAllValues={keepAllValues}
+              /></span>}
             <span className={styles.checkboxesContainer}>
             {(!type || type.value !== 'T') && 
               <TransactionFormInput
                 label="Previsão"
                 name="preview"
                 type="checkbox"
-                value={preview.value}
+                value={budgetControl.value ? "true" : preview.value}
                 onChange={preview.onChange}
                 setValue={preview.setValue}
+                reload={reload}
+                keepAllValues={keepAllValues}
+                disabled={budgetControl.value}
+              />}
+            {(!type || type.value !== 'T') && 
+              <TransactionFormInput
+                label="Controle de orç."
+                name="budget_control"
+                type="checkbox"
+                value={budgetControl.value}
+                onChange={budgetControl.onChange}
+                setValue={budgetControl.setValue}
                 reload={reload}
                 keepAllValues={keepAllValues}
               />}
@@ -343,17 +375,6 @@ const TransactionForm = () => {
                 keepAllValues={keepAllValues}
               />
             </span>
-            {(transactionFormValues && transactionFormValues.isEdit && type.value !== 'T') && <TransactionFormInput
-                label="Aplicar mudanças às parcelas seguintes"
-                name="cascade"
-                type="checkbox"
-                value={cascade.value}
-                onChange={cascade.onChange}
-                setValue={cascade.setValue}
-                reload={reload}
-                keepAllValues={keepAllValues}
-                style={{gridRow: '4', gridColumn: 'span 5', alignSelf: 'center'}}
-              />}
             {fetchLoading 
             ?
             <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}} disabled>Registrando...</Button>

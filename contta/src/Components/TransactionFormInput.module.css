@@ -24,6 +24,10 @@
   outline: none;
 }
 
+.formControl input:disabled {
+  background-color: hsl(0, 0%, 95%);
+}
+
 
 .formControl label {
   color: #8A8A8A;
@@ -72,7 +76,7 @@
 
 .checkboxControl {
   display: flex;
-  height: 35px;
+  height: 100%;
   width: 100%;
   display: flex;
   align-items: center;
@@ -84,6 +88,8 @@
   align-content: center;
   justify-content: space-between;
   padding: .1rem .5rem;
+  font-size: .8rem;
+  color: #474747;
 }
 
 .checkboxAndLabelContainer {
