@@ -42,6 +42,8 @@
   color: #333;
   font-weight: bold;
   font-size: 1rem;
+  display: flex;
+  justify-content: left;
 }
 
 .D>.container>.typeIcon {
@@ -85,7 +87,8 @@
 }
 
 .date,
-.preview {
+.preview,
+.budgetControl {
   font-weight: regular;
   color: #00000090;
   display: flex;
@@ -96,8 +99,14 @@
 }
 
 .date,
+.budgetControl,
 .preview>svg {
   fill: rgba(0, 0, 0, .3);
+}
+
+.budgetControl {
+  display: inline-block !important;
+  margin-left: .3rem;
 }
 
 .preview {

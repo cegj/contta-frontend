@@ -1,7 +1,7 @@
 import objectToQueryString from "./Helpers/objectToQueryString";
 
-export const API_URL = 'http://3.220.229.85:8000/api';
-// export const API_URL = 'http://localhost:8000/api';
+// export const API_URL = 'http://3.220.229.85:8000/api';
+export const API_URL = 'http://localhost:8000/api';
 
 export function GET_CHECK_TABLES(){
   return {

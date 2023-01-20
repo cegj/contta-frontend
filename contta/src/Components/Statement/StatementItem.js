@@ -9,6 +9,7 @@ import {ReactComponent as TransactionDateIcon} from '../../assets/icons/calendar
 import {ReactComponent as PaymentDateIcon} from '../../assets/icons/calendar_pay_icon.svg'
 import {ReactComponent as DoneIcon} from '../../assets/icons/done_fill_icon_small.svg'
 import {ReactComponent as NotDoneIcon} from '../../assets/icons/done_icon_small.svg'
+import {ReactComponent as BudgetIcon} from '../../assets/icons/table_icon_small.svg'
 import convertDateToBr from '../../Helpers/convertDateToBr'
 import useFetch from '../../Hooks/useFetch'
 import { PATCH_EXPENSE, PATCH_INCOME, PATCH_TRANSFER } from '../../api'
@@ -177,27 +178,28 @@ const StatementItem = (transaction) => {
               onClick={!isOnModal ? () => {setTransactionToGetRelated(transaction.id); setRelatedModalIsOpen(true)} : null}
               className={`${styles.installmentNumber} ${isOnModal ? styles.onModal : ''}`}>{transaction.installment}
             </span>}
+            {transaction.budget_control ? <span className={styles.budgetControl} data-background-color="#a19f9f" data-delay-show="700" data-tip="Transação de controle de orçamento: não é considerada no cálculo dos saldos dos extratos e sofre abatimento automático"><BudgetIcon /></span> : ""}
             </span>
           <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
         </div>
         <div className={styles.container}>
           <span className={styles.account}>
             {transaction.account
-            ? <Link to={`/accounts/${transaction.account_id}`}>{transaction.account.name}</Link>
-            : <Link to={`/accounts/0`}>Sem conta</Link>}</span>
+            ? <Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Conta" to={`/accounts/${transaction.account_id}`}>{transaction.account.name}</Link>
+            : <Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Conta" to={`/accounts/0`}>Sem conta</Link>}</span>
           <span className={styles.category}>
             {transaction.category
-            ? <Link to={`/categories/${transaction.category_id}`}>{transaction.category.name}</Link>
-            : <Link to={`/categories/0`}>Sem categoria</Link>}</span>
+            ? <Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Categoria" to={`/categories/${transaction.category_id}`}>{transaction.category.name}</Link>
+            : <Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Categoria" to={`/categories/0`}>Sem categoria</Link>}</span>
         </div>
         <div className={styles.container}>
-          <span className={styles.date}><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
-          <span className={styles.date}><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
+          <span data-background-color="#a19f9f" data-delay-show="700" data-tip="Data da transação" className={styles.date}><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
+          <span data-background-color="#a19f9f" data-delay-show="700" data-tip="Data do pagamento" className={styles.date}><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
         </div> 
         <div className={styles.container}>
           <span data-tip={(transaction.type !== 'T' && transaction.type !== 'I') ? !transaction.preview ? "Marcar como prevista" : "Marcar como consolidada" : ''} className={`${styles.preview} ${(transaction.type === 'T' || transaction.type === 'I') ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
         </div>
-        <span data-menu-option className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive} ${(transaction.type === 'I') ? styles.notPointer : ''}`} onClick={toggleOptions}></span>
+        <span data-tip="Opções" data-menu-option className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive} ${(transaction.type === 'I') ? styles.notPointer : ''}`} onClick={toggleOptions}></span>
         <div ref={optionsMenu} className={`${styles.menu} ${optionsIsOpen && styles.active}`}>
           <ul>
             <li data-menu-option className={styles.editIcon} onClick={handleEdit}>Editar</li>
