@@ -102,3 +102,29 @@
 :global(.zero) {
   color: transparent !important;
 }
+
+@media screen and (max-width: 480px) {
+
+  .settingsContainer {
+    width: 100%;
+    height: 80vh;
+  }
+
+  .settingsGroup {
+    border: 1px solid #e1e1e1;
+    padding: 1rem;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .optionsSelector {
+    flex-wrap: wrap;
+  }
+
+  .optionsSelector>span {
+    width: auto;
+    padding: 1.3rem 2rem;
+    font-size: .9rem;
+  }
+}

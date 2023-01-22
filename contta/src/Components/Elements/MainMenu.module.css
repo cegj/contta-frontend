@@ -67,7 +67,7 @@
 
 .menu>ul>li>a {
   color: #fff;
-  font-family: 'Ubuntu', sans-serif;
+  font-family: "Ubuntu", sans-serif;
   font-size: 1.2rem;
   display: flex;
   gap: 5px;
@@ -91,4 +91,21 @@
 
 .menu>ul>li>a:hover {
   transform: scale(1.1);
+}
+
+@media screen and (max-width: 480px) {
+  .menu {
+    width: 100vw;
+  }
+
+  .menu>ul>li>a {
+    background-color: #144b7a;
+    border-radius: 4px;
+    padding: .5rem;
+  }
+
+  .menu>ul>li>a:hover {
+    transform: scale(1.05);
+  }
+
 }

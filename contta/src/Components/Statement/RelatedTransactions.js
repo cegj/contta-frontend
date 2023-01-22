@@ -2,6 +2,7 @@ import React from 'react'
 import TransactionsContext from '../../Contexts/TransactionsContext'
 import Modal from '../Elements/Modal'
 import StatementItem from './StatementItem'
+import styles from './StatementList.module.css'
 
 const RelatedTransactions = ({id, isOpen, setIsOpen}) => {
 
@@ -20,7 +21,7 @@ const RelatedTransactions = ({id, isOpen, setIsOpen}) => {
 
   if (related) return (
     <Modal title={related.length > 1 ? `${related.length} transações relacionadas` : '1 transação relacionada'} isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div data-on-modal="true" style={{maxHeight: '350px', overflow: 'auto'}}>
+      <div data-on-modal="true" className={styles.relatedTransactionsContainer}>
         {related.map((transaction) => {
           return <StatementItem key={transaction.id} {...transaction}/>
         })}

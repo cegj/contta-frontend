@@ -99,3 +99,14 @@ h3 {
   border-radius: 5px;
   margin: 0 auto;
 }
+
+@media screen and (max-width: 480px) {
+  body {
+    overflow: auto;
+  }
+
+  .grid.g-two {
+    grid-template-columns: 1fr;
+    margin: 1rem;
+  }
+}

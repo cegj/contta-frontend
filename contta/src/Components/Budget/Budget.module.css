@@ -103,3 +103,33 @@
   background-color: #ffffe8 !important;
   color: #94948e;
 }
+
+.transactionsOnBudgetContainer {
+  max-height: 350px;
+  overflow: auto;
+}
+
+@media screen and (max-width: 480px) {
+  .tableContainer {
+    width: 100vw;
+    box-shadow: none;
+  }
+
+  .table {
+    font-size: .8rem;
+  }
+
+  [data-sticky="left-2"] {
+    left: 119px;
+  }
+
+  .table th,
+  .table td {
+    padding: .4rem .8rem;
+  }
+
+  .transactionsOnBudgetContainer {
+    max-height: unset;
+    height: 80vh;
+  }
+}

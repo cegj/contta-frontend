@@ -81,3 +81,15 @@
 .modalContent {
   padding: 1rem;
 }
+
+@media screen and (max-width: 480px) {
+  .modal {
+    width: 100vw;
+    height: 100vh;
+    max-height: unset;
+    max-width: unset;
+    border-radius: 0;
+    box-shadow: none;
+    animation: none;
+  }
+}

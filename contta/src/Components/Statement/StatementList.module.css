@@ -14,3 +14,25 @@
   gap: 4rem;
   margin-bottom: 15px;
 }
+
+.relatedTransactionsContainer {
+  max-height: 350px;
+  overflow: auto;
+}
+
+@media screen and (max-width: 480px) {
+  .balanceLine {
+    gap: .2rem;
+    margin-bottom: .7rem;
+    justify-content: space-between;
+  }
+
+  .statementContainer {
+    margin: 0;
+  }
+
+  .relatedTransactionsContainer {
+    max-height: unset;
+    height: 80vh;
+  }
+}

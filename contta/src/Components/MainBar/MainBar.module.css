@@ -2,7 +2,7 @@
   display: flex;
   flex-wrap: wrap;
   background-color: #0B467B;
-  min-height: 70px;
+  height: 70px;
   align-items: center;
   align-content: center;
   padding: 1rem;
@@ -45,4 +45,16 @@
   background-color: #082F53;
   margin-left: .5rem;
   margin-right: .5rem;
+}
+
+@media screen and (max-width: 480px) {
+  .mainBar {
+    height: fit-content;
+    padding: .5rem;
+  }
+
+  .optionsContainer {
+    margin: 0 0 0 auto;
+    gap: 20px;
+  }
 }

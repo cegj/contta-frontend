@@ -5,6 +5,7 @@ import useDate from '../../Hooks/useDate'
 import AddTransactionButton from '../Elements/AddTransactionButton'
 import Modal from '../Elements/Modal'
 import StatementList from '../Statement/StatementList'
+import styles from './Budget.module.css'
 
 const TransactionsOnBudget = ({catId, month, hideExpected, isOpen, setIsOpen, includeHiddenAccounts}) => {
 
@@ -45,7 +46,7 @@ const TransactionsOnBudget = ({catId, month, hideExpected, isOpen, setIsOpen, in
 
   if (isOpen) return (
     <Modal title={`Transações de ${category && category.name} em ${month}/${year}`} isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div data-on-modal="true" style={{maxHeight: '350px', overflow: 'auto'}}>
+      <div className={styles.transactionsOnBudgetContainer} data-on-modal="true">
         <StatementList transactions={transactionsOfSelected} categoryId={catId} />
         <div onClick={setValuesToNewTransaction}>
           <AddTransactionButton />
