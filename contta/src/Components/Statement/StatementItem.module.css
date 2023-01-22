@@ -34,10 +34,6 @@
   background-color: #f5f2db;
 }
 
-.fromHiddenAccount {
-  opacity: .7;
-}
-
 .description {
   color: #333;
   font-weight: bold;
@@ -86,22 +82,7 @@
   color: #00000095;
 }
 
-.date,
-.preview,
-.budgetControl {
-  font-weight: regular;
-  color: #00000090;
-  display: flex;
-  align-items: center;
-  gap: .3rem;
-  font-size: .875rem;
-  font-weight: lighter;
-}
 
-.budgetControl {
-  display: inline-block !important;
-  margin-left: .3rem;
-}
 
 .preview {
   cursor: pointer;
@@ -253,6 +234,10 @@
 
 .menu.active {
   display: block;
+}
+
+.fromHiddenAccount {
+  opacity: .7;
 }
 
 @keyframes showMenu {

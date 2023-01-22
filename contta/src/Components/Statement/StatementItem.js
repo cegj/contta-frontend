@@ -10,6 +10,7 @@ import {ReactComponent as PaymentDateIcon} from '../../assets/icons/calendar_pay
 import {ReactComponent as DoneIcon} from '../../assets/icons/done_fill_icon_small.svg'
 import {ReactComponent as NotDoneIcon} from '../../assets/icons/done_icon_small.svg'
 import {ReactComponent as BudgetIcon} from '../../assets/icons/table_icon_small.svg'
+import {ReactComponent as HiddenAccountIcon} from '../../assets/icons/visibillity_off_icon_small.svg'
 import convertDateToBr from '../../Helpers/convertDateToBr'
 import useFetch from '../../Hooks/useFetch'
 import { PATCH_EXPENSE, PATCH_INCOME, PATCH_TRANSFER } from '../../api'
@@ -169,7 +170,7 @@ const StatementItem = (transaction) => {
 
   return (
     <>
-      <div className={`${styles.statementItem} ${styles[transaction.type]} ${(transaction.account && transaction.account.show === 0)}`} ref={statementItemElement}>
+      <div className={`${styles.statementItem} ${styles[transaction.type]} ${(transaction.account && transaction.account.show === 0) ? styles.fromHiddenAccount : ""}`} ref={statementItemElement}>
         <div>
           <span className={styles.typeIcon}>{icon}</span>
         </div>
@@ -177,8 +178,10 @@ const StatementItem = (transaction) => {
           <div className={styles.line}>
             <span className={styles.description}>{transaction.description}</span>
             <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
-              {transaction.budget_control ?
-              <span data-background-color="#a19f9f" data-delay-show="700" data-tip="Transação de controle de orçamento: não é considerada no cálculo dos saldos dos extratos e sofre abatimento automático"><BudgetIcon /></span> : ""}
+            {transaction.budget_control ?
+            <span classList={styles.budgetControl} data-background-color="#a19f9f" data-delay-show="700" data-tip="Transação de controle de orçamento: não é considerada no cálculo dos saldos dos extratos e sofre abatimento automático"><BudgetIcon /></span> : ""}
+            {(transaction.account && transaction.account.show === 0) ?
+            <span classList={styles.hiddenAccount} data-background-color="#a19f9f" data-delay-show="700" data-tip="Transação vinculada a conta oculta: por padrão, não é considerado nos saldos, extratos e orçamentos"><HiddenAccountIcon /></span> : ""}
           </div>
           <div className={styles.line}>
             <span className={styles.metadata} data-background-color="#a19f9f" data-delay-show="700" data-tip="Data da transação"><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
@@ -193,11 +196,11 @@ const StatementItem = (transaction) => {
         </div>
         <div className={styles.buttonsContainer}>
         {transaction.installments_key &&
-            <span
-              data-tip={!isOnModal ? "Ver transações relacionadas" : null}
-              onClick={!isOnModal ? () => {setTransactionToGetRelated(transaction.id); setRelatedModalIsOpen(true)} : null}
-              className={`${styles.installmentNumber} ${isOnModal ? styles.onModal : ''}`}
-              >{transaction.installment}</span>}
+        <span
+          data-tip={!isOnModal ? "Ver transações relacionadas" : null}
+          onClick={!isOnModal ? () => {setTransactionToGetRelated(transaction.id); setRelatedModalIsOpen(true)} : null}
+          className={`${styles.installmentNumber} ${isOnModal ? styles.onModal : ''}`}
+          >{transaction.installment}</span>}
           <span data-tip={(transaction.type !== 'T' && transaction.type !== 'I' && !transaction.budget_control) ? !transaction.preview ? "Marcar como prevista" : "Marcar como consolidada" : ''} className={`${styles.preview} ${(transaction.type === 'T' || transaction.type === 'I' || transaction.budget_control) ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
           <span data-tip="Opções" data-menu-option className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive} ${(transaction.type === 'I') ? styles.notPointer : ''}`} onClick={toggleOptions}></span>
         <div ref={optionsMenu} className={`${styles.menu} ${optionsIsOpen && styles.active}`}>
