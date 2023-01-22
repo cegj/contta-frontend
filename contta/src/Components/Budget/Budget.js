@@ -23,7 +23,7 @@ const Budget = () => {
   const [transactionsModalIsOpen, setTransactionsModalIsOpen] = React.useState(false)
   const [selectedCatId, setSelectedCatId] = React.useState(null)
   const [selectedMonth, setSelectedMonth] = React.useState(null)
-  const [includeExpectedOnTransactionsModal, setIncludeExpectedOnTransactionsModal] = React.useState(null)
+  const [hideExpectedOnTransactionsModel, setHideExpectedOnTransactionsModel] = React.useState(null)
   const {updateTransactions, setUpdateTransactions} = React.useContext(TransactionsContext)
   const tableContainer = React.useRef(null)
 
@@ -149,8 +149,8 @@ const Budget = () => {
   function handleClickOnCell({target}){
     const month = target.dataset.lastDay.split('-')[1]
     const {catId} = target.dataset;
-    if (target.dataset.cellType === 'cat-exec') setIncludeExpectedOnTransactionsModal('false')
-    else setIncludeExpectedOnTransactionsModal('true')
+    if (target.dataset.cellType === 'cat-exec') setHideExpectedOnTransactionsModel(true)
+    else setHideExpectedOnTransactionsModel(false)
     setSelectedCatId(catId)
     setSelectedMonth(month)
     setTransactionsModalIsOpen(true)
@@ -339,7 +339,7 @@ const Budget = () => {
       <ScrollContainer innerRef={tableContainer} className={styles.tableContainer}>
         {elementsToRender}
       </ScrollContainer>
-      {transactionsModalIsOpen && <TransactionsOnBudget catId={selectedCatId} month={selectedMonth} includeExpected={includeExpectedOnTransactionsModal} isOpen={transactionsModalIsOpen} setIsOpen={setTransactionsModalIsOpen} includeHiddenAccounts={includeHiddenAccounts}/>}
+      {transactionsModalIsOpen && <TransactionsOnBudget catId={selectedCatId} month={selectedMonth} hideExpected={hideExpectedOnTransactionsModel} isOpen={transactionsModalIsOpen} setIsOpen={setTransactionsModalIsOpen} includeHiddenAccounts={includeHiddenAccounts}/>}
     </>
   )
 }
