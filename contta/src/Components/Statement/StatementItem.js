@@ -169,7 +169,48 @@ const StatementItem = (transaction) => {
 
   return (
     <>
-      <div ref={statementItemElement} className={`${styles.statementItem} ${styles[transaction.type]} ${(transaction.account && transaction.account.show === 0) ? styles.fromHiddenAccount : ""}`}>
+      <div className={`${styles.statementItem} ${styles[transaction.type]} ${(transaction.account && transaction.account.show === 0)}`} ref={statementItemElement}>
+        <div>
+          <span className={styles.typeIcon}>{icon}</span>
+        </div>
+        <div>
+          <div className={styles.flexLine}>
+            <span className={styles.description}>{transaction.description}</span>
+            <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
+              {transaction.budget_control ?
+              <span data-background-color="#a19f9f" data-delay-show="700" data-tip="Transação de controle de orçamento: não é considerada no cálculo dos saldos dos extratos e sofre abatimento automático"><BudgetIcon /></span> : ""}
+          </div>
+          <div className={styles.flexLine}>
+            <span className={styles.metadata} data-background-color="#a19f9f" data-delay-show="700" data-tip="Data da transação"><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
+            <span className={styles.metadata} data-background-color="#a19f9f" data-delay-show="700" data-tip="Data do pagamento"><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
+            <span className={styles.metadata}>{transaction.account
+            ? <><PaymentDateIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Conta" to={`/accounts/${transaction.account_id}`}>{transaction.account.name}</Link></>
+            : <><PaymentDateIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Conta" to={`/accounts/0`}>Sem conta</Link></>}</span>
+            <span className={styles.metadata}>{transaction.category
+            ? <><PaymentDateIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Categoria" to={`/categories/${transaction.category_id}`}>{transaction.category.name}</Link></>
+            : <><PaymentDateIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Categoria" to={`/categories/0`}>Sem categoria</Link></>}</span>
+          </div>
+        </div>
+        <div className={styles.buttonsContainer}>
+        {transaction.installments_key &&
+            <span
+              data-tip={!isOnModal ? "Ver transações relacionadas" : null}
+              onClick={!isOnModal ? () => {setTransactionToGetRelated(transaction.id); setRelatedModalIsOpen(true)} : null}
+              className={`${styles.installmentNumber} ${isOnModal ? styles.onModal : ''}`}
+              >{transaction.installment}</span>}
+          <span data-tip={(transaction.type !== 'T' && transaction.type !== 'I' && !transaction.budget_control) ? !transaction.preview ? "Marcar como prevista" : "Marcar como consolidada" : ''} className={`${styles.preview} ${(transaction.type === 'T' || transaction.type === 'I' || transaction.budget_control) ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
+          <span data-tip="Opções" data-menu-option className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive} ${(transaction.type === 'I') ? styles.notPointer : ''}`} onClick={toggleOptions}></span>
+        <div ref={optionsMenu} className={`${styles.menu} ${optionsIsOpen && styles.active}`}>
+          <ul>
+            <li data-menu-option className={styles.editIcon} onClick={handleEdit}>Editar</li>
+            <li data-menu-option className={styles.deleteIcon} data-cascade="false" onClick={handleDelete}>Apagar</li>
+            {transaction.installments_key && <li data-menu-option className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar a partir desta</li>}
+          </ul>
+        </div>
+          </div>
+      </div>
+      
+      {/* <div ref={statementItemElement} className={`${styles.statementItem} ${styles[transaction.type]} ${(transaction.account && transaction.account.show === 0) ? styles.fromHiddenAccount : ""}`}>
         <div className={styles.container}>
           <span className={styles.typeIcon}>{icon}</span>
         </div>
@@ -210,7 +251,7 @@ const StatementItem = (transaction) => {
             {transaction.installments_key && <li data-menu-option className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar a partir desta</li>}
           </ul>
         </div>
-      </div>
+      </div> */}
       {transactionToGetRelated && <RelatedTransactions id={transactionToGetRelated} isOpen={relatedModalIsOpen} setIsOpen={setRelatedModalIsOpen}/>}
     </>
   )

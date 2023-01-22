@@ -4,6 +4,7 @@ import AppContext from '../../Contexts/AppContext'
 import StatementList from './StatementList'
 import TransactionsContext from '../../Contexts/TransactionsContext'
 import useDate from '../../Hooks/useDate'
+import styles from './Statement.module.css'
 
 const Statement = () => {
 
@@ -37,7 +38,7 @@ const Statement = () => {
   return (
     <>
     <Header />
-    <div className="grid g-one">
+    <div className={`grid g-one ${styles.statementContainer}`}>
       {transactions && <StatementList transactions={transactions}/>}
     </div>
     </>

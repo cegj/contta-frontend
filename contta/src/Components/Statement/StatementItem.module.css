@@ -1,4 +1,4 @@
-.statementItem {
+/* .statementItem {
   font-family: 'Roboto', sans-serif;
   width: 100%;
   min-height: 70px;
@@ -98,12 +98,6 @@
   font-weight: lighter;
 }
 
-.date,
-.budgetControl,
-.preview>svg {
-  fill: rgba(0, 0, 0, .3);
-}
-
 .budgetControl {
   display: inline-block !important;
   margin-left: .3rem;
@@ -123,6 +117,103 @@
   display: flex;
   flex-direction: column;
   gap: .3rem;
+}
+ */
+
+.statementItem {
+  display: grid;
+  grid-template-columns: max-content auto max-content;
+  align-items: center;
+  position: relative;
+  padding: .5rem;
+  gap: 1rem;
+  /* width: 100%; */
+  background-color: lightgray;
+  margin-bottom: .7rem;
+  border-radius: 5px;
+}
+
+.flexLine {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  align-content: center;
+}
+
+.flexLine:first-child {
+  margin-bottom: .4rem;
+  font-size: 1rem;
+  color: #4b4b4b;
+  font-weight: lighter;
+}
+
+.flexLine:last-child,
+.flexLine:last-child a {
+  font-weight: lighter;
+  font-size: .8rem;
+  color: #3f3f3f;
+}
+
+.description {
+  font-size: 1rem;
+}
+
+.T {
+  background-color: #f0edf5;
+}
+
+.R {
+  background-color: #e1f0e4;
+}
+
+.D {
+  background-color: #f8eae8;
+}
+
+.I {
+  background-color: #f1efde;
+}
+
+.D .value {
+  color: #BA3939;
+}
+
+.R .value {
+  color: #2FA12C;
+}
+
+.T .value {
+  color: #7139BA;
+}
+
+.I .value {
+  color: #7e7c24;
+}
+
+.D .typeIcon {
+  fill: #f3887a;
+}
+
+.R .typeIcon {
+  fill: #5aca70;
+}
+
+.T .typeIcon {
+  fill: #9b68f3;
+}
+
+.I .typeIcon {
+  fill: #bebb8b;
+}
+
+.metadata {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.metadata>svg {
+  fill: #a0a0a0;
 }
 
 .menuBtn {
@@ -150,7 +241,7 @@
 
 .menu {
   position: absolute;
-  right: 35px;
+  right: 25px;
   padding: .8rem;
   transform: .2s;
   animation: showMenu .2s forwards;
@@ -196,7 +287,6 @@
 .menu>ul>li:hover {
   background-color: rgb(236, 236, 236);
   color: #6e6e6e;
-  transform: scale(1.05);
 }
 
 .editIcon::before {
@@ -223,19 +313,37 @@
 
 .installmentNumber {
   display: inline-block;
-  margin-left: .5rem;
-  background-color: rgba(121, 121, 121, .1);
-  color: rgba(121, 121, 121, .9);
+  background-color: #929292;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
   width: 20px;
   height: 20px;
   font-size: .875rem;
+  font-weight: bold;
   padding: .1rem;
   text-align: center;
   font-weight: normal;
-  border-radius: 4px;
+  border-radius: 50%;
   cursor: pointer;
 }
 
 .installmentNumber.onModal {
   cursor: default;
+}
+
+.buttonsContainer {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  gap: .5rem;
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.preview>svg {
+  fill: #929292;
 }
