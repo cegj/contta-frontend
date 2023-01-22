@@ -8,7 +8,7 @@ import StatementList from '../Statement/StatementList'
 
 const TransactionsOnBudget = ({catId, month, includeExpected, isOpen, setIsOpen, includeHiddenAccounts}) => {
 
-  const {year, typeOfDateBalance, categories, setTransactionFormValues} = React.useContext(AppContext)
+  const {year, categories, setTransactionFormValues} = React.useContext(AppContext)
   const {getTransactions, updateTransactions, setUpdateTransactions} = React.useContext(TransactionsContext)
   const [transactionsOfSelected, setTransactionsOfSelected] = React.useState([]);
   const {getFirstDay, getLastDay} = useDate()
@@ -32,10 +32,10 @@ const TransactionsOnBudget = ({catId, month, includeExpected, isOpen, setIsOpen,
   const getTransactionsOfSelected = React.useCallback(async(catId) => {
     const firstDay = getFirstDay(year, month)
     const lastDay = getLastDay(year, month)
-    const transactions = await getTransactions({from: firstDay, to: lastDay, category: catId, typeofdate: typeOfDateBalance, includeexpected: includeExpected, includehiddenaccounts: includeHiddenAccounts})
+    const transactions = await getTransactions({from: firstDay, to: lastDay, category: catId, typeofdate: 'payment_date', includeexpected: includeExpected, includehiddenaccounts: includeHiddenAccounts})
     if (transactions.length === 0) setHasNoTransactions(true)
     else setTransactionsOfSelected(transactions)
-  }, [getTransactions, getFirstDay, getLastDay, month, year, typeOfDateBalance, setHasNoTransactions, includeExpected, includeHiddenAccounts])
+  }, [getTransactions, getFirstDay, getLastDay, month, year, setHasNoTransactions, includeExpected, includeHiddenAccounts])
 
   React.useEffect(() => {
     if(isOpen && (transactionsOfSelected.length === 0 || updateTransactions)){

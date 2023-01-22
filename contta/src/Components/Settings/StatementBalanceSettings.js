@@ -30,6 +30,7 @@ const StatementBalanceSettings = () => {
   }
 
   function selectTypeOfDateGroup({target}){
+    console.log(typeOfDateBalance)
     window.localStorage.setItem('typeOfDateGroup', target.dataset.value)
     setTypeOfDateGroup(target.dataset.value)
     setUpdateTransactions(true)

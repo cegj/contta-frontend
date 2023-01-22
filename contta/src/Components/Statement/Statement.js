@@ -10,7 +10,7 @@ const Statement = () => {
   const {setPageName, setPageSubName, includeHiddenAccounts} = React.useContext(AppContext)
   React.useEffect(() => {setPageName("Extrato"); setPageSubName(null)}, [setPageName, setPageSubName])
 
-  const {month, year, typeOfDateBalance} = React.useContext(AppContext)
+  const {month, year, typeOfDateGroup} = React.useContext(AppContext)
   const {getTransactions, updateTransactions, setUpdateTransactions} = React.useContext(TransactionsContext);
   const {getFirstDay, getLastDay} = useDate();
   const [transactions, setTransactions] = React.useState(null)
@@ -19,13 +19,14 @@ const Statement = () => {
   const lastDay = getLastDay(year, month);
 
   const getAndSet = React.useCallback(async() => {
-    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance, includehiddenaccounts: includeHiddenAccounts})
+    console.log(typeOfDateGroup)
+    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateGroup, includehiddenaccounts: includeHiddenAccounts})
     setTransactions(transactions)    
-  }, [firstDay, lastDay, typeOfDateBalance, includeHiddenAccounts, getTransactions])
+  }, [firstDay, lastDay, typeOfDateGroup, includeHiddenAccounts, getTransactions])
 
   React.useEffect(() => {
     getAndSet()
-  }, [firstDay, lastDay, typeOfDateBalance, getAndSet])
+  }, [firstDay, lastDay, getAndSet])
 
   React.useEffect(() => {
     if(updateTransactions){

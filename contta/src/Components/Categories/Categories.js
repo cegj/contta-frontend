@@ -24,7 +24,7 @@ const Categories = () => {
   const {setMessage} = React.useContext(MessagesContext)
   const {request, fetchLoading} = useFetch();
   const [categoryName, setCategoryName] = React.useState(null)
-  const {month, year, typeOfDateBalance} = React.useContext(AppContext)
+  const {month, year, typeOfDateGroup} = React.useContext(AppContext)
   const {getTransactions, updateTransactions, setUpdateTransactions} = React.useContext(TransactionsContext);
   const {getFirstDay, getLastDay} = useDate();
   const [transactions, setTransactions] = React.useState(null)
@@ -76,9 +76,9 @@ const Categories = () => {
   }, [selectedCategory])
 
   const getAndSet = React.useCallback(async(categoryId) => {
-    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance, category: categoryId, includehiddenaccounts: includeHiddenAccounts})
+    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateGroup, category: categoryId, includehiddenaccounts: includeHiddenAccounts})
     setTransactions(transactions)    
-  }, [firstDay, lastDay, typeOfDateBalance, includeHiddenAccounts, getTransactions])
+  }, [firstDay, lastDay, typeOfDateGroup, includeHiddenAccounts, getTransactions])
 
   React.useEffect(() => {
     ReactTooltip.rebuild()

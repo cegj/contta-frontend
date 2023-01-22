@@ -23,7 +23,7 @@ const Accounts = () => {
   const {setPageName, setPageSubName, setAccounts, setLoading, accounts} = React.useContext(AppContext)
   const [accountName, setAccountName] = React.useState(null)
   const [updateAccountsList, setUpdateAccountsList] = React.useState(true)
-  const {month, year, typeOfDateBalance} = React.useContext(AppContext)
+  const {month, year, typeOfDateGroup} = React.useContext(AppContext)
   const {getTransactions, updateTransactions, setUpdateTransactions} = React.useContext(TransactionsContext);
   const {getFirstDay, getLastDay} = useDate();
   const [transactions, setTransactions] = React.useState(null)
@@ -77,9 +77,9 @@ const Accounts = () => {
   }, [selectedAccount])
 
   const getAndSet = React.useCallback(async(accountId) => {
-    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateBalance, account: accountId, includehiddenaccounts: true})
+    const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateGroup, account: accountId, includehiddenaccounts: true})
     setTransactions(transactions)    
-  }, [firstDay, lastDay, typeOfDateBalance, getTransactions])
+  }, [firstDay, lastDay, typeOfDateGroup, getTransactions])
 
   React.useEffect(() => {
     ReactTooltip.rebuild()
