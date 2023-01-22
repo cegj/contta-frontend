@@ -174,13 +174,13 @@ const StatementItem = (transaction) => {
           <span className={styles.typeIcon}>{icon}</span>
         </div>
         <div>
-          <div className={styles.flexLine}>
+          <div className={styles.line}>
             <span className={styles.description}>{transaction.description}</span>
             <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
               {transaction.budget_control ?
               <span data-background-color="#a19f9f" data-delay-show="700" data-tip="Transação de controle de orçamento: não é considerada no cálculo dos saldos dos extratos e sofre abatimento automático"><BudgetIcon /></span> : ""}
           </div>
-          <div className={styles.flexLine}>
+          <div className={styles.line}>
             <span className={styles.metadata} data-background-color="#a19f9f" data-delay-show="700" data-tip="Data da transação"><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
             <span className={styles.metadata} data-background-color="#a19f9f" data-delay-show="700" data-tip="Data do pagamento"><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
             <span className={styles.metadata}>{transaction.account

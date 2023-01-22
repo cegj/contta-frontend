@@ -1,7 +1,8 @@
 .mainBar {
   display: flex;
+  flex-wrap: wrap;
   background-color: #0B467B;
-  height: 70px;
+  min-height: 70px;
   align-items: center;
   align-content: center;
   padding: 1rem;
