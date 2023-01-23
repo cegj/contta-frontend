@@ -39,6 +39,10 @@ const TransactionsOnBudget = ({catId, month, hideExpected, isOpen, setIsOpen, in
   }, [getTransactions, getFirstDay, getLastDay, month, year, setHasNoTransactions, hideExpected, includeHiddenAccounts])
 
   React.useEffect(() => {
+    if(updateTransactions) setHasNoTransactions(false)
+  }, [updateTransactions])
+
+  React.useEffect(() => {
     if(isOpen && (transactionsOfSelected.length === 0 || updateTransactions)){
       if (!hasNoTransactions) getTransactionsOfSelected(catId)
       setUpdateTransactions(false)

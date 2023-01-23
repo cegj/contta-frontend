@@ -7,6 +7,8 @@ import {ReactComponent as TransferIcon} from '../../assets/icons/transfer_icon.s
 import {ReactComponent as InitialBalanceIcon} from '../../assets/icons/initial_balance_icon.svg'
 import {ReactComponent as TransactionDateIcon} from '../../assets/icons/calendar_date_icon.svg'
 import {ReactComponent as PaymentDateIcon} from '../../assets/icons/calendar_pay_icon.svg'
+import {ReactComponent as AccountIcon} from '../../assets/icons/account_icon_small.svg'
+import {ReactComponent as CategoryIcon} from '../../assets/icons/category_icon_small.svg'
 import {ReactComponent as DoneIcon} from '../../assets/icons/done_fill_icon_small.svg'
 import {ReactComponent as NotDoneIcon} from '../../assets/icons/done_icon_small.svg'
 import {ReactComponent as BudgetIcon} from '../../assets/icons/table_icon_small.svg'
@@ -187,11 +189,11 @@ const StatementItem = (transaction) => {
             <span className={styles.metadata} data-background-color="#a19f9f" data-delay-show="700" data-tip="Data da transação"><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
             <span className={styles.metadata} data-background-color="#a19f9f" data-delay-show="700" data-tip="Data do pagamento"><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
             <span className={styles.metadata}>{transaction.account
-            ? <><PaymentDateIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Conta" to={`/accounts/${transaction.account_id}`}>{transaction.account.name}</Link></>
-            : <><PaymentDateIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Conta" to={`/accounts/0`}>Sem conta</Link></>}</span>
+            ? <><AccountIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Conta" to={`/accounts/${transaction.account_id}`}>{transaction.account.name}</Link></>
+            : <><AccountIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Conta" to={`/accounts/0`}>Sem conta</Link></>}</span>
             <span className={styles.metadata}>{transaction.category
-            ? <><PaymentDateIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Categoria" to={`/categories/${transaction.category_id}`}>{transaction.category.name}</Link></>
-            : <><PaymentDateIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Categoria" to={`/categories/0`}>Sem categoria</Link></>}</span>
+            ? <><CategoryIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Categoria" to={`/categories/${transaction.category_id}`}>{transaction.category.name}</Link></>
+            : <><CategoryIcon /><Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Categoria" to={`/categories/0`}>Sem categoria</Link></>}</span>
           </div>
         </div>
         <div className={styles.buttonsContainer}>
