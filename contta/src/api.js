@@ -1,6 +1,6 @@
 import objectToQueryString from "./Helpers/objectToQueryString";
 
-export const API_URL = 'YOUR_API_URL';
+export const API_URL = 'https://contta-api.cegj.dev/api';
 
 export function GET_CHECK_TABLES(){
   return {

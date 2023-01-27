@@ -20,7 +20,6 @@ const Statement = () => {
   const lastDay = getLastDay(year, month);
 
   const getAndSet = React.useCallback(async() => {
-    console.log(typeOfDateGroup)
     const transactions = await getTransactions({from: firstDay, to: lastDay, typeofdate: typeOfDateGroup, includehiddenaccounts: includeHiddenAccounts})
     setTransactions(transactions)    
   }, [firstDay, lastDay, typeOfDateGroup, includeHiddenAccounts, getTransactions])
