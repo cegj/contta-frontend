@@ -135,25 +135,20 @@ const TransactionForm = () => {
           {field: transactionDate, name: 'data da transação'},
           {field: paymentDate, name: 'data do pagamento'}, 
           {field: value, name: 'valor'}, 
-          {field: description, name: 'descrição'}, 
-          {field: category, name: 'categoria'} 
+          {field: description, name: 'descrição'} 
         ]
-
-        if (!budgetControl.value) {
-          fields.push({field: account, name: 'conta'})
-        }
 
         if (!validateSubmit(fields)){
           return;
         }
-        console.log(budgetControl.value)
+
         body = {
           transaction_date: transactionDate.value,
           payment_date: paymentDate.value,
           value: convertToInteger(value.value),
           description: description.value,
-          category_id: category.value,
-          account_id: account.value,
+          category_id: category && category.value,
+          account_id: account && account.value,
           preview: preview.value,
           usual: usual.value,
           budget_control: budgetControl.value,
