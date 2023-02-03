@@ -17,7 +17,9 @@ const TransactionsOnBudget = ({catId, month, hideExpected, isOpen, setIsOpen, in
   const [category, setCategory] = React.useState(null)
 
   function setValuesToNewTransaction(){
-    setTransactionFormValues({category: {label: category.name, value: category.id}, transactionDate: `${year}-${month}-01`, paymentDate: `${year}-${month}-01`})
+      const firstDay = year + "-" + month + "-01";
+      const initialValues = {category: {label: category.name, value: category.id}, "transaction-date": firstDay, "payment-date": firstDay}
+      window.localStorage.setItem('transactionForm', JSON.stringify(initialValues))  
   }
 
   React.useEffect(() => {

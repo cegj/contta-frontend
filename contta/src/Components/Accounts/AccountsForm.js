@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from '../Elements/Modal'
-import TransactionFormInput from '../TransactionFormInput'
+import FormInput from '../FormInput'
 import useForm from '../../Hooks/useForm'
 import styles from './AccountsForm.module.css'
 import Button from '../Elements/Button'
@@ -228,7 +228,8 @@ const AccountsForm = ({isOpen, setIsOpen, setUpdateAccountsList, accountToEdit, 
     isOpen && 
     <Modal title={accountToEdit ? "Editar conta" : "Criar conta"} isOpen={isOpen} setIsOpen={setIsOpen}>
       <form className={styles.accountsForm} onSubmit={handleSubmit}>
-        <TransactionFormInput 
+        <FormInput
+          formName="accountsForm" 
           label='Nome da conta'
           name='name'
           type='string'
@@ -237,7 +238,8 @@ const AccountsForm = ({isOpen, setIsOpen, setUpdateAccountsList, accountToEdit, 
           setValue={name.setValue}
           style={{gridColumn: 'span 2'}}
         />
-        <TransactionFormInput 
+        <FormInput
+          formName="accountsForm" 
           label="Tipo"
           name='type'
           type='select'
@@ -246,7 +248,8 @@ const AccountsForm = ({isOpen, setIsOpen, setUpdateAccountsList, accountToEdit, 
           options={typeOptions}
           setValue={setType}
         />
-        <TransactionFormInput 
+        <FormInput
+          formName="accountsForm" 
           label='Saldo inicial'
           name='initial_balance'
           type='string'
@@ -256,7 +259,8 @@ const AccountsForm = ({isOpen, setIsOpen, setUpdateAccountsList, accountToEdit, 
           // style={(type && type.value === 'T') ? {gridColumn: 'span 6'} : {gridColumn: 'span 4'}}
           currency={true}
         />
-        <TransactionFormInput
+        <FormInput
+          formName="accountsForm"
           label="Exibir conta"
           name="show"
           type="checkbox"

@@ -102,9 +102,9 @@ const StatementItem = (transaction) => {
       const edittingValues = {}
       edittingValues.id = transaction.id
       edittingValues.type = typeOptions.find(type => type.value === transaction.type)
-      edittingValues.transactionDate = transaction.transaction_date;
-      edittingValues.paymentDate = transaction.payment_date;
-      edittingValues.value = transaction.value;
+      edittingValues["transaction-date"] = transaction.transaction_date;
+      edittingValues["payment-date"] = transaction.payment_date;
+      edittingValues.value = transaction.value.toString();
       edittingValues.description = transaction.description;
       categoryOptions.forEach((group) => {
         const cat = group.options.find((category) => category.value === transaction.category_id)
@@ -120,9 +120,9 @@ const StatementItem = (transaction) => {
       }
       edittingValues.preview = transaction.preview;
       edittingValues.usual = transaction.usual;
-      edittingValues.budgetControl = transaction.budget_control;
-      edittingValues.isEdit = true;
-      setTransactionFormValues(edittingValues)
+      edittingValues["budget-control"] = transaction.budget_control;
+
+      window.localStorage.setItem('transactionForm', JSON.stringify(edittingValues))  
       setTransactionModalIsOpen(true)
       }
   

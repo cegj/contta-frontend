@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from '../Elements/Modal'
-import TransactionFormInput from '../TransactionFormInput'
+import FormInput from '../FormInput'
 import useForm from '../../Hooks/useForm'
 import styles from './CategoriesForm.module.css'
 import Button from '../Elements/Button'
@@ -193,7 +193,8 @@ const CategoriesForm = ({isOpen, setIsOpen, setUpdateCategoriesList, categoryToE
     <Modal title={categoryToEdit ? `Editar ${!isGroup.value ? 'categoria' : 'grupo'}` : `Criar ${!isGroup.value ? 'categoria' : 'grupo'}`} isOpen={isOpen} setIsOpen={setIsOpen}>
       <form className={styles.CategoriesForm} onSubmit={handleSubmit}>
         {!categoryToEdit && 
-          <TransactionFormInput
+          <FormInput
+            formName="categoriesForm"
             label="Grupo de categorias"
             name="isGroup"
             type="checkbox"
@@ -201,7 +202,8 @@ const CategoriesForm = ({isOpen, setIsOpen, setUpdateCategoriesList, categoryToE
             onChange={isGroup.onChange}
             setValue={isGroup.setValue}
           />}
-        <TransactionFormInput 
+        <FormInput
+          formName="categoriesForm" 
           label={`Nome ${!isGroup.value ? 'da categoria' : 'do grupo'}`}
           name='name'
           type='string'
@@ -210,7 +212,8 @@ const CategoriesForm = ({isOpen, setIsOpen, setUpdateCategoriesList, categoryToE
           setValue={name.setValue}
         />
         {!isGroup.value &&         
-        <TransactionFormInput 
+        <FormInput
+          formName="categoriesForm"
           label="Grupo da categoria"
           name='group'
           type='select'
