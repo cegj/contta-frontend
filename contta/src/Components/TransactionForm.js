@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './TransactionForm.module.css'
 import AppContext from '../Contexts/AppContext'
-import {ReactComponent as AttachIcon} from '../assets/icons/attach_icon.svg'
+// import {ReactComponent as AttachIcon} from '../assets/icons/attach_icon.svg'
 import {ReactComponent as PinIcon} from '../assets/icons/pin_icon.svg'
 import Button from './Elements/Button'
 import useFetch from '../Hooks/useFetch'
@@ -10,22 +10,22 @@ import MessagesContext from '../Contexts/MessagesContext'
 import FormInput from './FormInput'
 import convertToInteger from '../Helpers/convertToInteger'
 import ReactTooltip from 'react-tooltip'
-import convertToFloat from '../Helpers/convertToFloat'
+// import convertToFloat from '../Helpers/convertToFloat'
 import TransactionsContext from '../Contexts/TransactionsContext'
 import Modal from './Elements/Modal'
+// import reactSelect from 'react-select'
 
 const TransactionForm = () => {
 
   const {setMessage} = React.useContext(MessagesContext);
   const {fetchLoading} = useFetch();
-  const {categories, accounts, transactionModalIsOpen, setTransactionModalIsOpen, setLoading, transactionFormValues, setTransactionFormValues} = React.useContext(AppContext);
+  const {categories, accounts, transactionModalIsOpen, setTransactionModalIsOpen, setLoading} = React.useContext(AppContext);
   const [modalIsFixed, setModalIsFixed] = React.useState(false);
-  const [keepAllValues, setKeepAllValues] = React.useState(false);
+  const [keepAllValues] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const {storeTransaction, editTransaction, typeOptions, categoryOptions, accountOptions} = React.useContext(TransactionsContext);
-
-  React.useEffect(() => {}, [transactionFormValues])
   
+  const id = useForm();
   const [type, setType] = React.useState([]);
   const transactionDate = useForm();
   const paymentDate = useForm();
@@ -41,6 +41,7 @@ const TransactionForm = () => {
   const cascade = useForm('checkbox');
 
   const clearForm = React.useCallback(() => {
+    id.setValue('');
     setType([]);
     transactionDate.setValue('');
     paymentDate.setValue('');
@@ -79,7 +80,7 @@ const TransactionForm = () => {
     if (!transactionModalIsOpen){
       clearForm();
     }
-  }, [transactionModalIsOpen, setTransactionFormValues, clearForm, keepAllValues])
+  }, [transactionModalIsOpen, clearForm, keepAllValues])
 
   function validateSubmit(fields){
     function validate(field){
@@ -159,8 +160,8 @@ const TransactionForm = () => {
           return
       }
 
-      if (transactionFormValues && transactionFormValues.isEdit){
-        const editted = editTransaction(body, transactionFormValues.type.value, transactionFormValues.id, cascade.value)
+      if (id.value){
+        const editted = editTransaction(body, type.value, id.value, cascade.value)
         if (editted){
           clearForm();
           setReload(true);
@@ -186,12 +187,23 @@ const TransactionForm = () => {
   return (
       transactionModalIsOpen &&
         <Modal
-        title={transactionFormValues && transactionFormValues.isEdit ? 'Editar transação' : 'Registrar transação'}
+        title={id.value ? 'Editar transação' : 'Registrar transação'}
         isOpen={transactionModalIsOpen}
         setIsOpen={setTransactionModalIsOpen}
         additionalBtns={additionalBtns}
         >
             <form className={styles.transactionForm} onSubmit={handleSubmit}>
+            <FormInput
+                formName="transactionForm"
+                label='id'
+                name='id'
+                type='string'
+                value={id.value}
+                onChange={id.onChange}
+                setValue={id.setValue}
+                style={{display: 'none'}}
+                reload={reload}
+              />
               {<FormInput
                 formName="transactionForm"
                 label="Tipo"
@@ -203,7 +215,7 @@ const TransactionForm = () => {
                 setValue={setType}
                 style={{gridColumn: 'span 2'}}
                 reload={reload}
-                disabled={transactionFormValues && transactionFormValues.isEdit ? true : false}
+                disabled={id.value ? true : false}
               />}
               <FormInput
                 formName="transactionForm"
@@ -292,7 +304,7 @@ const TransactionForm = () => {
                 reload={reload}
               />
               }
-              {(transactionFormValues && !transactionFormValues.isEdit && (!type || type.value !== 'T')) && 
+              {(!id.value && (!type || type.value !== 'T')) && 
               <FormInput
                 formName="transactionForm"
                 label="Parcelas"
@@ -305,7 +317,7 @@ const TransactionForm = () => {
                 reload={reload}
               />
               }
-              {(transactionFormValues && transactionFormValues.isEdit && type.value !== 'T') && 
+              {(id.value && type.value !== 'T') && 
             <span style={{gridRow: '3', gridColumn: '6'}} className={styles.checkboxesContainer}>
               <FormInput
                 formName="transactionForm"
@@ -356,7 +368,7 @@ const TransactionForm = () => {
             ?
             <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}} disabled>Registrando...</Button>
             :
-            <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}}>{transactionFormValues && transactionFormValues.isEdit ? 'Editar' : 'Registrar'}</Button>
+            <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}}>{id.value ? 'Editar' : 'Registrar'}</Button>
             }
             </form>
         </Modal>

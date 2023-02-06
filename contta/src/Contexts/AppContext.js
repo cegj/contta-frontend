@@ -21,7 +21,6 @@ export const AppContextData = ({children}) => {
   const {logged} = React.useContext(UserContext);
   const {request} = useFetch();
   const [transactionModalIsOpen, setTransactionModalIsOpen] = React.useState(false);
-  const [transactionFormValues, setTransactionFormValues] = React.useState({});
   const [monthYearModalIsOpen, setMonthYearModalIsOpen] = React.useState(false);
   const [settingModalIsOpen, setSettingModalIsOpen] = React.useState(false);
   const [reload, setReload] = React.useState(false);
@@ -124,7 +123,6 @@ React.useEffect(() => {
         categories, setCategories, groupedCategories,
         accounts, setAccounts,
         transactionModalIsOpen, setTransactionModalIsOpen,
-        transactionFormValues, setTransactionFormValues,
         pageName, setPageName,
         pageSubName, setPageSubName,
         month, setMonth,

@@ -28,7 +28,7 @@ const StatementItem = (transaction) => {
   const [optionsIsOpen, setOptionsIsOpen] = React.useState(false);
   const {request} = useFetch();
   const {setMessage} = React.useContext(MessagesContext);
-  const {setUpdateAccountBalances, setUpdateCategoryBalances, setTransactionFormValues, setTransactionModalIsOpen} = React.useContext(AppContext);
+  const {setUpdateAccountBalances, setUpdateCategoryBalances, setTransactionModalIsOpen} = React.useContext(AppContext);
   const {setUpdateTransactions, deleteTransaction, getTransactionById, typeOptions, categoryOptions, accountOptions} = React.useContext(TransactionsContext)
   const [transactionToGetRelated, setTransactionToGetRelated] = React.useState(null);
   const [relatedModalIsOpen, setRelatedModalIsOpen] = React.useState(true);
@@ -100,27 +100,27 @@ const StatementItem = (transaction) => {
 
     async function setEdittingValuesAndOpenForm(transaction) {
       const edittingValues = {}
-      edittingValues.id = transaction.id
-      edittingValues.type = typeOptions.find(type => type.value === transaction.type)
+      edittingValues["id"] = transaction.id
+      edittingValues["type"] = typeOptions.find(type => type.value === transaction.type)
       edittingValues["transaction-date"] = transaction.transaction_date;
       edittingValues["payment-date"] = transaction.payment_date;
-      edittingValues.value = transaction.value.toString();
-      edittingValues.description = transaction.description;
+      edittingValues["value"] = transaction.value.toString();
+      edittingValues["description"] = transaction.description;
       categoryOptions.forEach((group) => {
         const cat = group.options.find((category) => category.value === transaction.category_id)
-        if (cat) {edittingValues.category = cat; return};
+        if (cat) {edittingValues["category"] = cat; return};
       })
       let relatedTransactions = null;
-      if (transaction.type === "T") {relatedTransactions = await getRelatedTransactions(transaction.id)}
-      if (transaction.type === "T"){
-        edittingValues.account = accountOptions.find(account => account.value === relatedTransactions[0].account_id)
-        edittingValues.destinationAccount = accountOptions.find(account => account.value === relatedTransactions[1].account_id)
+      if (transaction["type"] === "T") {relatedTransactions = await getRelatedTransactions(transaction.id)}
+      if (transaction["type"] === "T"){
+        edittingValues["account"] = accountOptions.find(account => account.value === relatedTransactions[0].account_id)
+        edittingValues["destination_account"] = accountOptions.find(account => account.value === relatedTransactions[1].account_id)
       } else {
-        edittingValues.account = accountOptions.find(account => account.value === transaction.account_id)
+        edittingValues["account"] = accountOptions.find(account => account.value === transaction.account_id)
       }
-      edittingValues.preview = transaction.preview;
-      edittingValues.usual = transaction.usual;
-      edittingValues["budget-control"] = transaction.budget_control;
+      edittingValues["preview"] = transaction.preview;
+      edittingValues["usual"] = transaction.usual;
+      edittingValues["budget_control"] = transaction.budget_control;
 
       window.localStorage.setItem('transactionForm', JSON.stringify(edittingValues))  
       setTransactionModalIsOpen(true)
