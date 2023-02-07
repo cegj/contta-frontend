@@ -82,6 +82,12 @@ const TransactionForm = () => {
     }
   }, [transactionModalIsOpen, clearForm, keepAllValues])
 
+  React.useEffect(() => {
+    const today = new Date().toLocaleString("sv", {timeZone: "America/Sao_Paulo"}).split(' ')[0];
+    if (!transactionDate.value) transactionDate.setValue(today)
+    if (!paymentDate.value) paymentDate.setValue(today)
+  }, [transactionDate, paymentDate])
+
   function validateSubmit(fields){
     function validate(field){
       if (!field || !field.value || field.value === "" || field.value === null){
