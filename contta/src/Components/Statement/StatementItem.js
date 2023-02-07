@@ -214,49 +214,6 @@ const StatementItem = (transaction) => {
         </div>
           </div>
       </div>
-      
-      {/* <div ref={statementItemElement} className={`${styles.statementItem} ${styles[transaction.type]} ${(transaction.account && transaction.account.show === 0) ? styles.fromHiddenAccount : ""}`}>
-        <div className={styles.container}>
-          <span className={styles.typeIcon}>{icon}</span>
-        </div>
-        <div className={styles.container}>
-          <span className={styles.description}>{transaction.description}
-            {transaction.installments_key &&
-            <span
-              data-tip={!isOnModal ? "Ver transações relacionadas" : null}
-              onClick={!isOnModal ? () => {setTransactionToGetRelated(transaction.id); setRelatedModalIsOpen(true)} : null}
-              className={`${styles.installmentNumber} ${isOnModal ? styles.onModal : ''}`}>{transaction.installment}
-            </span>}
-            {transaction.budget_control ? <span className={styles.budgetControl} data-background-color="#a19f9f" data-delay-show="700" data-tip="Transação de controle de orçamento: não é considerada no cálculo dos saldos dos extratos e sofre abatimento automático"><BudgetIcon /></span> : ""}
-            </span>
-          <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
-        </div>
-        <div className={styles.container}>
-          <span className={styles.account}>
-            {transaction.account
-            ? <Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Conta" to={`/accounts/${transaction.account_id}`}>{transaction.account.name}</Link>
-            : <Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Conta" to={`/accounts/0`}>Sem conta</Link>}</span>
-          <span className={styles.category}>
-            {transaction.category
-            ? <Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Categoria" to={`/categories/${transaction.category_id}`}>{transaction.category.name}</Link>
-            : <Link data-background-color="#a19f9f" data-delay-show="700" data-tip="Categoria" to={`/categories/0`}>Sem categoria</Link>}</span>
-        </div>
-        <div className={styles.container}>
-          <span data-background-color="#a19f9f" data-delay-show="700" data-tip="Data da transação" className={styles.date}><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
-          <span data-background-color="#a19f9f" data-delay-show="700" data-tip="Data do pagamento" className={styles.date}><PaymentDateIcon /> {convertDateToBr(transaction.payment_date)}</span>
-        </div> 
-        <div className={styles.container}>
-          <span data-tip={(transaction.type !== 'T' && transaction.type !== 'I' && !transaction.budget_control) ? !transaction.preview ? "Marcar como prevista" : "Marcar como consolidada" : ''} className={`${styles.preview} ${(transaction.type === 'T' || transaction.type === 'I' || transaction.budget_control) ? styles.notPointer : ''}`} onClick={togglePreview}>{!transaction.preview ? <DoneIcon /> : <NotDoneIcon />}</span>
-        </div>
-        <span data-tip="Opções" data-menu-option className={`${styles.menuBtn} ${optionsIsOpen && styles.menuBtnActive} ${(transaction.type === 'I') ? styles.notPointer : ''}`} onClick={toggleOptions}></span>
-        <div ref={optionsMenu} className={`${styles.menu} ${optionsIsOpen && styles.active}`}>
-          <ul>
-            <li data-menu-option className={styles.editIcon} onClick={handleEdit}>Editar</li>
-            <li data-menu-option className={styles.deleteIcon} data-cascade="false" onClick={handleDelete}>Apagar</li>
-            {transaction.installments_key && <li data-menu-option className={styles.deleteIcon} data-cascade="true" onClick={handleDelete}>Apagar a partir desta</li>}
-          </ul>
-        </div>
-      </div> */}
       {transactionToGetRelated && <RelatedTransactions id={transactionToGetRelated} isOpen={relatedModalIsOpen} setIsOpen={setRelatedModalIsOpen}/>}
     </>
   )
