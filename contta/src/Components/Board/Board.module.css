@@ -1,5 +1,9 @@
+@import '../../Vars.css';
+
 .boardContainer {
   background-color: rgb(250, 250, 250);
   padding: .5rem 1rem;
   border-radius: 10px;
+  grid-template-columns: 1fr 1fr;
+  max-width: var(--container-width);
 }

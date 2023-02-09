@@ -5,7 +5,7 @@ import useDate from '../../Hooks/useDate'
 import useFetch from '../../Hooks/useFetch'
 import AppContext from '../../Contexts/AppContext'
 
-const AnnualHistoryChart = () => {
+const AnnualHistoryChart = ({style}) => {
 
   const {year, typeOfDateBalance, includeExpectedOnBalance, setLoading} = React.useContext(AppContext)
   const {getLastDay} = useDate();
@@ -76,7 +76,7 @@ const AnnualHistoryChart = () => {
 
 
   return (
-    <div>
+    <div style={{gridColumn: "span 2"}}>
       <h2>Receitas e despesas ao longo do ano</h2>
       <Chart options={chartConfig.options} series={chartConfig.series} width={"100%"} height={350} />
     </div>

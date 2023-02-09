@@ -2,7 +2,8 @@ import React from 'react'
 import Header from '../Header'
 import AnnualHistoryChart from './AnnualHistoryChart'
 import AppContext from '../../Contexts/AppContext'
-import MonthCategoryChart from './MonthCategoryChart'
+import MonthCategoryChartDonut from './MonthCategoryChartDonut'
+import MonthCategoryChartTreemap from './MonthCategoryChartTreemap'
 import styles from './Board.module.css'
 
 const Board = () => {
@@ -13,10 +14,10 @@ const Board = () => {
   return (
     <>
     <Header />
-    <div className={`grid g-one ${styles.boardContainer}`}>
-    <span className="noTransactions">O painel está em desenvolvimento.</span>
+    <div className={`grid ${styles.boardContainer}`}>
     <AnnualHistoryChart />
-    <MonthCategoryChart />
+    <MonthCategoryChartDonut />
+    <MonthCategoryChartTreemap />
     </div>
     </>
   )

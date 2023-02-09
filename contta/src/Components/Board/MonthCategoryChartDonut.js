@@ -5,7 +5,7 @@ import useDate from '../../Hooks/useDate';
 import useFetch from '../../Hooks/useFetch';
 import { GET_BALANCE } from '../../api';
 
-const MonthCategoryChart = () => {
+const MonthCategoryChartDonut = () => {
 
   const {year, month, typeOfDateBalance, includeExpectedOnBalance, setLoading, categories} = React.useContext(AppContext)
   const {getLastDay} = useDate();
@@ -18,24 +18,15 @@ const MonthCategoryChart = () => {
   const [chartConfig, setChartConfig] = React.useState({      
     series: [],
     options: {
-      labels: [],
       chart: {
-        type: 'donut',
+        type: 'pie',
         id: 'monthCategoryChart',
-        events: {
-          click: function(event, chartContext, config) {
-            // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts
-            console.log('event', event)
-            console.log('chartContext', chartContext)
-            console.log('config', config)
-          }    
-        }
       },
       noData: {
         text: "Carregando gráfico..."
       },
       legend: {
-        position: 'bottom'
+        show: false
       },
       responsive: [{
         breakpoint: 480,
@@ -82,10 +73,10 @@ const MonthCategoryChart = () => {
 
   return (
     <div>
-      <h2>Gastos por grupos de categorias no mês atual</h2>
-      <Chart options={chartConfig.options} series={chartConfig.series} type="donut" width={"100%"} height={350} />
+      <h2>Gastos por grupos de categorias no mês atual (percentual)</h2>
+      <Chart options={chartConfig.options} series={chartConfig.series} type="pie" width={"100%"} height={450} />
     </div>
   )
 }
 
-export default MonthCategoryChart
+export default MonthCategoryChartDonut
