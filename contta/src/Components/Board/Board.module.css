@@ -1,9 +1,16 @@
-@import '../../Vars.css';
-
 .boardContainer {
   background-color: rgb(250, 250, 250);
   padding: .5rem 1rem;
   border-radius: 10px;
-  grid-template-columns: 1fr 1fr;
-  max-width: var(--container-width);
+}
+
+.sectionTitle {
+  margin-bottom: .5rem;
+  color: #333;
+}
+
+.chartTitle {
+  font-size: 1.3rem;
+  font-weight: lighter;
+  margin-bottom: .3rem;
 }

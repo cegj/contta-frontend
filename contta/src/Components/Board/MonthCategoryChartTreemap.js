@@ -4,6 +4,8 @@ import AppContext from '../../Contexts/AppContext'
 import useDate from '../../Hooks/useDate';
 import useFetch from '../../Hooks/useFetch';
 import { GET_BALANCE } from '../../api';
+import styles from './Board.module.css'
+
 
 const MonthCategoryChartTreemap = () => {
 
@@ -21,6 +23,17 @@ const MonthCategoryChartTreemap = () => {
       chart: {
         type: 'treemap',
         id: 'monthCategoryChart',
+      },
+      dataLabels: {
+        enabled: true,
+        style: {
+          fontWeight: 'regular',
+          fontFamily: 'Open Sans, sans-serif'
+        },
+        formatter: function(text, op) {
+          return [text, op.value]
+        },
+        offsetY: -4
       },
       noData: {
         text: "Carregando gráfico..."
@@ -76,8 +89,8 @@ const MonthCategoryChartTreemap = () => {
 
   return (
     <div>
-      <h2>Gastos por grupos de categorias no mês atual (volume)</h2>
-      <Chart options={chartConfig.options} series={chartConfig.series} type="treemap" width={"100%"} height={450} />
+      <h3 className={styles.chartTitle}>Volume por grupos no mês atual</h3>
+      <Chart options={chartConfig.options} series={chartConfig.series} type="treemap" width={"100%"} height={300} />
     </div>
   )
 }

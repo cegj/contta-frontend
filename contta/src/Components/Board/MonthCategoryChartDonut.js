@@ -4,6 +4,8 @@ import AppContext from '../../Contexts/AppContext'
 import useDate from '../../Hooks/useDate';
 import useFetch from '../../Hooks/useFetch';
 import { GET_BALANCE } from '../../api';
+import styles from './Board.module.css'
+
 
 const MonthCategoryChartDonut = () => {
 
@@ -26,7 +28,7 @@ const MonthCategoryChartDonut = () => {
         text: "Carregando gráfico..."
       },
       legend: {
-        show: false
+        show: true
       },
       responsive: [{
         breakpoint: 480,
@@ -73,8 +75,8 @@ const MonthCategoryChartDonut = () => {
 
   return (
     <div>
-      <h2>Gastos por grupos de categorias no mês atual (percentual)</h2>
-      <Chart options={chartConfig.options} series={chartConfig.series} type="pie" width={"100%"} height={450} />
+      <h3 className={styles.chartTitle}>Percentual por grupos no mês atual</h3>
+      <Chart options={chartConfig.options} series={chartConfig.series} type="pie" width={"100%"} height={300} />
     </div>
   )
 }

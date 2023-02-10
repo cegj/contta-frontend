@@ -4,6 +4,8 @@ import { GET_BALANCE } from '../../api'
 import useDate from '../../Hooks/useDate'
 import useFetch from '../../Hooks/useFetch'
 import AppContext from '../../Contexts/AppContext'
+import styles from './Board.module.css'
+
 
 const AnnualHistoryChart = ({style}) => {
 
@@ -77,7 +79,7 @@ const AnnualHistoryChart = ({style}) => {
 
   return (
     <div style={{gridColumn: "span 2"}}>
-      <h2>Receitas e despesas ao longo do ano</h2>
+      <h3 className={styles.chartTitle}>Receitas e despesas ao longo do ano</h3>
       <Chart options={chartConfig.options} series={chartConfig.series} width={"100%"} height={350} />
     </div>
   )

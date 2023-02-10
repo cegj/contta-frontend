@@ -14,10 +14,16 @@ const Board = () => {
   return (
     <>
     <Header />
-    <div className={`grid ${styles.boardContainer}`}>
-    <AnnualHistoryChart />
-    <MonthCategoryChartDonut />
-    <MonthCategoryChartTreemap />
+    <div className={`grid g-one ${styles.boardContainer}`}>
+      <div>
+        <h2 className={styles.sectionTitle}>Geral</h2>
+      <AnnualHistoryChart />
+      </div>
+      <div style={{display: "grid", gap: "1rem", gridTemplateColumns: "1fr 1fr"}}>
+        <h2 className={styles.sectionTitle} style={{gridColumn: "span 2"}}>Categorias</h2>
+        <MonthCategoryChartDonut />
+        <MonthCategoryChartTreemap />
+      </div>
     </div>
     </>
   )
