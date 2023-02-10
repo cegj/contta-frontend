@@ -29,7 +29,7 @@ export const UserContextData = ({children}) => {
         const user = json;
         setUser(user);
         setLogged(true);
-        navigate('/statement')
+        navigate('/board')
       } else {
         throw new Error(error);
       }
