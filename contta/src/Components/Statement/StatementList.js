@@ -4,7 +4,7 @@ import StatementItem from './StatementItem'
 import StatementFilterBar from './StatementFilterBar'
 import convertToFloat from '../../Helpers/convertToFloat'
 import AppContext from '../../Contexts/AppContext'
-import { GET_BALANCE } from '../../api'
+import { GET_MONTH_BALANCE } from '../../api'
 import groupBy from '../../Helpers/groupBy'
 import useFetch from '../../Hooks/useFetch'
 
@@ -31,17 +31,21 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
     try {
       const token = window.localStorage.getItem('token')
       async function getBalance(){
-        grouped.forEach(async (day) => {
-          const query = {date: day[0], typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, includehiddenaccounts: includeHiddenAccounts, account: accountId, category: categoryId}
-          const {url, options} = GET_BALANCE(token, query)
-          const {response, json, error} = await request(url, options)
-          if (response.ok){
-            delete json.message;
-            day[2] = json;
-            return true
-          }
-          else throw new Error(error)    
-        })}           
+        const yearMonth = grouped[0][0].slice(0, -3) //use first day as reference to get year month
+        const query = {yearmonth: yearMonth, typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, includehiddenaccounts: includeHiddenAccounts, account: accountId, category: categoryId}
+        const {url, options} = GET_MONTH_BALANCE(token, query)
+        const {response, json, error} = await request(url, options)
+        console.log(grouped)
+        console.log(json)
+        if (response.ok){
+          grouped.forEach(async(day) => {
+            const dayChar = +day[0].slice(-2)
+            day[2] = json.balances[dayChar]
+          })
+        } else {
+          throw new Error(error)
+        }
+      }           
       getBalance();
     } catch (error) {
         console.log(error)

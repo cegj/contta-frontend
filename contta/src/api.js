@@ -369,6 +369,20 @@ export function GET_BALANCE(token, queryObject){
   }
 }
 
+export function GET_MONTH_BALANCE(token, queryObject){
+  const query = objectToQueryString(queryObject)
+
+  return {
+    url: API_URL + `/balances/month?${query}`,
+    options: {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token
+      }  
+    }
+  }
+}
+
 export function GET_BALANCE_FOR_BUDGET(token, queryObject){
   const query = objectToQueryString(queryObject)
 
