@@ -37,13 +37,8 @@ const CategoriesForm = ({isOpen, setIsOpen, setUpdateCategoriesList, categoryToE
 
   React.useEffect(() => {
     function setEdittingValues(){
-
-      console.log(categoryToEdit)
-
       const editIsGroup = categoryToEdit.group_id ? false : true;
-
       const groupOfEditting = groupOptions.find(group => group.value === categoryToEdit.group_id)
-
       name.setValue(categoryToEdit.name)
       if(editIsGroup) isGroup.setValue(true)
       if(!editIsGroup) setGroup(groupOfEditting)

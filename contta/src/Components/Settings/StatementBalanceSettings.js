@@ -30,7 +30,6 @@ const StatementBalanceSettings = () => {
   }
 
   function selectTypeOfDateGroup({target}){
-    console.log(typeOfDateBalance)
     window.localStorage.setItem('typeOfDateGroup', target.dataset.value)
     setTypeOfDateGroup(target.dataset.value)
     setUpdateTransactions(true)
@@ -47,10 +46,6 @@ const StatementBalanceSettings = () => {
     setIncludeHiddenAccounts(JSON.parse(target.dataset.value))
     setUpdateTransactions(true)
   }
-
-  React.useEffect(() => {
-    console.log(includeExpectedOnBalance)
-  }, [includeExpectedOnBalance])
 
   return (
     <section className={styles.settingsGroup}>

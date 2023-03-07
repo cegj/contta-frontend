@@ -35,8 +35,6 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
         const query = {yearmonth: yearMonth, typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, includehiddenaccounts: includeHiddenAccounts, account: accountId, category: categoryId}
         const {url, options} = GET_MONTH_BALANCE(token, query)
         const {response, json, error} = await request(url, options)
-        console.log(grouped)
-        console.log(json)
         if (response.ok){
           grouped.forEach(async(day) => {
             const dayChar = +day[0].slice(-2)
