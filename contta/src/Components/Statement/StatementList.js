@@ -28,29 +28,31 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
     grouped.forEach((day) => {
       day.push({date: 0, month_to_date: 0, all_to_date: 0})
     })
-    try {
-      const token = window.localStorage.getItem('token')
-      async function getBalance(){
-        const yearMonth = grouped[0][0].slice(0, -3) //use first day as reference to get year month
-        const query = {yearmonth: yearMonth, typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, includehiddenaccounts: includeHiddenAccounts, account: accountId, category: categoryId}
-        const {url, options} = GET_MONTH_BALANCE(token, query)
-        const {response, json, error} = await request(url, options)
-        if (response.ok){
-          grouped.forEach(async(day) => {
-            const dayChar = +day[0].slice(-2)
-            day[2] = json.balances[dayChar]
-          })
-        } else {
-          throw new Error(error)
-        }
-      }           
-      getBalance();
-    } catch (error) {
-        console.log(error)
-        setMessage({content: `Erro ao obter saldos: ${error.message}`, type: "e"})
-        return false;
-    } finally {
-      setGroupWithBalance([...grouped])
+    if (grouped.length > 0){
+      try {
+        const token = window.localStorage.getItem('token')
+        async function getBalance(){
+          const yearMonth = grouped[0][0].slice(0, -3) //use first day as reference to get year month
+          const query = {yearmonth: yearMonth, typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, includehiddenaccounts: includeHiddenAccounts, account: accountId, category: categoryId}
+          const {url, options} = GET_MONTH_BALANCE(token, query)
+          const {response, json, error} = await request(url, options)
+          if (response.ok){
+            grouped.forEach(async(day) => {
+              const dayChar = +day[0].slice(-2)
+              day[2] = json.balances[dayChar]
+            })
+          } else {
+            throw new Error(error)
+          }
+        }           
+        getBalance();
+      } catch (error) {
+          console.log(error)
+          setMessage({content: `Erro ao obter saldos: ${error.message}`, type: "e"})
+          return false;
+      } finally {
+        setGroupWithBalance([...grouped])  
+    }
     }}, [includeExpectedOnBalance, typeOfDateBalance, typeOfDateGroup, accountId, categoryId, includeHiddenAccounts, setMessage, request])
 
   React.useEffect(() => {

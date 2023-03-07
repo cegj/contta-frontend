@@ -181,9 +181,9 @@ const StatementItem = (transaction) => {
             <span className={styles.description}>{transaction.description}</span>
             <span className={styles.value}>R$ {convertToFloat(transaction.value)}</span>
             {transaction.budget_control ?
-            <span classList={styles.budgetControl} data-background-color="#a19f9f" data-delay-show="700" data-tip="Transação de controle de orçamento: não é considerada no cálculo dos saldos dos extratos e sofre abatimento automático"><BudgetIcon /></span> : ""}
+            <span classlist={styles.budgetControl} data-background-color="#a19f9f" data-delay-show="700" data-tip="Transação de controle de orçamento: não é considerada no cálculo dos saldos dos extratos e sofre abatimento automático"><BudgetIcon /></span> : ""}
             {(transaction.account && transaction.account.show === 0) ?
-            <span classList={styles.hiddenAccount} data-background-color="#a19f9f" data-delay-show="700" data-tip="Transação vinculada a conta oculta: por padrão, não é considerado nos saldos, extratos e orçamentos"><HiddenAccountIcon /></span> : ""}
+            <span classlist={styles.hiddenAccount} data-background-color="#a19f9f" data-delay-show="700" data-tip="Transação vinculada a conta oculta: por padrão, não é considerado nos saldos, extratos e orçamentos"><HiddenAccountIcon /></span> : ""}
           </div>
           <div className={styles.line}>
             <span className={styles.metadata} data-background-color="#a19f9f" data-delay-show="700" data-tip="Data da transação"><TransactionDateIcon /> {convertDateToBr(transaction.transaction_date)}</span>
