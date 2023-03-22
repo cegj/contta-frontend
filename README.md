@@ -31,6 +31,7 @@ Backend desenvolvido em REST API com PHP Laravel: [veja o repositório aqui](htt
 - Definir contas como ocultas, de forma a não serem consideradas nos saldos e exibidas nos extratos;
 - Fazer ajustes finos no extrato e nos saldos, como: tipo de data para agrupar transações, tipo de data para calcular saldos, considerar ou não transações previstas nos saldos, exibir ou não transações de contas ocultas, dentre outros.
 - Registrar compras parceladas, visualizá-las de forma agrupada e editá-las ou apagá-las em lote, caso necessário.
+- Responsividade em dispositivos móveis.
 
 ### Planejado
 
