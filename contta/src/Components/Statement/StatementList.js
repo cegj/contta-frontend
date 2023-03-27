@@ -53,7 +53,8 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
       } finally {
         setGroupWithBalance([...grouped])  
     }
-    }}, [includeExpectedOnBalance, typeOfDateBalance, typeOfDateGroup, accountId, categoryId, includeHiddenAccounts, setMessage, request])
+    } else setGroupWithBalance(null)
+  }, [includeExpectedOnBalance, typeOfDateBalance, typeOfDateGroup, accountId, categoryId, includeHiddenAccounts, setMessage, request])
 
   React.useEffect(() => {
     if(typeFilter || categoryFilter || accountFilter || statusFilter) setHasFilter(true)
