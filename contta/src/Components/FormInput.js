@@ -7,10 +7,10 @@ import setCurrencyMask from '../Helpers/setCurrencyMask'
 
 const FormInput = ({formName, type, name, label, value, onChange, style, options, setValue, reload, currency = false, disabled = false}) => {
 
-  const [keepValue, setKeepValue] = React.useState(window.localStorage.getItem(`${formName}KeepValues`) ? JSON.parse(window.localStorage.getItem(`${formName}KeepValues`))[name] : false);
+  const [keepValue, setKeepValue] = React.useState(window.sessionStorage.getItem(`${formName}KeepValues`) ? JSON.parse(window.sessionStorage.getItem(`${formName}KeepValues`))[name] : false);
 
   React.useEffect(() => {
-    const storedValues = JSON.parse(window.localStorage.getItem(formName))
+    const storedValues = JSON.parse(window.sessionStorage.getItem(formName))
     if (storedValues){
       storedValues[name] && setValue(storedValues[name]);
     }
@@ -19,37 +19,37 @@ const FormInput = ({formName, type, name, label, value, onChange, style, options
 
   React.useEffect(() => {
     if (!keepValue) {
-      const storedValues = JSON.parse(window.localStorage.getItem(formName));
+      const storedValues = JSON.parse(window.sessionStorage.getItem(formName));
       if (storedValues){
         delete storedValues[name];
-        window.localStorage.setItem(formName, JSON.stringify(storedValues))  
+        window.sessionStorage.setItem(formName, JSON.stringify(storedValues))  
       }
-      const settedKeepValues = JSON.parse(window.localStorage.getItem(`${formName}KeepValues`))
+      const settedKeepValues = JSON.parse(window.sessionStorage.getItem(`${formName}KeepValues`))
       if (settedKeepValues){
         settedKeepValues[name] = false;
-        window.localStorage.setItem(`${formName}KeepValues`, JSON.stringify(settedKeepValues))  
+        window.sessionStorage.setItem(`${formName}KeepValues`, JSON.stringify(settedKeepValues))  
       }
     }
 
     if (keepValue){
-      const settedKeepValues = JSON.parse(window.localStorage.getItem(`${formName}KeepValues`))
+      const settedKeepValues = JSON.parse(window.sessionStorage.getItem(`${formName}KeepValues`))
       if (settedKeepValues){
         settedKeepValues[name] = true;
-        window.localStorage.setItem(`${formName}KeepValues`, JSON.stringify(settedKeepValues))  
+        window.sessionStorage.setItem(`${formName}KeepValues`, JSON.stringify(settedKeepValues))  
       } else {
-        window.localStorage.setItem(`${formName}KeepValues`, JSON.stringify({[name]: true}))  
+        window.sessionStorage.setItem(`${formName}KeepValues`, JSON.stringify({[name]: true}))  
       }
     }
   }, [keepValue, name, formName])
 
   React.useEffect(() => {
     if(keepValue){
-      const storedValues = JSON.parse(window.localStorage.getItem(formName));
+      const storedValues = JSON.parse(window.sessionStorage.getItem(formName));
       if (storedValues){
         storedValues[name] = value;
-        window.localStorage.setItem(formName, JSON.stringify(storedValues))  
+        window.sessionStorage.setItem(formName, JSON.stringify(storedValues))  
       } else {
-        window.localStorage.setItem(formName, JSON.stringify({[name]: value}))  
+        window.sessionStorage.setItem(formName, JSON.stringify({[name]: value}))  
       }  
     }
   }, [name, formName, value, keepValue])
