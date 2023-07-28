@@ -27,6 +27,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
     const grouped = Object.entries(groupBy(transactions, typeOfDateGroup));
     grouped.forEach((day) => {
       day.push({date: 0, month_to_date: 0, all_to_date: 0})
+      day.push({firstOnFuture: false})
     })
     if (grouped.length > 0){
       try {
@@ -45,7 +46,22 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
             throw new Error(error)
           }
         }           
+        function checkIsToday(){
+          const today = new Date()
+          today.setHours(0,0,0,0)
+          grouped.find((day) => {
+            const dayDate = new Date(`${day[0]} 00:00:00`)
+            if (dayDate > today){
+              day[3].firstOnFuture = true;
+              return true}
+            else {
+              return false
+            }
+          })
+        }
         getBalance();
+        checkIsToday();
+        console.log(grouped)
       } catch (error) {
           console.log(error)
           setMessage({content: `Erro ao obter saldos: ${error.message}`, type: "e"})
@@ -109,6 +125,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
   {(elementsToRender && elementsToRender.length > 0)
     ? elementsToRender.map((element) => {return element})
     : <span className="noTransactions">Nenhuma transação encontrada</span>     }   
+
  </div>
 
 }
