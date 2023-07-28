@@ -82,24 +82,15 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
     const render = [];
     if(groupWithBalance && groupWithBalance.length > 0){
       groupWithBalance.forEach((day) => {
+        {day[3].firstOnFuture && render.push(<StatementSeparator text="Transações futuras:" />)}
         day[1].forEach((transaction) => {
           if (hasFilter){
             if (typeFilter && (transaction.type !== typeFilter.value)) return null
             if (categoryFilter && (transaction.category_id !== categoryFilter.value)) return null
             if (accountFilter && (transaction.account_id !== accountFilter.value)) return null
             if (statusFilter && (transaction.preview !== statusFilter.value)) return null
-            else render.push(
-              <>
-                {day[3].firstOnFuture && <StatementSeparator text="Transações futuras:" />}
-                <StatementItem key={transaction.id} {...transaction} />
-              </>
-              )
-          } else render.push(
-            <>
-              {day[3].firstOnFuture && <StatementSeparator text="Transações futuras:"/>}
-              <StatementItem key={transaction.id} {...transaction} />
-            </>
-        )
+            else render.push(<StatementItem key={transaction.id} {...transaction} />)
+          } else render.push(<StatementItem key={transaction.id} {...transaction} />)
       })
         const dateBalance = convertToFloat(day[2].date.balance);
         const monthToDateBalance = convertToFloat(day[2].month_to_date.balance);
