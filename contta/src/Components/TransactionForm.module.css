@@ -8,15 +8,15 @@
 }
 
 .modalTitle.d {
-  color: rgb(119, 0, 0);
+  color: #770000;
 }
 
 .modalTitle.r {
-  color: rgb(0, 99, 0);
+  color: #006300;
 }
 
 .modalTitle.t {
-  color: rgb(104, 0, 104);
+  color: #680068;
 }
 
 .buttonsContainer {

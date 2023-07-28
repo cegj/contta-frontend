@@ -14,7 +14,7 @@
 }
 
 .filterIcon>svg {
-  fill: rgb(139, 139, 139);
+  fill: #8b8b8b;
 }
 
 .filterIcon.hasFilter {
