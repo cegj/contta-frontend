@@ -62,7 +62,6 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
         }
         getBalance();
         checkIsToday();
-        console.log(grouped)
       } catch (error) {
           console.log(error)
           setMessage({content: `Erro ao obter saldos: ${error.message}`, type: "e"})
