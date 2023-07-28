@@ -122,7 +122,7 @@ const StatementItem = (transaction) => {
       edittingValues["usual"] = transaction.usual;
       edittingValues["budget_control"] = transaction.budget_control;
 
-      window.localStorage.setItem('transactionForm', JSON.stringify(edittingValues))  
+      window.sessionStorage.setItem('transactionForm', JSON.stringify(edittingValues))  
       setTransactionModalIsOpen(true)
       }
   
