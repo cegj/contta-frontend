@@ -16,6 +16,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
   const [categoryFilter, setCategoryFilter] = React.useState(null)
   const [accountFilter, setAccountFilter] = React.useState(null)
   const [statusFilter, setStatusFilter] = React.useState(null)
+  const [showSeparators, setShowSeparators] = React.useState(true)
   const [hasFilter, setHasFilter] = React.useState(false)
   const {setMessage, typeOfDateGroup, typeOfDateBalance, includeExpectedOnBalance, includeHiddenAccounts, setLoading} = React.useContext(AppContext)
   const {request, fetchLoading} = useFetch();
@@ -81,7 +82,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
     const render = [];
     if(groupWithBalance && groupWithBalance.length > 0){
       groupWithBalance.forEach((day) => {
-        {day[3].firstOnFuture && render.push(<StatementSeparator text="Transações futuras:" />)}
+        {!hasFilter && day[3].firstOnFuture && render.push(<StatementSeparator text="Transações futuras:" />)}
         day[1].forEach((transaction) => {
           if (hasFilter){
             if (typeFilter && (transaction.type !== typeFilter.value)) return null
