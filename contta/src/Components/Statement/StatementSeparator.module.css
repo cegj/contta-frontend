@@ -1,0 +1,12 @@
+.separator {
+  margin: .5rem auto;
+  padding: .5rem;
+  font-size: .875rem;
+  text-transform: lowercase;
+  text-align: center;
+  color: #b8b8b8;
+  font-family: 'Ubuntu', sans-serif;
+  background-color: rgb(238, 238, 238);
+  border-radius: 20px;
+  width: 98%;
+}

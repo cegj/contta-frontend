@@ -7,6 +7,7 @@ import AppContext from '../../Contexts/AppContext'
 import { GET_MONTH_BALANCE } from '../../api'
 import groupBy from '../../Helpers/groupBy'
 import useFetch from '../../Hooks/useFetch'
+import StatementSeparator from './StatementSeparator'
 
 const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
 
@@ -87,8 +88,18 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
             if (categoryFilter && (transaction.category_id !== categoryFilter.value)) return null
             if (accountFilter && (transaction.account_id !== accountFilter.value)) return null
             if (statusFilter && (transaction.preview !== statusFilter.value)) return null
-            else render.push(<StatementItem key={transaction.id} {...transaction} />)
-          } else render.push(<StatementItem key={transaction.id} {...transaction} />)
+            else render.push(
+              <>
+                {day[3].firstOnFuture && <StatementSeparator text="Transações futuras:" />}
+                <StatementItem key={transaction.id} {...transaction} />
+              </>
+              )
+          } else render.push(
+            <>
+              {day[3].firstOnFuture && <StatementSeparator text="Transações futuras:"/>}
+              <StatementItem key={transaction.id} {...transaction} />
+            </>
+        )
       })
         const dateBalance = convertToFloat(day[2].date.balance);
         const monthToDateBalance = convertToFloat(day[2].month_to_date.balance);
