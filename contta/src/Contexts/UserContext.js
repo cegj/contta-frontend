@@ -29,35 +29,23 @@ export const UserContextData = ({children}) => {
         const user = json;
         setUser(user);
         setLogged(true);
-        navigate('/board')
       } else {
         throw new Error(error);
       }
     } catch (error) {
       userLogout();
       setMessage({content: `Não foi possível entrar: ${error.message}`, type: 'e'});
-    }}, [setMessage, userLogout, request, navigate])
+    }}, [setMessage, userLogout, request])
 
-  React.useEffect(() => {
-    async function autoLogin(){
-      const token = window.localStorage.getItem('token');
-      if (token){
-        getUser(token);
-      }
-    }
-    if(!logged){
-      autoLogin();
-    }
-  }, [getUser, logged])
-
-  async function userLogin(email, password) {
+    async function userLogin(email, password) {
     try {
       const {url, options} = POST_LOGIN({email, password});
       const {response, json, error} = await request(url, options);
       if (response.ok){
         const {access_token} = json;
         window.localStorage.setItem('token', access_token);
-        getUser(access_token);  
+        await getUser(access_token);
+        navigate('/board')  
       } else {
         throw new Error(error);
       }
@@ -82,7 +70,7 @@ export const UserContextData = ({children}) => {
       }}  
 
   return (
-    <UserContext.Provider value={{ userLogin, userLogout, createUser, user, logged, fetchLoading }}>
+    <UserContext.Provider value={{ userLogin, userLogout, createUser, user, logged, getUser, fetchLoading }}>
       {children}
     </UserContext.Provider>
   )
