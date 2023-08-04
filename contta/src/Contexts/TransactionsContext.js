@@ -13,6 +13,7 @@ export const TransactionsContextData = ({children}) => {
   const {setLoading, setUpdateAccountBalances, setUpdateCategoryBalances} = React.useContext(AppContext)
   const {accounts, categories} = React.useContext(AppContext)
   const [updateTransactions, setUpdateTransactions] = React.useState(true)
+  const [sendingTransaction, setSendingTransaction] = React.useState(false)
   
   const getTransactions = React.useCallback(async (query = {from: '', to: '', typeofdate: '', account: '', category: ''}) => {
     try {
@@ -50,6 +51,7 @@ export const TransactionsContextData = ({children}) => {
     else if (type === 'D') {({url, options} = POST_EXPENSE(body, token))}
     else if (type === 'T') {({url, options} = POST_TRANSFER(body, token))} 
     try {
+      setSendingTransaction(true)
       const {response, json, error} = await request(url, options);
       if (response.ok){
         setMessage({content: json.message, type: 's'})
@@ -64,6 +66,8 @@ export const TransactionsContextData = ({children}) => {
       console.log(error)
       setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
       return false;
+    } finally {
+      setSendingTransaction(false)
     }
   }, [request, setMessage, setUpdateAccountBalances, setUpdateCategoryBalances])
 
@@ -75,6 +79,7 @@ export const TransactionsContextData = ({children}) => {
     else if (type === 'D') {({url, options} = PATCH_EXPENSE(body, token, id, cascade))}
     else if (type === 'T') {({url, options} = PATCH_TRANSFER(body, token, id, cascade))}  
     try {
+      setSendingTransaction(true)
       const {response, json, error} = await request(url, options);
       if (response.ok){
         setMessage({content: json.message, type: 's'})
@@ -89,6 +94,8 @@ export const TransactionsContextData = ({children}) => {
       console.log(error)
       setMessage({content: `Erro ao editar transação: ${error.message}`, type: "e"})
       return false;
+    } finally {
+      setSendingTransaction(false)
     }
   }, [request, setMessage, setUpdateAccountBalances, setUpdateCategoryBalances])
 
@@ -96,6 +103,7 @@ export const TransactionsContextData = ({children}) => {
     const token = window.localStorage.getItem('token')
     const {url, options} = DELETE_TRANSACTION(token, transaction.id, transaction.type, cascade)
     try {
+      setSendingTransaction(true)
       const {response, error} = await request(url, options);
       if (response.ok){
         setMessage({content: `${cascade ? 'Transação e parcelas seguintes apagadas' : 'Transação apagada'}`, type: 's'})
@@ -110,6 +118,8 @@ export const TransactionsContextData = ({children}) => {
       console.log(error)
       setMessage({content: `Erro ao apagar transação: ${error.message}`, type: "e"})
       return false;
+    } finally {
+      setSendingTransaction(false)
     }
   }, [request, setMessage, setUpdateAccountBalances, setUpdateCategoryBalances])
 
@@ -162,7 +172,8 @@ export const TransactionsContextData = ({children}) => {
         storeTransaction,
         editTransaction,
         deleteTransaction,
-        updateTransactions, setUpdateTransactions
+        updateTransactions, setUpdateTransactions,
+        sendingTransaction
       }
       }>
       {children}

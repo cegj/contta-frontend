@@ -4,7 +4,7 @@ import AppContext from '../Contexts/AppContext'
 // import {ReactComponent as AttachIcon} from '../assets/icons/attach_icon.svg'
 import {ReactComponent as PinIcon} from '../assets/icons/pin_icon.svg'
 import Button from './Elements/Button'
-import useFetch from '../Hooks/useFetch'
+// import useFetch from '../Hooks/useFetch'
 import useForm from '../Hooks/useForm'
 import MessagesContext from '../Contexts/MessagesContext'
 import FormInput from './FormInput'
@@ -18,12 +18,12 @@ import Modal from './Elements/Modal'
 const TransactionForm = () => {
 
   const {setMessage} = React.useContext(MessagesContext);
-  const {fetchLoading} = useFetch();
-  const {categories, accounts, transactionModalIsOpen, setTransactionModalIsOpen, setLoading} = React.useContext(AppContext);
+  // const {fetchLoading} = useFetch();
+  const {categories, accounts, transactionModalIsOpen, setTransactionModalIsOpen} = React.useContext(AppContext);
   const [modalIsFixed, setModalIsFixed] = React.useState(false);
   const [keepAllValues] = React.useState(false);
   const [reload, setReload] = React.useState(false);
-  const {storeTransaction, editTransaction, typeOptions, categoryOptions, accountOptions} = React.useContext(TransactionsContext);
+  const {storeTransaction, editTransaction, typeOptions, categoryOptions, accountOptions, sendingTransaction} = React.useContext(TransactionsContext);
   
   const id = useForm();
   const [type, setType] = React.useState([]);
@@ -61,9 +61,9 @@ const TransactionForm = () => {
     if(!transactionModalIsOpen) {ReactTooltip.hide()}
   }, [transactionModalIsOpen])
 
-  React.useEffect(() => {
-    setLoading(fetchLoading)
-  }, [fetchLoading, setLoading])
+  // React.useEffect(() => {
+  //   setLoading(fetchLoading)
+  // }, [fetchLoading, setLoading])
 
   //Update form is reload if it's setted true by some child
   React.useEffect(() => {
@@ -370,9 +370,9 @@ const TransactionForm = () => {
                 reload={reload}
               />
             </span>
-            {fetchLoading 
+            {sendingTransaction 
             ?
-            <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}} disabled>Registrando...</Button>
+            <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}} disabled>{id.value ? 'Editando...' : 'Registrando...'}</Button>
             :
             <Button type="confirm" style={{gridRow: '4', gridColumn: '6', alignSelf: 'end'}}>{id.value ? 'Editar' : 'Registrar'}</Button>
             }
