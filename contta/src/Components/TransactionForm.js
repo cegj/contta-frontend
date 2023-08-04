@@ -179,7 +179,7 @@ const TransactionForm = () => {
     })
 
   const additionalBtns = [
-    <span key="2" data-tip="Manter janela aberta" className={`${styles.pinButton} ${modalIsFixed && styles.active}`} onClick={() => {modalIsFixed ? setModalIsFixed(false) : setModalIsFixed(true)}}><PinIcon /></span>]
+    <span key="2" data-tip={modalIsFixed ? "Não manter janela aberta após registro" : "Manter janela aberta após registro"} className={`${styles.pinButton} ${modalIsFixed && styles.active}`} onClick={() => {modalIsFixed ? setModalIsFixed(false) : setModalIsFixed(true)}}><PinIcon /></span>]
     
   return (
       transactionModalIsOpen &&
