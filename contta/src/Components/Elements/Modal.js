@@ -3,7 +3,7 @@ import styles from './Modal.module.css'
 import {ReactComponent as CloseIcon} from '../../assets/icons/close_icon.svg'
 import ReactTooltip from 'react-tooltip'
 
-const Modal = ({title, isOpen, setIsOpen, additionalBtns = null, children}) => {
+const Modal = ({title, isOpen, setIsOpen, additionalBtns = null, isFixed = false, children}) => {
   
   const modalContainer = React.useRef(null);
 
@@ -15,14 +15,16 @@ const Modal = ({title, isOpen, setIsOpen, additionalBtns = null, children}) => {
 
   React.useEffect(() => {
     function closeOnClick(event){
-      const clickOutside = modalContainer.current === event.target
-      if (clickOutside) {
-        setIsOpen(false)
-        modalContainer.current.removeEventListener('click', closeOnClick)
+      if (!isFixed){
+        const clickOutside = modalContainer.current === event.target
+        if (clickOutside) {
+          setIsOpen(false)
+        }
       }
+      modalContainer.current.removeEventListener('click', closeOnClick)
     }
     modalContainer.current.addEventListener('click', closeOnClick)
-  }, [setIsOpen])
+  }, [setIsOpen, isFixed])
 
   return (
     isOpen &&
@@ -32,7 +34,7 @@ const Modal = ({title, isOpen, setIsOpen, additionalBtns = null, children}) => {
           {title &&<h2 className={styles.modalTitle}>{title}</h2>}
           <span className={styles.buttonsContainer}>
             {additionalBtns && additionalBtns.map((btn) => {return btn})}
-            <span data-tip="Fechar" className={styles.closeButton} onClick={() => {setIsOpen(false)}} ><CloseIcon /></span>
+           {!isFixed && <span data-tip="Fechar" className={styles.closeButton} onClick={() => {setIsOpen(false)}} ><CloseIcon /></span>}
           </span>
         </div>
         <div id="modalContent" className={styles.modalContent}>

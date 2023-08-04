@@ -1,27 +1,21 @@
 import React from 'react'
 import styles from './TransactionForm.module.css'
 import AppContext from '../Contexts/AppContext'
-// import {ReactComponent as AttachIcon} from '../assets/icons/attach_icon.svg'
 import {ReactComponent as PinIcon} from '../assets/icons/pin_icon.svg'
 import Button from './Elements/Button'
-// import useFetch from '../Hooks/useFetch'
 import useForm from '../Hooks/useForm'
 import MessagesContext from '../Contexts/MessagesContext'
 import FormInput from './FormInput'
 import convertToInteger from '../Helpers/convertToInteger'
 import ReactTooltip from 'react-tooltip'
-// import convertToFloat from '../Helpers/convertToFloat'
 import TransactionsContext from '../Contexts/TransactionsContext'
 import Modal from './Elements/Modal'
-// import reactSelect from 'react-select'
 
 const TransactionForm = () => {
 
   const {setMessage} = React.useContext(MessagesContext);
-  // const {fetchLoading} = useFetch();
   const {categories, accounts, transactionModalIsOpen, setTransactionModalIsOpen} = React.useContext(AppContext);
   const [modalIsFixed, setModalIsFixed] = React.useState(false);
-  const [keepAllValues] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const {storeTransaction, editTransaction, typeOptions, categoryOptions, accountOptions, sendingTransaction} = React.useContext(TransactionsContext);
   
@@ -61,10 +55,6 @@ const TransactionForm = () => {
     if(!transactionModalIsOpen) {ReactTooltip.hide()}
   }, [transactionModalIsOpen])
 
-  // React.useEffect(() => {
-  //   setLoading(fetchLoading)
-  // }, [fetchLoading, setLoading])
-
   //Update form is reload if it's setted true by some child
   React.useEffect(() => {
     if(reload){
@@ -80,7 +70,7 @@ const TransactionForm = () => {
     if (!transactionModalIsOpen){
       clearForm();
     }
-  }, [transactionModalIsOpen, clearForm, keepAllValues])
+  }, [transactionModalIsOpen, clearForm])
 
   React.useEffect(() => {
     const today = new Date().toLocaleString("sv", {timeZone: "America/Sao_Paulo"}).split(' ')[0];
@@ -171,24 +161,25 @@ const TransactionForm = () => {
         if (editted){
           clearForm();
           setReload(true);
-          if(!modalIsFixed){
-            setTransactionModalIsOpen(false);
-          }  
+          setTransactionModalIsOpen(false); 
         }
       } else {
         const stored = await storeTransaction(body, type.value)
         if (stored){
           clearForm();
           setReload(true);
-          if(!modalIsFixed){
-            setTransactionModalIsOpen(false);
-          }  
+          setTransactionModalIsOpen(false);
       }
     }}
 
+    React.useEffect(() => {
+      if(modalIsFixed){
+        setTransactionModalIsOpen(true);
+      }
+    })
+
   const additionalBtns = [
-    // <span key="1" data-tip="Manter valores" className={`${styles.pinButton} ${keepAllValues && styles.active}`} onClick={handleKeepAllValues}><AttachIcon /></span>,
-    <span key="2" data-tip="Manter janela aberta após envio" className={`${styles.pinButton} ${modalIsFixed && styles.active}`} onClick={() => {modalIsFixed ? setModalIsFixed(false) : setModalIsFixed(true)}}><PinIcon /></span>]
+    <span key="2" data-tip="Manter janela aberta" className={`${styles.pinButton} ${modalIsFixed && styles.active}`} onClick={() => {modalIsFixed ? setModalIsFixed(false) : setModalIsFixed(true)}}><PinIcon /></span>]
     
   return (
       transactionModalIsOpen &&
@@ -197,6 +188,7 @@ const TransactionForm = () => {
         isOpen={transactionModalIsOpen}
         setIsOpen={setTransactionModalIsOpen}
         additionalBtns={additionalBtns}
+        isFixed={modalIsFixed}
         >
             <form className={styles.transactionForm} onSubmit={handleSubmit}>
             <FormInput
