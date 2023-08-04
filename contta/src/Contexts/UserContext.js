@@ -19,7 +19,8 @@ export const UserContextData = ({children}) => {
     setUser(null);
     setLogged(false);
     setMessage({content: "Sessão encerrada", type: 'n'});  
-  }, [setMessage])
+    navigate("/")
+  }, [setMessage, navigate])
 
   const getUser = React.useCallback(async (token) => {
     try {

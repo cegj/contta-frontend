@@ -4,7 +4,7 @@ import UserContext from '../Contexts/UserContext'
 
 const ProtectedRoute = ({children}) => {
 
-  const {logged, getUser, userLogout} = React.useContext(UserContext);
+  const {logged, getUser} = React.useContext(UserContext);
 
   if (logged){
     return children
@@ -16,7 +16,6 @@ const ProtectedRoute = ({children}) => {
     return children
   }
 
-  userLogout()
   return <Navigate to="/" />
 }
 
