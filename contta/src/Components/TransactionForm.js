@@ -167,7 +167,7 @@ const TransactionForm = () => {
       }
 
       if (id.value){
-        const editted = editTransaction(body, type.value, id.value, cascade.value)
+        const editted = await editTransaction(body, type.value, id.value, cascade.value)
         if (editted){
           clearForm();
           setReload(true);
@@ -176,7 +176,7 @@ const TransactionForm = () => {
           }  
         }
       } else {
-        const stored = storeTransaction(body, type.value)
+        const stored = await storeTransaction(body, type.value)
         if (stored){
           clearForm();
           setReload(true);

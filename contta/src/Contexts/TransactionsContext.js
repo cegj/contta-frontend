@@ -87,7 +87,7 @@ export const TransactionsContextData = ({children}) => {
       }
     } catch (error) {
       console.log(error)
-      setMessage({content: `Erro ao registrar transação: ${error.message}`, type: "e"})
+      setMessage({content: `Erro ao editar transação: ${error.message}`, type: "e"})
       return false;
     }
   }, [request, setMessage, setUpdateAccountBalances, setUpdateCategoryBalances])

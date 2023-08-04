@@ -1,6 +1,6 @@
 import objectToQueryString from "./Helpers/objectToQueryString";
 
-export const API_URL = 'http://localhost:8000/api';
+export const API_URL = 'http://127.0.0.1:8000/api';
 
 export function GET_CHECK_TABLES(){
   return {
