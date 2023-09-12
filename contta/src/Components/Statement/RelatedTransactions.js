@@ -20,7 +20,7 @@ const RelatedTransactions = ({id, isOpen, setIsOpen}) => {
   }, [id, getRelatedTransactions, transactions, updateTransactions])
 
   if (related) return (
-    <Modal title={related.length > 1 ? `${related.length} transações relacionadas` : '1 transação relacionada'} isOpen={isOpen} setIsOpen={setIsOpen}>
+    <Modal title={related.length > 1 ? `${related.length} transações relacionadas` : `${related.length} transação relacionada`} isOpen={isOpen} setIsOpen={setIsOpen}>
       <div data-on-modal="true" className={styles.relatedTransactionsContainer}>
         {related.map((transaction) => {
           return <StatementItem key={transaction.id} {...transaction}/>

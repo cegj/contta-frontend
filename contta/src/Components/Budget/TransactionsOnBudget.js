@@ -51,24 +51,6 @@ const TransactionsOnBudget = ({catId, month, hideExpected, isOpen, setIsOpen, in
       setUpdateTransactions(false)
     }}, [getAndSet, updateTransactions, setUpdateTransactions])
 
-  // const getTransactionsOfSelected = React.useCallback(async(catId) => {
-  //   const firstDay = getFirstDay(year, month)
-  //   const lastDay = getLastDay(year, month)
-  //   const transactions = await getTransactions({from: firstDay, to: lastDay, category: catId, typeofdate: 'payment_date', hideexpected: hideExpected, includehiddenaccounts: includeHiddenAccounts})
-  //   if (transactions.length === 0) setHasNoTransactions(true)
-  //   else setTransactionsOfSelected(transactions)
-  // }, [getTransactions, getFirstDay, getLastDay, month, year, setHasNoTransactions, hideExpected, includeHiddenAccounts])
-
-  // React.useEffect(() => {
-  //   if(updateTransactions) setHasNoTransactions(false)
-  // }, [updateTransactions])
-
-  // React.useEffect(() => {
-  //   if(isOpen && (transactionsOfSelected.length === 0 || updateTransactions)){
-  //     if (!hasNoTransactions) getTransactionsOfSelected(catId)
-  //     setUpdateTransactions(false)
-  //   }}, [isOpen, getTransactionsOfSelected, transactionsOfSelected, catId, hasNoTransactions, updateTransactions, setUpdateTransactions])
-
   if (isOpen) return (
     <Modal title={`Transações de ${category && category.name} em ${month}/${year}`} isOpen={isOpen} setIsOpen={setIsOpen}>
       <div className={styles.transactionsOnBudgetContainer} data-on-modal="true">
