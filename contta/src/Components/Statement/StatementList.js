@@ -16,9 +16,8 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
   const [categoryFilter, setCategoryFilter] = React.useState(null)
   const [accountFilter, setAccountFilter] = React.useState(null)
   const [statusFilter, setStatusFilter] = React.useState(null)
-  const [showSeparators, setShowSeparators] = React.useState(true)
   const [hasFilter, setHasFilter] = React.useState(false)
-  const {setMessage, typeOfDateGroup, typeOfDateBalance, includeExpectedOnBalance, includeHiddenAccounts, setLoading} = React.useContext(AppContext)
+  const {setMessage, typeOfDateBalance, includeExpectedOnBalance, includeHiddenAccounts, setLoading} = React.useContext(AppContext)
   const {request, fetchLoading} = useFetch();
 
   React.useEffect(() => {
@@ -26,8 +25,9 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
   }, [fetchLoading, setLoading])
 
   const getGroupWithBalance = React.useCallback((transactions) => {
-    const grouped = Object.entries(groupBy(transactions, typeOfDateGroup));
+    const grouped = Object.entries(groupBy(transactions, 'payment_date'));
     grouped.forEach((day) => {
+      console.log(day)
       day.push({date: 0, month_to_date: 0, all_to_date: 0})
       day.push({firstOnFuture: false})
     })
@@ -71,7 +71,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
         setGroupWithBalance([...grouped])  
     }
     } else setGroupWithBalance(null)
-  }, [includeExpectedOnBalance, typeOfDateBalance, typeOfDateGroup, accountId, categoryId, includeHiddenAccounts, setMessage, request])
+  }, [includeExpectedOnBalance, typeOfDateBalance, accountId, categoryId, includeHiddenAccounts, setMessage, request])
 
   React.useEffect(() => {
     if(typeFilter || categoryFilter || accountFilter || statusFilter) setHasFilter(true)
@@ -82,7 +82,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
     const render = [];
     if(groupWithBalance && groupWithBalance.length > 0){
       groupWithBalance.forEach((day) => {
-        {!hasFilter && day[3].firstOnFuture && render.push(<StatementSeparator text="Transações futuras:" />)}
+        !hasFilter && day[3].firstOnFuture && render.push(<StatementSeparator text="Transações futuras:" />)
         day[1].forEach((transaction) => {
           if (hasFilter){
             if (typeFilter && (transaction.type !== typeFilter.value)) return null
@@ -92,6 +92,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
             else render.push(<StatementItem key={transaction.id} {...transaction} />)
           } else render.push(<StatementItem key={transaction.id} {...transaction} />)
       })
+        // console.log(day)
         const dateBalance = convertToFloat(day[2].date.balance);
         const monthToDateBalance = convertToFloat(day[2].month_to_date.balance);
         const allToDateBalance = convertToFloat(day[2].all_to_date.balance);
