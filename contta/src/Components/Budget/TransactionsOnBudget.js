@@ -54,7 +54,7 @@ const TransactionsOnBudget = ({catId, month, hideExpected, isOpen, setIsOpen, in
   if (isOpen) return (
     <Modal title={`Transações de ${category && category.name} em ${month}/${year}`} isOpen={isOpen} setIsOpen={setIsOpen}>
       <div className={styles.transactionsOnBudgetContainer} data-on-modal="true">
-      {transactions && <StatementList transactions={transactions} categoryId={catId} />}
+      {transactions && <StatementList transactions={transactions} categoryId={catId} forcedTypeOfDateBalance={'payment_date'} forcedTypeOfDateGroup={'payment_date'}/>}
         <div onClick={setValuesToNewTransaction}>
           <AddTransactionButton />
         </div>

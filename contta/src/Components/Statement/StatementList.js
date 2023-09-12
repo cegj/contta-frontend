@@ -9,7 +9,7 @@ import groupBy from '../../Helpers/groupBy'
 import useFetch from '../../Hooks/useFetch'
 import StatementSeparator from './StatementSeparator'
 
-const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
+const StatementList = ({transactions, accountId = '', categoryId = '', forcedTypeOfDateBalance = null, forcedTypeOfDateGroup = null}) => {
 
   const [groupWithBalance, setGroupWithBalance] = React.useState(null)
   const [typeFilter, setTypeFilter] = React.useState(null)
@@ -17,7 +17,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
   const [accountFilter, setAccountFilter] = React.useState(null)
   const [statusFilter, setStatusFilter] = React.useState(null)
   const [hasFilter, setHasFilter] = React.useState(false)
-  const {setMessage, typeOfDateBalance, includeExpectedOnBalance, includeHiddenAccounts, setLoading} = React.useContext(AppContext)
+  const {setMessage, typeOfDateBalance, typeOfDateGroup, includeExpectedOnBalance, includeHiddenAccounts, setLoading} = React.useContext(AppContext)
   const {request, fetchLoading} = useFetch();
 
   React.useEffect(() => {
@@ -25,7 +25,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
   }, [fetchLoading, setLoading])
 
   const getGroupWithBalance = React.useCallback((transactions) => {
-    const grouped = Object.entries(groupBy(transactions, 'payment_date'));
+    const grouped = Object.entries(groupBy(transactions, forcedTypeOfDateGroup ? forcedTypeOfDateGroup : typeOfDateGroup));
     grouped.forEach((day) => {
       day.push({date: 0, month_to_date: 0, all_to_date: 0})
       day.push({firstOnFuture: false})
@@ -35,7 +35,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
         const token = window.localStorage.getItem('token')
         async function getBalance(){
           const yearMonth = grouped[0][0].slice(0, -3) //use first day as reference to get year month
-          const query = {yearmonth: yearMonth, typeofdate: typeOfDateBalance, includeexpected: includeExpectedOnBalance, includehiddenaccounts: includeHiddenAccounts, account: accountId, category: categoryId}
+          const query = {yearmonth: yearMonth, typeofdate: forcedTypeOfDateBalance ? forcedTypeOfDateBalance : typeOfDateBalance, includeexpected: includeExpectedOnBalance, includehiddenaccounts: includeHiddenAccounts, account: accountId, category: categoryId}
           const {url, options} = GET_MONTH_BALANCE(token, query)
           const {response, json, error} = await request(url, options)
           if (response.ok){
@@ -70,7 +70,7 @@ const StatementList = ({transactions, accountId = '', categoryId = ''}) => {
         setGroupWithBalance([...grouped])  
     }
     } else setGroupWithBalance(null)
-  }, [includeExpectedOnBalance, typeOfDateBalance, accountId, categoryId, includeHiddenAccounts, setMessage, request])
+  }, [includeExpectedOnBalance, forcedTypeOfDateBalance, typeOfDateBalance, forcedTypeOfDateGroup, typeOfDateGroup, accountId, categoryId, includeHiddenAccounts, setMessage, request])
 
   React.useEffect(() => {
     if(typeFilter || categoryFilter || accountFilter || statusFilter) setHasFilter(true)
