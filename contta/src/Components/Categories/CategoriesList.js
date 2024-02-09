@@ -79,7 +79,7 @@ React.useEffect(() => {
                 <li key={category.id} className={styles.item}>
                   <Link to={`${category.id}`}>
                     <span>{category.name}</span>
-                    <span>{category.balance ? `R$ ${convertToFloat(category.balance.all_to_date.balance)}` : ""}</span>
+                    <span>{category.balance ? `R$ ${convertToFloat(category.balance.month_to_date.balance)}` : ""}</span>
                   </Link>
                 </li>)
               })}
